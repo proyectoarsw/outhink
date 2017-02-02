@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-navbar hideBackButton>
+    <ion-title>Login</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <h2></h2>
+
+<ion-card style="max-width:480px; margin: auto auto">
+  <ion-card-content>
+
+    <form [formGroup]="form" (ngSubmit)="login()">
+
+      <ion-item>
+        <ion-label floating>Username</ion-label>
+        <ion-input type="email" value="" formControlName="username"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label floating>Password</ion-label>
+        <ion-input  type="password" value="" formControlName="password"></ion-input>
+      </ion-item>
+
+      <div padding>
+      <button ion-button small color="primary" block  type="submit" [disabled]="!form.valid">Sign In</button>
+    </div>
+</form>
+   
+
+
+
+
+
+
+
+  </ion-card-content>
+
+</ion-card>
+
+
+</ion-content>

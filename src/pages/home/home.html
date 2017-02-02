@@ -1,0 +1,154 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+
+    <img src="http://dynamicot.mybluemix.net/images/IBM.svg" width="60px" style="margin-left:20px ;display:inline-block" height="50px"/>
+    <div>Watson Advisor</div>
+</ion-title>
+    <ion-buttons end>
+  <button ion-button small  *ngIf="user" (click)="logout()"><ion-icon name="log-out"></ion-icon></button>
+  <button ion-button small color="primary"  *ngIf="user.name"><b>{{user.name}}</b></button>
+
+</ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  
+<ion-grid>
+  <ion-row responsive-sm>
+    <ion-col width-30>
+  <ion-item style="max-width:300px">
+  <ion-label>Start</ion-label>
+  <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="start" ></ion-datetime>
+</ion-item>
+
+  <ion-item style="max-width:300px">
+  <ion-label>End</ion-label>
+  <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="end"></ion-datetime>
+</ion-item>
+
+<button ion-button round (click)="updateChart()" style="background-color: green">Apply</button>
+    </ion-col>
+    <ion-col width-20 style="color:green; text-align: center; align-items: center; display: flex">
+      <div>
+      <h1 style="font-size: 150px">{{totalCancelled}}</h1>
+        <p>Jobs Cancelled in range</p> 
+        </div>
+    </ion-col>
+    <ion-col width-50>
+
+  <div class="col-md-6">
+    <div style="display: block;">
+
+      <h2>Number of cancelled Jobs in time</h2>
+
+    <canvas baseChart width="200" height="100" style="max-width:600px;"
+                [datasets]="lineChartData"
+                [labels]="lineChartLabels"
+                [options]="lineChartOptions"
+                [legend]="lineChartLegend"
+                [colors]="lineChartColors"
+                [chartType]="lineChartType"></canvas>
+    </div>
+  </div>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+
+<ion-grid>
+  <ion-row responsive-sm>
+    <ion-col width-40>
+      <h2>Top 3 cancelled Jobs by duration</h2>
+
+<canvas baseChart width="200" height="200" style="max-width:500px;"
+                    [datasets]="chartData"
+                    [labels]="chartLabels"
+                    [options]="chartOptions"
+                    [legend]="chartLegend"
+                    [chartType]="chartType"
+                    [colors]="barChartColors"
+                    (chartHover)="chartHovered($event)"
+                    (chartClick)="chartClicked($event)"></canvas>
+
+    </ion-col>
+    <ion-col >
+    <ion-grid>
+
+  <ion-row style="background-color: 	green; color: white; text-align: center; word-wrap: break-word;word-break: break-all;">
+    <ion-col width-10>Message #</ion-col>
+    <ion-col width-20>Job</ion-col>
+    <ion-col width-20>Date</ion-col>
+    <ion-col width-10>Time</ion-col>
+    <ion-col width-20>Message</ion-col>
+    <ion-col width-10>Type</ion-col>
+    <ion-col width-10>Class</ion-col>
+  </ion-row >
+
+
+
+    <ion-row *ngFor="let d of logData" style="text-align: center; word-wrap: break-word; word-break: break-all;">
+    <ion-col width-10>{{d.message_no}}</ion-col>
+    <ion-col width-20>{{d.job}}</ion-col>
+    <ion-col width-20>{{d.date}}</ion-col>
+    <ion-col width-10>{{d.time}}</ion-col>
+    <ion-col width-20>{{d.message_text}}</ion-col>
+    <ion-col width-10>{{d.message_type}}</ion-col>
+    <ion-col width-10>{{d.message_class}}</ion-col>
+
+    </ion-row>
+</ion-grid>
+
+
+
+    </ion-col>
+  </ion-row>
+
+<ion-row responsive-sm>
+    <ion-col width-50>
+        
+  <h2>Users with most cancelled Jobs</h2>
+
+
+      <div class="col-md-6">
+        <div style="display: block;">
+        <canvas baseChart width="200" height="200" style="max-width:400px"
+                    [data]="pieChartData"
+                    [labels]="pieChartLabels"
+                    [legend]="pieChartLegend"
+                    [chartType]="pieChartType"
+                    [colors]="colors"
+                    (chartHover)="chartHovered($event)"></canvas>
+        </div>
+      </div>
+    
+
+    </ion-col>
+
+    <ion-col width-50>
+
+<h2>Top 5 most cancelled Jobs by cuantity</h2>
+
+      <div class="col-md-6">
+        <div style="display: block;">
+        <canvas baseChart width="200" height="200" style="max-width:400px"
+                    [data]="donChartData"
+                    [labels]="donChartLabels"
+                    [legend]="donChartLegend"
+                    [chartType]="donChartType"
+                    [colors]="colors"
+                    (chartHover)="chartHovered($event)"></canvas>
+        </div>
+      </div>
+
+
+    </ion-col>
+</ion-row>
+
+
+    </ion-grid>
+
+
+</ion-content>
+
+

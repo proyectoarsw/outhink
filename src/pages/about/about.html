@@ -1,0 +1,121 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Transactions
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+<ion-grid>
+  <ion-row responsive-sm>
+    <ion-col width-30>
+  <ion-item style="max-width:300px">
+  <ion-label>Start</ion-label>
+  <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="start" ></ion-datetime>
+</ion-item>
+
+  <ion-item style="max-width:300px">
+  <ion-label>End</ion-label>
+  <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="end"></ion-datetime>
+</ion-item>
+
+<button ion-button round (click)="updateChart()" style="background-color: green">Apply</button>
+    </ion-col>
+
+        <ion-col width-50>
+
+<h2>Top 10 heaviest transactions</h2>
+
+      <div class="col-md-6">
+        <div style="display: block;">
+        <canvas baseChart width="200" height="200" style="max-width:400px"
+                    [data]="donChartData"
+                    [labels]="donChartLabels"
+                    [legend]="donChartLegend"
+                    [chartType]="donChartType"
+                    [colors]="colors"
+                    (chartHover)="chartHovered($event)"></canvas>
+        </div>
+      </div>
+
+
+    </ion-col>
+ <!--   <ion-col width-20 style="color:green; text-align: center; align-items: center; display: flex">
+      <div>
+      <h1 style="font-size: 150px">{{totalCancelled}}</h1>
+        <p>Jobs Cancelled in range</p> 
+        </div>
+    </ion-col>
+    <ion-col width-50>
+
+  <div class="col-md-6">
+    <div style="display: block;">
+    <canvas baseChart width="200" height="100" style="max-width:600px;"
+                [datasets]="lineChartData"
+                [labels]="lineChartLabels"
+                [options]="lineChartOptions"
+                [legend]="lineChartLegend"
+                [colors]="lineChartColors"
+                [chartType]="lineChartType"></canvas>
+    </div>
+  </div>
+    </ion-col> -->
+  </ion-row>
+</ion-grid>
+
+<ion-grid>
+  <ion-row responsive-sm>
+    <ion-col width-40>
+      <h2>Top 10 transactions with most memory usage</h2>
+
+<canvas baseChart width="200" height="200" style="max-width:500px;"
+                    [datasets]="chartData"
+                    [labels]="chartLabels"
+                    [options]="chartOptions"
+                    [legend]="chartLegend"
+                    [chartType]="chartType"
+                    [colors]="barChartColors"></canvas>
+
+    </ion-col>
+    <ion-col >
+          <h2>Top 5 transactions with most private memory usage</h2>
+
+<canvas baseChart width="200" height="200" style="max-width:500px;"
+                    [datasets]="chartData2"
+                    [labels]="chartLabels2"
+                    [options]="chartOptions"
+                    [chartType]="chartType"
+                    [colors]="barChartColors"></canvas>
+
+    </ion-col>
+  </ion-row>
+
+<ion-row responsive-sm>
+  <!--  <ion-col width-50>
+        
+  <h2>Users with most cancelled jobs</h2>
+
+
+      <div class="col-md-6">
+        <div style="display: block;">
+        <canvas baseChart width="200" height="200" style="max-width:400px"
+                    [data]="pieChartData"
+                    [labels]="pieChartLabels"
+                    [legend]="pieChartLegend"
+                    [chartType]="pieChartType"
+                    (chartHover)="chartHovered($event)"></canvas>
+        </div>
+      </div>
+    
+
+    </ion-col> -->
+
+
+</ion-row>
+
+
+    </ion-grid>
+
+</ion-content>

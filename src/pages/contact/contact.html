@@ -1,0 +1,107 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Dumps
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+<ion-grid>
+  <ion-row responsive-sm>
+    <ion-col width-30>
+  <ion-item style="max-width:300px">
+  <ion-label>Start</ion-label>
+  <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="start" ></ion-datetime>
+</ion-item>
+
+  <ion-item style="max-width:300px">
+  <ion-label>End</ion-label>
+  <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="end"></ion-datetime>
+</ion-item>
+
+<button ion-button round (click)="updateChart()" style="background-color: green">Apply</button>
+    </ion-col>
+    <ion-col width-30 style="color:green; text-align: center; align-items: center; display: flex">
+      <div>
+      <h1 style="font-size: 150px">{{totalDumps}}</h1>
+        <p>Dumps in range</p> 
+        </div>
+    </ion-col>
+    <ion-col width-40>
+
+  <div class="col-md-6">
+    <div style="display: block;">
+
+        <h2>Number of Dumps in time</h2>
+
+    <canvas baseChart width="200" height="100" style="max-width:600px;"
+                [datasets]="lineChartData"
+                [labels]="lineChartLabels"
+                [options]="lineChartOptions"
+                [legend]="lineChartLegend"
+                [colors]="lineChartColors"
+                [chartType]="lineChartType"></canvas>
+    </div>
+  </div>
+    </ion-col> 
+  </ion-row>
+</ion-grid>
+
+<ion-grid>
+  <ion-row responsive-sm>
+    <ion-col width-40>
+      <h2>Top 5 programs with more Dumps</h2>
+
+<canvas baseChart width="200" height="200" style="max-width:500px;"
+                    [datasets]="chartData"
+                    [labels]="chartLabels"
+                    [options]="chartOptions"
+                    [legend]="chartLegend"
+                    [chartType]="chartType"
+                    [colors]="barChartColors"></canvas>
+
+    </ion-col>
+    <ion-col >
+          <h2>Top 5 errors in Dumps</h2>
+
+      <div class="col-md-6">
+        <div style="display: block;">
+<canvas baseChart width="200" height="200" style="max-width:500px;"
+                    [datasets]="chartData2"
+                    [labels]="chartLabels2"
+                    [options]="chartOptions"
+                    [legend]="chartLegend"
+                    [chartType]="chartType"
+                    [colors]="barChartColors"
+                    (chartClick)="chartClicked($event)"></canvas>
+        </div>
+      </div>
+
+    </ion-col>
+  </ion-row>
+
+<ion-row style="text-align: center; align-items: center; display: flex">
+    <ion-grid style="max-width: 1000px; margin: auto">
+
+  <ion-row style="background-color: 	green; color: white; text-align: center; word-wrap: break-word;word-break: break-all;">
+    <ion-col >Error</ion-col>
+    <ion-col *ngFor="let d of errorData.data">{{d._id}}</ion-col>
+
+  </ion-row >
+
+
+
+    <ion-row  style="text-align: center; word-wrap: break-word; word-break: break-all;">
+    <ion-col >{{errorData.error}}</ion-col>
+    <ion-col *ngFor="let e of errorData.data">{{e.value.count}}</ion-col>
+
+    </ion-row>
+</ion-grid>
+</ion-row>
+
+    </ion-grid>
+
+
+</ion-content>

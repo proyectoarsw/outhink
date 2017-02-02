@@ -1,0 +1,10 @@
+applications:
+- path: .
+  memory: 500M
+  instances: 1
+  domain: w3ibm.mybluemix.net
+  name: watson-advisor
+  host: watson-advisor
+  disk_quota: 1024M
+services:
+- watsonadvisor-mongo
