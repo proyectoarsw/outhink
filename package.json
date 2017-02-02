@@ -1,7 +1,6 @@
 {
   "name": "watson-advisor",
   "author": "Mario Hernandez",
-  "homepage": "http://ionicframework.com/",
   "private": true,
     "engines": {
     "node": "6.0.0"
