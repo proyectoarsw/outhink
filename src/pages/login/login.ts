@@ -21,7 +21,7 @@ export class LoginPage {
 
   public form: any;
 
-  public url:String = "http://watson-advisor.w3ibm.mybluemix.net/";
+  public url:String = "https://watson-advisor.mybluemix.net/";
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public http:Http, public toastCtrl: ToastController, private formBuilder: FormBuilder) {
 
@@ -47,7 +47,8 @@ export class LoginPage {
     login(){
 
     var url = this.url+'login';
-    var body = {email: this.form.value.username, password: this.form.value.password};
+    
+    var body = {username: this.form.value.username, password: this.form.value.password};
     this.http.post(url,body, { headers: this.contentHeader }).map(res => res.json()).subscribe(
           resp => {
             console.log(resp);

@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 
 import {Http, Headers} from '@angular/http';
+import { Storage } from '@ionic/storage';
+import { LoginPage } from '../login/login';
 import 'rxjs/add/operator/map';
 import * as moment from "moment";
 
@@ -19,9 +21,15 @@ contentHeader: Headers = new Headers({"Content-Type": "application/json"});
 data : Array<any> = [];
 logData : Array<any> = [];
 
+local: Storage = new Storage();
+
+user:any = {};
+
 public totalCancelled : number = 0;
 
-public url:String = "http://watson-advisor.w3ibm.mybluemix.net/";
+public url:String = "https://watson-advisor.mybluemix.net/";
+
+
 
   constructor(public navCtrl: NavController, http: Http) {
     this.http = http;
@@ -341,6 +349,34 @@ public url:String = "http://watson-advisor.w3ibm.mybluemix.net/";
         
 
   }
+
+        // Go to login screen
+  goLogin(){
+    this.navCtrl.push(LoginPage);
+                 }
+
+// Logout
+ logout(){
+   this.local.set('user', null);
+   this.user = {};
+   this.goLogin();
+                }
+
+  // Refresh every time you enter the view
+  ionViewDidEnter() {
+
+    this.local.get('user').then(token => {
+      if(token){
+        this.user = token;
+      }else{
+        this.user = {};
+        console.log("Not logged in");
+        this.goLogin();
+      }
+    }).catch(error => {
+      console.log(error);
+    });
+}
 
 
 }

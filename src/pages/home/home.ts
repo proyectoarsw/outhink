@@ -23,7 +23,7 @@ contentHeader: Headers = new Headers({"Content-Type": "application/json"});
 data : Array<any> = [];
 logData : Array<any> = [];
 
-public url:String = "http://watson-advisor.w3ibm.mybluemix.net/";
+public url:String = "https://watson-advisor.mybluemix.net/";
 
 public totalCancelled : number = 0;
 

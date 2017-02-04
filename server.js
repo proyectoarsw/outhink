@@ -34,7 +34,8 @@ var appenv = cfenv.getAppEnv();
 var services = appenv.services;
 
 // The services object is a map named by service so we extract the one for MongoDB
-var mongodb_services = services["mongodb"];
+var mongodb_services = services["compose-for-mongodb"];
+//var mongodb_services = services["mongodb"];
 
 // This check ensures there is a services for MongoDB databases
 assert(!util.isUndefined(mongodb_services), "Must be bound to mongodb services");
@@ -45,7 +46,7 @@ var credentials = mongodb_services[0].credentials;
 // Within the credentials, an entry ca_certificate_base64 contains the SSL pinning key
 // We convert that from a string into a Buffer entry in an array which we use when
 // connecting.
-//var ca = [new Buffer(credentials.ca_certificate_base64, 'base64')];
+var ca = [new Buffer(credentials.ca_certificate_base64, 'base64')];
 
 // This is a global variable we'll use for handing the MongoDB client around
 var mongodb;
@@ -59,10 +60,13 @@ function initDBConnection() {
 // call. Among those SSL settings is the SSL CA, into which we pass the array
 // wrapped and now decoded ca_certificate_base64,
 
-MongoClient.connect(credentials.url + '?authMode=scram-sha1&rm.tcpNoDelay=true', {
+MongoClient.connect(credentials.uri + '?authMode=scram-sha1&rm.tcpNoDelay=true', {
         mongos: {
             poolSize: 1,
             reconnectTries: 1
+            ,ssl: true,
+            sslValidate: true,
+            sslCA: ca
         }
     },
     function(err, db) {
@@ -77,7 +81,7 @@ MongoClient.connect(credentials.url + '?authMode=scram-sha1&rm.tcpNoDelay=true',
 
             mongodb = db.db("db");
 
-            //mongodb.collection("job").remove({});
+            //mongodb.collection("users").remove({});
             //mongodb.collection("joblog").remove({});
 
 
@@ -743,6 +747,16 @@ app.post("/login",cors(),function(request, response){
 
     }
   });
+
+});
+
+/////// Other services
+
+// Service to login a user
+app.post("/delete",cors(),function(request, response){
+  console.log("Delete collection");
+
+    mongodb.collection(request.body.collection).remove({});
 
 });
 

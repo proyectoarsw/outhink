@@ -1,10 +1,10 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>
+<!--    <ion-title start> -->
 
-    <img src="http://dynamicot.mybluemix.net/images/IBM.svg" width="60px" style="margin-left:20px ;display:inline-block" height="50px"/>
-    <div>Watson Advisor</div>
-</ion-title>
+    <img src="http://dynamicot.mybluemix.net/images/IBM.svg" width="60px" style="margin-left:10px ;display:inline-block" height="50px"/>
+    <!--<div>Watson Advisor</div>-->
+<!--</ion-title>-->
     <ion-buttons end>
   <button ion-button small  *ngIf="user" (click)="logout()"><ion-icon name="log-out"></ion-icon></button>
   <button ion-button small color="primary"  *ngIf="user.name"><b>{{user.name}}</b></button>
@@ -17,7 +17,7 @@
   
 <ion-grid>
   <ion-row responsive-sm>
-    <ion-col width-30>
+    <ion-col width-50>
   <ion-item style="max-width:300px">
   <ion-label>Start</ion-label>
   <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="start" ></ion-datetime>
@@ -29,13 +29,14 @@
 </ion-item>
 
 <button ion-button round (click)="updateChart()" style="background-color: green">Apply</button>
-    </ion-col>
-    <ion-col width-20 style="color:green; text-align: center; align-items: center; display: flex">
-      <div>
+
+      <div style="color:green; text-align: center; align-items: center; display: flex">
       <h1 style="font-size: 150px">{{totalCancelled}}</h1>
         <p>Jobs Cancelled in range</p> 
         </div>
-    </ion-col>
+
+</ion-col>
+
     <ion-col width-50>
 
   <div class="col-md-6">
