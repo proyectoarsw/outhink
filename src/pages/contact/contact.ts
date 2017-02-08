@@ -21,6 +21,7 @@ end: String = new Date().toISOString();
 contentHeader: Headers = new Headers({"Content-Type": "application/json"});
 data : Array<any> = [];
 errorData : Array<any> = [];
+initial : String =  new Date().toISOString();
 
 local: Storage = new Storage();
 
@@ -135,6 +136,10 @@ public url:String = "https://watson-advisor.mybluemix.net/";
   }  
 
   public updateChart():void {
+
+    this.start = moment(this.start).utc().startOf('day').format();
+    this.end = moment(this.end).utc().endOf('day').format();
+
     this.updateBar();
     this.updateBar2();
    // this.updatePie();

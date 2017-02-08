@@ -20,12 +20,12 @@
     <ion-col width-50>
   <ion-item style="max-width:300px">
   <ion-label>Start</ion-label>
-  <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="start" ></ion-datetime>
+  <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="start" [max]="end"></ion-datetime>
 </ion-item>
 
   <ion-item style="max-width:300px">
   <ion-label>End</ion-label>
-  <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="end"></ion-datetime>
+  <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="end" [min]="start" [max]="initial"></ion-datetime>
 </ion-item>
 
 <button ion-button round (click)="updateChart()" style="background-color: green">Apply</button>
@@ -61,8 +61,9 @@
   <ion-row responsive-sm>
     <ion-col width-40>
       <h2>Top 3 cancelled Jobs by duration</h2>
-
-<canvas baseChart width="200" height="200" style="max-width:500px;"
+<!--<ion-scroll direction="x" style="height:400px;overflow: scroll;
+  white-space: nowrap;">-->
+<canvas baseChart   
                     [datasets]="chartData"
                     [labels]="chartLabels"
                     [options]="chartOptions"
@@ -71,6 +72,7 @@
                     [colors]="barChartColors"
                     (chartHover)="chartHovered($event)"
                     (chartClick)="chartClicked($event)"></canvas>
+<!--</ion-scroll>-->
 
     </ion-col>
     <ion-col >
@@ -128,7 +130,7 @@
 
     <ion-col width-50>
 
-<h2>Top 5 most cancelled Jobs by cuantity</h2>
+<h2>Top 5 most cancelled Jobs by quantity</h2>
 
       <div class="col-md-6">
         <div style="display: block;">

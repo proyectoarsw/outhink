@@ -22,6 +22,7 @@ end: String = new Date().toISOString();
 contentHeader: Headers = new Headers({"Content-Type": "application/json"});
 data : Array<any> = [];
 logData : Array<any> = [];
+initial : String =  new Date().toISOString();
 
 public url:String = "https://watson-advisor.mybluemix.net/";
 
@@ -61,21 +62,16 @@ user:any = {};
   //BarChart
   public chartOptions:any={
     responsive: true,
-            scales: {
-            xAxes: [{
-              ticks: {
-                  beginAtZero: true
-              }
-            }],
-            yAxes: [{
-                stacked: true
-            }]
-        }
+
+          tooltips : {
+            displayColors:false,
+            titleFontSize:10
+          }
   };
 
   public chartLabels:string[] = ["Job1", "Job2", "Job3"];
   public chartType:string = "horizontalBar";
-  public chartLegend:boolean = true;
+  public chartLegend:boolean = false;
   public chartData:any[] = [
     {data:[10,10,10], label: "Total duration (ms)"}
   ];
@@ -136,6 +132,10 @@ user:any = {};
   }  
 
   public updateChart():void {
+
+    this.start = moment(this.start).utc().startOf('day').format();
+    this.end = moment(this.end).utc().endOf('day').format();
+
     this.updateBar();
     this.updatePie();
     this.updateDon();

@@ -494,7 +494,7 @@ app.post("/dumpchart4",cors(),function(request, response){
 out:{replace: 'tempdum4' + request.body.error}},
     function(err, collection){
 
-      collection.find().toArray(function(er, results) {
+      collection.find().limit(10).toArray(function(er, results) {
 
         console.log("Results: "+ results.length);
 
