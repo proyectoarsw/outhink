@@ -35,6 +35,19 @@ user:any = {};
 
   constructor(public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController) {
     this.http = http;
+    
+
+        this.local.get('user').then(token => {
+      if(token){
+        this.user = token;
+      }else{
+        this.user = {};
+        console.log("Not logged in");
+        this.navCtrl.popToRoot;
+      }
+    }).catch(error => {
+      console.log(error);
+    });
   }
 
     //LineChart
@@ -318,7 +331,7 @@ user:any = {};
 
   // Refresh every time you enter the view
   ionViewDidEnter() {
-
+/*
     this.local.get('user').then(token => {
       if(token){
         this.user = token;
@@ -330,6 +343,7 @@ user:any = {};
     }).catch(error => {
       console.log(error);
     });
+    */
 }
 
 

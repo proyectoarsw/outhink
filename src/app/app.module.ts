@@ -6,6 +6,7 @@ import { ContactPage } from '../pages/contact/contact';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
 import { LoginPage } from '../pages/login/login';
+import { BasePage } from '../pages/base/base';
 import { ChartsModule } from 'ng2-charts';
 import '../../node_modules/chart.js/dist/Chart.bundle.min.js';
 
@@ -16,7 +17,8 @@ import '../../node_modules/chart.js/dist/Chart.bundle.min.js';
     ContactPage,
     HomePage,
     TabsPage,
-    LoginPage
+    LoginPage,
+    BasePage
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -29,7 +31,8 @@ import '../../node_modules/chart.js/dist/Chart.bundle.min.js';
     ContactPage,
     HomePage,
     TabsPage,
-    LoginPage
+    LoginPage,
+    BasePage
   ],
   providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]
 })

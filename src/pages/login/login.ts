@@ -4,6 +4,7 @@ import { NavController, NavParams, ToastController } from 'ionic-angular';
 import {Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
 import {Validators, FormBuilder } from '@angular/forms';
+import { BasePage } from '../base/base';
 
 import { Storage } from '@ionic/storage';
 
@@ -29,7 +30,7 @@ export class LoginPage {
   this.local.get('user').then(token => {
 
     if(token){
-      this.navCtrl.pop();
+      this.navCtrl.push(BasePage);
     }
   }).catch(error => {
     console.log(error);
@@ -56,7 +57,7 @@ export class LoginPage {
 
             
             this.local.set("user",resp.user);
-            this.navCtrl.pop();
+            this.navCtrl.push(BasePage);
           }else{
             this.presentToast(resp.message);
           }

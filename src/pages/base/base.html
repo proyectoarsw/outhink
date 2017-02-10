@@ -1,0 +1,88 @@
+<!--
+  Generated template for the Base page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+
+http://dynamicot.mybluemix.net/images/ALFAGRES.svg
+http://dynamicot.mybluemix.net/images/ARGOS.svg
+http://dynamicot.mybluemix.net/images/ATH.svg
+http://dynamicot.mybluemix.net/images/AVAIL.svg
+http://dynamicot.mybluemix.net/images/AVAILM.svg
+http://dynamicot.mybluemix.net/images/AVIANCA.svg
+http://dynamicot.mybluemix.net/images/BANCOLOMBIA.svg
+http://dynamicot.mybluemix.net/images/CAFAM.svg
+http://dynamicot.mybluemix.net/images/CAPACITY.svg
+http://dynamicot.mybluemix.net/images/CARTONES.svg
+http://dynamicot.mybluemix.net/images/CASA_LUKER.svg
+http://dynamicot.mybluemix.net/images/CER.svg
+http://dynamicot.mybluemix.net/images/COLOMBINA.svg
+http://dynamicot.mybluemix.net/images/COLSUBSIDIO.svg
+http://dynamicot.mybluemix.net/images/COMFANDI.svg
+http://dynamicot.mybluemix.net/images/COMPENSAR.svg
+http://dynamicot.mybluemix.net/images/CORONA.svg
+http://dynamicot.mybluemix.net/images/CRYSTAL.svg
+http://dynamicot.mybluemix.net/images/EDUARDONO.svg
+http://dynamicot.mybluemix.net/images/EPA.svg
+http://dynamicot.mybluemix.net/images/ERECOS.svg
+http://dynamicot.mybluemix.net/images/FAMILIA.svg
+http://dynamicot.mybluemix.net/images/GAS_OCCIDENTE.svg
+http://dynamicot.mybluemix.net/images/GECOLSA.svg
+http://dynamicot.mybluemix.net/images/GRUPO_ARGOS.svg
+http://dynamicot.mybluemix.net/images/HARINERA.svg
+http://dynamicot.mybluemix.net/images/IBM.svg
+http://dynamicot.mybluemix.net/images/IBM_OCC.svg
+http://dynamicot.mybluemix.net/images/INCESA.svg
+http://dynamicot.mybluemix.net/images/LA14.svg
+http://dynamicot.mybluemix.net/images/LAFRANCOL.svg
+http://dynamicot.mybluemix.net/images/MCPOLLO.svg
+http://dynamicot.mybluemix.net/images/MINEROS.svg
+http://dynamicot.mybluemix.net/images/NUTRESA.svg
+http://dynamicot.mybluemix.net/images/PALERMO.svg
+http://dynamicot.mybluemix.net/images/SAP.svg
+http://dynamicot.mybluemix.net/images/SOLLA.svg
+http://dynamicot.mybluemix.net/images/SPRB.svg
+http://dynamicot.mybluemix.net/images/SUAM.svg
+http://dynamicot.mybluemix.net/images/SURAMERICANA.svg
+http://dynamicot.mybluemix.net/images/UNIANDES.svg
+
+
+-->
+<ion-header>
+  <ion-navbar hideBackButton="true">
+
+    <img src="http://dynamicot.mybluemix.net/images/IBM.svg" width="60px" style="margin-left:10px ;display:inline-block" height="50px"/>
+    <!--<div>Watson Advisor</div>-->
+<!--</ion-title>-->
+    <ion-buttons end>
+  <button ion-button small  *ngIf="user" (click)="logout()"><ion-icon name="log-out"></ion-icon></button>
+  <button ion-button small color="primary"  *ngIf="user.name"><b>{{user.name}}</b></button>
+
+</ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-grid>
+  <ion-row responsive-sm>
+    <ion-col>
+      <ion-card style="min-width: 200px">
+  <img src="https://static.pexels.com/photos/115045/pexels-photo-115045.jpeg"/>
+</ion-card>
+</ion-col>
+    <ion-col *ngFor="let cli of user.clients">
+
+  <img [src]="cli.url" style="
+    margin-left: auto;
+    margin-right: auto;
+    display: block;" (click)="goDashboard(cli)"/>
+
+
+</ion-col>
+    
+  </ion-row>
+</ion-grid>
+
+</ion-content>
