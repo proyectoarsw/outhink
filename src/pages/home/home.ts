@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 
-import { NavController, AlertController, ToastController } from 'ionic-angular';
+import { NavController, AlertController, ToastController, App, PopoverController } from 'ionic-angular';
 import {Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
 import * as moment from "moment";
 
-import { LoginPage } from '../login/login';
+//import { BasePage } from '../base/base';
+
+import { PopoverPage } from '../popover/popover';
 
 import { Storage } from '@ionic/storage';
 
@@ -31,19 +33,24 @@ public totalCancelled : number = 0;
 local: Storage = new Storage();
 
 user:any = {};
+client:any = {};
 
 
-  constructor(public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController) {
+  constructor(private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController) {
     this.http = http;
     
 
         this.local.get('user').then(token => {
       if(token){
         this.user = token;
-      }else{
-        this.user = {};
-        console.log("Not logged in");
-        this.navCtrl.popToRoot;
+      }
+    }).catch(error => {
+      console.log(error);
+    });
+
+        this.local.get('client').then(token => {
+      if(token){
+        this.client = token;
       }
     }).catch(error => {
       console.log(error);
@@ -158,7 +165,7 @@ user:any = {};
   updateBar():void {
     
     var link = this.url +'jobchart';
-    var data = JSON.stringify({start: this.start, end:this.end});
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
@@ -197,7 +204,7 @@ user:any = {};
   updatePie():void {
     
     var link = this.url + 'jobchart2';
-    var data = JSON.stringify({start: this.start, end:this.end});
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
@@ -235,7 +242,7 @@ user:any = {};
     updateDon():void {
     
     var link = this.url+'jobchart3';
-    var data = JSON.stringify({start: this.start, end:this.end});
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
@@ -273,7 +280,7 @@ user:any = {};
       updateLine():void {
     
     var link = this.url+'jobchart4';
-    var data = JSON.stringify({start: this.start, end:this.end});
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
@@ -316,34 +323,31 @@ user:any = {};
 
   }
 
-
+/*
     // Go to login screen
   goLogin(){
-    this.navCtrl.push(LoginPage);
+    this._app.getRootNav().popToRoot();
+                 }
+
+    // Go to base screen
+  goBase(){
+    this._app.getRootNav().popTo(BasePage);
                  }
 
 // Logout
  logout(){
    this.local.set('user', null);
-   this.user = {};
    this.goLogin();
                 }
 
-  // Refresh every time you enter the view
-  ionViewDidEnter() {
-/*
-    this.local.get('user').then(token => {
-      if(token){
-        this.user = token;
-      }else{
-        this.user = {};
-        console.log("Not logged in");
-        this.goLogin();
-      }
-    }).catch(error => {
-      console.log(error);
+                */
+
+  // display menu
+  displayMenu(event) {
+        let popover = this.popoverCtrl.create(PopoverPage);
+    popover.present({
+      ev: event
     });
-    */
 }
 
 

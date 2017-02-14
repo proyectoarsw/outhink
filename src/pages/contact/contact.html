@@ -6,8 +6,8 @@
     <!--<div>Watson Advisor</div>-->
 <!--</ion-title>-->
     <ion-buttons end>
-  <button ion-button small  *ngIf="user" (click)="logout()"><ion-icon name="log-out"></ion-icon></button>
-  <button ion-button small color="primary"  *ngIf="user.name"><b>{{user.name}}</b></button>
+  <!--<button ion-button small  *ngIf="user" (click)="logout()"><ion-icon name="log-out"></ion-icon></button>-->
+  <button ion-button small color="primary"  *ngIf="user.name" (click)="displayMenu($event)"><b>{{user.name}}</b></button>
 
 </ion-buttons>
   </ion-navbar>

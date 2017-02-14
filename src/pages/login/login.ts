@@ -5,6 +5,7 @@ import {Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
 import {Validators, FormBuilder } from '@angular/forms';
 import { BasePage } from '../base/base';
+import { TabsPage } from '../tabs/tabs';
 
 import { Storage } from '@ionic/storage';
 
@@ -30,7 +31,7 @@ export class LoginPage {
   this.local.get('user').then(token => {
 
     if(token){
-      this.navCtrl.push(BasePage);
+      this.updateUser(token);
     }
   }).catch(error => {
     console.log(error);
@@ -57,7 +58,41 @@ export class LoginPage {
 
             
             this.local.set("user",resp.user);
-            this.navCtrl.push(BasePage);
+            if(resp.user.ibm){
+              this.navCtrl.push(BasePage);
+            }else{
+              this.local.set("client",resp.user.clients[0]);
+              this.navCtrl.push(TabsPage);
+            }
+          }else{
+            this.presentToast(resp.message);
+          }
+          },
+          error => console.error('Error: ' + error),
+          () => console.log('Completed!')
+        );
+
+  
+  }
+
+      updateUser(us){
+
+    var url = this.url+'uservalidate';
+    
+    var body = {username: us.username};
+    this.http.post(url,body, { headers: this.contentHeader }).map(res => res.json()).subscribe(
+          resp => {
+            console.log(resp);
+            if(resp.success){
+
+            
+              this.local.set("user",resp.user);
+            if(resp.user.ibm){
+              this.navCtrl.push(BasePage);
+            }else{
+              this.local.set("client",resp.user.clients[0]);
+              this.navCtrl.push(TabsPage);
+            }
           }else{
             this.presentToast(resp.message);
           }

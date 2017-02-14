@@ -372,6 +372,48 @@ app.post("/transaction", function(request, response) {
 
 });
 
+
+/// TEST
+
+// Service to add test arrays
+app.post("/test", function(request, response) {
+  console.log("Insert test array");
+  console.log(request.body);
+
+  mongodb.collection("testcol").insertMany(request.body, function(err, r) {
+    if (err) {
+    console.log("Error: " + err);
+     response.status(500).send(err);
+    } else {
+      console.log("Success");
+        response.send({success:true});
+    }
+  });
+
+});
+
+// Service to delete test arrays
+app.delete("/test", function(request, response) {
+  console.log("delete test collection");
+  console.log(request.body);
+
+  mongodb.collection("testcol").remove({});
+
+  response.send({success:true});
+
+});
+
+// Service to get test status
+app.get("/test/status",function(request, response){
+  console.log("Getting status");
+  mongodb.collection("testcol").stats(function(err, results) {
+    response.send({success:true, status:results});
+});
+
+});
+
+
+
 //////////////  Chart POST Services
 
 
@@ -389,7 +431,8 @@ app.post("/dumpchart",cors(),function(request, response){
   query:{datee:{
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
-  }}},
+  },
+        customer:request.body.client}},
     function(err, collection){
 
       collection.find().sort({value:-1}).limit(5).toArray(function(er, results) {
@@ -419,7 +462,8 @@ app.post("/dumpchart2",cors(),function(request, response){
   query:{datee:{
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
-  }}},
+  },
+        customer:request.body.client}},
     function(err, collection){
 
       collection.find().sort({value:-1}).limit(5).toArray(function(er, results) {
@@ -449,7 +493,8 @@ app.post("/dumpchart3",cors(),function(request, response){
   query:{datee:{
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
-  }}},
+  },
+        customer:request.body.client}},
     function(err, collection){
 
       collection.find().toArray(function(er, results) {
@@ -490,7 +535,8 @@ app.post("/dumpchart4",cors(),function(request, response){
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
   },
-  runtime_error: request.body.error},
+  runtime_error: request.body.error,
+        customer:request.body.client},
 out:{replace: 'tempdum4' + request.body.error}},
     function(err, collection){
 
@@ -521,7 +567,8 @@ app.post("/transchart",cors(),function(request, response){
   query:{datee:{
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
-  }}},
+  },
+        customer:request.body.client}},
     function(err, collection){
 
       collection.find().sort({value:-1}).limit(10).toArray(function(er, results) {
@@ -551,7 +598,8 @@ app.post("/memorychart",cors(),function(request, response){
   query:{datee:{
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
-  }}},
+  },
+        customer:request.body.client}},
     function(err, collection){
 
       collection.find().sort({value:-1}).limit(10).toArray(function(er, results) {
@@ -581,7 +629,8 @@ app.post("/memorychart2",cors(),function(request, response){
   query:{datee:{
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
-  }}},
+  },
+        customer:request.body.client}},
     function(err, collection){
 
       collection.find().sort({value:-1}).limit(5).toArray(function(er, results) {
@@ -605,7 +654,8 @@ app.post("/jobchart",cors(),function(request, response){
     mongodb.collection("job").find({date:{
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
-  }},{job_name:1, duration:1, log:1}).sort({duration:-1}).limit(3).toArray(function(er, results) {
+  },
+        customer:request.body.client},{job_name:1, duration:1, log:1}).sort({duration:-1}).limit(3).toArray(function(er, results) {
 
         console.log("Results: "+ results.length);
 
@@ -629,7 +679,8 @@ app.post("/jobchart2",cors(),function(request, response){
   query:{date:{
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
-  }}},
+  },
+        customer:request.body.client}},
     function(err, collection){
 
       collection.find().sort({value:-1}).limit(10).toArray(function(er, results) {
@@ -659,7 +710,8 @@ app.post("/jobchart3",cors(),function(request, response){
   query:{date:{
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
-  }}},
+  },
+        customer:request.body.client}},
     function(err, collection){
 
       collection.find().sort({value:-1}).limit(5).toArray(function(er, results) {
@@ -689,7 +741,8 @@ app.post("/jobchart4",cors(),function(request, response){
   query:{date:{
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
-  }}},
+  },
+        customer:request.body.client}},
     function(err, collection){
 
       collection.find().toArray(function(er, results) {
@@ -739,9 +792,24 @@ app.post("/user",cors(),function(request, response){
 app.post("/login",cors(),function(request, response){
   console.log("Login User");
 
-    mongodb.collection("users").find({username:request.body.username, password:request.body.password}).toArray(function(err, items) {
+    mongodb.collection("users").find({username:request.body.username, password:request.body.password},{password:0}).toArray(function(err, items) {
     if (err || items.length == 0) {
      response.send({success:false, message:"Username and password doesn't match"});
+    } else {
+      response.send({success:true, user:items[0]});
+
+    }
+  });
+
+});
+
+// Service to validate a user
+app.post("/uservalidate",cors(),function(request, response){
+  console.log("Login User");
+
+    mongodb.collection("users").find({username:request.body.username},{password:0}).toArray(function(err, items) {
+    if (err || items.length == 0) {
+     response.send({success:false, message:"Username doesn't exist"});
     } else {
       response.send({success:true, user:items[0]});
 
@@ -915,6 +983,19 @@ app.get("/users",function(request, response){
      response.status(500).send(err);
     } else {
      response.send({success:true, users:items});
+    }
+  });
+
+});
+
+// Service to get all test
+app.get("/test",function(request, response){
+  console.log("Getting all test");
+  mongodb.collection("testcol").find({}).toArray(function(err, items) {
+    if (err) {
+     response.status(500).send(err);
+    } else {
+     response.send({success:true, items:items});
     }
   });
 

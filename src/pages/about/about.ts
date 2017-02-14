@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
 
-import { NavController } from 'ionic-angular';
+import { NavController, App, PopoverController } from 'ionic-angular';
 
 import {Http, Headers} from '@angular/http';
 import { Storage } from '@ionic/storage';
-import { LoginPage } from '../login/login';
+//import { BasePage } from '../base/base';
+
+import { PopoverPage } from '../popover/popover';
+//import { LoginPage } from '../login/login';
 import 'rxjs/add/operator/map';
 import * as moment from "moment";
 
@@ -25,6 +28,7 @@ initial : String =  new Date().toISOString();
 local: Storage = new Storage();
 
 user:any = {};
+client:any = {};
 
 public totalCancelled : number = 0;
 
@@ -32,8 +36,24 @@ public url:String = "https://watson-advisor.mybluemix.net/";
 
 
 
-  constructor(public navCtrl: NavController, http: Http) {
+  constructor(private _app: App, public navCtrl: NavController, http: Http, public popoverCtrl: PopoverController) {
     this.http = http;
+
+    this.local.get('user').then(token => {
+      if(token){
+        this.user = token;
+      }
+    }).catch(error => {
+      console.log(error);
+    });
+
+        this.local.get('client').then(token => {
+      if(token){
+        this.client = token;
+      }
+    }).catch(error => {
+      console.log(error);
+    });
   }
 
     //LineChart
@@ -158,7 +178,7 @@ public url:String = "https://watson-advisor.mybluemix.net/";
   updateBar():void {
     
     var link = this.url+'memorychart';
-    var data = JSON.stringify({start: this.start, end:this.end});
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
@@ -197,7 +217,7 @@ public url:String = "https://watson-advisor.mybluemix.net/";
     updateBar2():void {
     
     var link = this.url+'memorychart2';
-    var data = JSON.stringify({start: this.start, end:this.end});
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
@@ -236,7 +256,7 @@ public url:String = "https://watson-advisor.mybluemix.net/";
   updatePie():void {
     
     var link = this.url+'jobchart2';
-    var data = JSON.stringify({start: this.start, end:this.end});
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
@@ -274,7 +294,7 @@ public url:String = "https://watson-advisor.mybluemix.net/";
     updateDon():void {
     
     var link = this.url+'transchart';
-    var data = JSON.stringify({start: this.start, end:this.end});
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
@@ -312,7 +332,7 @@ public url:String = "https://watson-advisor.mybluemix.net/";
       updateLine():void {
     
     var link = this.url+'jobchart4';
-    var data = JSON.stringify({start: this.start, end:this.end});
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
@@ -355,31 +375,30 @@ public url:String = "https://watson-advisor.mybluemix.net/";
 
   }
 
+/*
         // Go to login screen
   goLogin(){
-    this.navCtrl.push(LoginPage);
+    this._app.getRootNav().popToRoot();
+                 }
+
+    // Go to base screen
+  goBase(){
+    this._app.getRootNav().popTo(BasePage);
                  }
 
 // Logout
  logout(){
    this.local.set('user', null);
-   this.user = {};
    this.goLogin();
                 }
 
-  // Refresh every time you enter the view
-  ionViewDidEnter() {
+                */
 
-    this.local.get('user').then(token => {
-      if(token){
-        this.user = token;
-      }else{
-        this.user = {};
-        console.log("Not logged in");
-        this.goLogin();
-      }
-    }).catch(error => {
-      console.log(error);
+  // display menu
+  displayMenu(event) {
+        let popover = this.popoverCtrl.create(PopoverPage);
+    popover.present({
+      ev: event
     });
 }
 
