@@ -683,7 +683,7 @@ app.post("/jobchart2",cors(),function(request, response){
         customer:request.body.client}},
     function(err, collection){
 
-      collection.find().sort({value:-1}).limit(10).toArray(function(er, results) {
+      collection.find().sort({value:-1}).limit(5).toArray(function(er, results) {
 
         console.log("Results: "+ results.length);
 

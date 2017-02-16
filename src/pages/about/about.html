@@ -42,6 +42,7 @@
                     [labels]="donChartLabels"
                     [legend]="donChartLegend"
                     [chartType]="donChartType"
+                    [options]="donChartOptions"
                     [colors]="colors"
                     (chartHover)="chartHovered($event)"></canvas>
         </div>
@@ -75,7 +76,7 @@
 <ion-grid>
   <ion-row responsive-sm>
     <ion-col width-40>
-      <h2>Top 10 transactions with most memory usage</h2>
+      <h2>Top 10 transactions with most average memory usage</h2>
 
 <canvas baseChart width="200" height="200" style="max-width:500px;"
                     [datasets]="chartData"
@@ -87,12 +88,13 @@
 
     </ion-col>
     <ion-col >
-          <h2>Top 5 transactions with most private memory usage</h2>
+          <h2>Top 5 transactions with most average private memory usage</h2>
 
 <canvas baseChart width="200" height="200" style="max-width:500px;"
                     [datasets]="chartData2"
                     [labels]="chartLabels2"
                     [options]="chartOptions"
+                    [legend]="chartLegend"
                     [chartType]="chartType"
                     [colors]="barChartColors"></canvas>
 

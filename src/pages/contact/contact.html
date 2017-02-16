@@ -29,11 +29,17 @@
 </ion-item>
 
 <button ion-button round (click)="updateChart()" style="background-color: green">Apply</button>
-    
-          <div style="color:green; text-align: center; align-items: center; display: flex">
-      <h1 style="font-size: 150px">{{totalDumps}}</h1>
-        <p>Dumps in range</p> 
+
+      <div style="color:green; text-align: center; align-items: center; display: flex; vertical-align: middle">
+      <ion-grid>
+  <ion-row responsive-sm>
+    <ion-col><h1 style="font-size: 150px">{{totalDumps}}</h1></ion-col>
+  </ion-row>
+    <ion-row responsive-sm>
+       <ion-col> <p>Dumps in range</p> </ion-col>
+  </ion-row></ion-grid>
         </div>
+
     </ion-col>
 
     <ion-col width-50>
@@ -89,10 +95,13 @@
     </ion-col>
   </ion-row>
 
-<ion-row style="text-align: center; align-items: center; display: flex">
-    <ion-grid style="max-width: 1000px; margin: auto">
+  <ion-scroll scrollX="true" style="height: 80px;" *ngIf="errorData.error">
+<ion-row style="align-items: center; display: flex, margin:auto">
+  
 
-  <ion-row style="background-color: 	green; color: white; text-align: center; word-wrap: break-word;word-break: break-all;">
+    <ion-grid style=" min-width: 1000px">
+
+  <ion-row style="text-align: center;height:30px; background-color: 	green; color: white">
     <ion-col >Error</ion-col>
     <ion-col *ngFor="let d of errorData.data">{{d._id}}</ion-col>
 
@@ -100,13 +109,15 @@
 
 
 
-    <ion-row  style="text-align: center; word-wrap: break-word; word-break: break-all;">
+    <ion-row  style="text-align: center; word-wrap: break-word; word-break: break-all;height:50px;">
     <ion-col >{{errorData.error}}</ion-col>
     <ion-col *ngFor="let e of errorData.data">{{e.value.count}}</ion-col>
 
     </ion-row>
 </ion-grid>
+
 </ion-row>
+</ion-scroll>
 
     </ion-grid>
 

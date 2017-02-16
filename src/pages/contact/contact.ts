@@ -79,21 +79,38 @@ public url:String = "https://watson-advisor.mybluemix.net/";
   //BarChart
   public chartOptions:any={
     responsive: true,
-            scales: {
-            xAxes: [{
+
+          tooltips : {
+            displayColors:false,
+            titleFontSize:0,
+                callbacks: {
+                    label: function(tooltipItems, data) { 
+                        return tooltipItems.xLabel + ' Dumps';
+                    }
+                }
+          },
+          scales:{
+            xAxes:[{
               ticks: {
-                  beginAtZero: true
-              }
+                 beginAtZero: true,
+                  callback: function(label, index, labels) {
+                      return label+'';
+                  }
+              },
+                scaleLabel: {
+                    display: false,
+                    labelString: 'Duration'
+                }
             }],
             yAxes: [{
                 stacked: true
             }]
-        }
+          }
   };
 
   public chartLabels:string[] = ["Program1", "Program2", "Program3", "Program4","Program5"];
   public chartType:string = "horizontalBar";
-  public chartLegend:boolean = true;
+  public chartLegend:boolean = false;
   public chartData:any[] = [
     {data:[10,10,10,10,10], label: "Number of Dumps"}
   ];

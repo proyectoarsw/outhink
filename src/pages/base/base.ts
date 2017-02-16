@@ -70,8 +70,5 @@ goDashboard(client){
    this.navCtrl.popToRoot();
  }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad BasePage');
-  }
 
 }

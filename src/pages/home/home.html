@@ -35,9 +35,14 @@
 
 <button ion-button round (click)="updateChart()" style="background-color: green">Apply</button>
 
-      <div style="color:green; text-align: center; align-items: center; display: flex">
-      <h1 style="font-size: 150px">{{totalCancelled}}</h1>
-        <p>Jobs Cancelled in range</p> 
+      <div style="color:green; text-align: center; align-items: center; display: flex; vertical-align: middle">
+      <ion-grid>
+  <ion-row responsive-sm>
+    <ion-col><h1 style="font-size: 150px">{{totalCancelled}}</h1></ion-col>
+  </ion-row>
+    <ion-row responsive-sm>
+       <ion-col> <p>Jobs Cancelled in range</p> </ion-col>
+  </ion-row></ion-grid>
         </div>
 
 </ion-col>
@@ -81,10 +86,11 @@
 
     </ion-col>
     <ion-col >
-    <ion-grid>
+        <ion-scroll scrollX="true" scrollY="true" style="min-height:300px ">
+    <ion-grid style="min-width: 550px">
 
   <ion-row style="background-color: 	green; color: white; text-align: center; word-wrap: break-word;word-break: break-all;">
-    <ion-col width-10>Message #</ion-col>
+    <ion-col width-10>#</ion-col>
     <ion-col width-20>Job</ion-col>
     <ion-col width-20>Date</ion-col>
     <ion-col width-10>Time</ion-col>
@@ -106,6 +112,7 @@
 
     </ion-row>
 </ion-grid>
+        </ion-scroll>
 
 
 
@@ -125,6 +132,7 @@
                     [labels]="pieChartLabels"
                     [legend]="pieChartLegend"
                     [chartType]="pieChartType"
+                    [options]="pieChartOptions"
                     [colors]="colors"
                     (chartHover)="chartHovered($event)"></canvas>
         </div>
@@ -144,6 +152,7 @@
                     [labels]="donChartLabels"
                     [legend]="donChartLegend"
                     [chartType]="donChartType"
+                    [options]="donChartOptions"
                     [colors]="colors"
                     (chartHover)="chartHovered($event)"></canvas>
         </div>

@@ -81,10 +81,23 @@ public url:String = "https://watson-advisor.mybluemix.net/";
   //BarChart
   public chartOptions:any={
     responsive: true,
+
+          tooltips : {
+            displayColors:false,
+            titleFontSize:0,
+                callbacks: {
+                    label: function(tooltipItems, data) { 
+                        return tooltipItems.xLabel + ' KB';
+                    }
+                }
+          },
             scales: {
             xAxes: [{
               ticks: {
-                  beginAtZero: true
+                  beginAtZero: true,
+                  callback: function(label, index, labels) {
+                      return label+' KB';
+                  }
               }
             }],
             yAxes: [{
@@ -95,7 +108,7 @@ public url:String = "https://watson-advisor.mybluemix.net/";
 
   public chartLabels:string[] = ["Tran1", "Tran2", "Tran3", "Tran4","Tran5","Tran6","Tran7","Tran8","Tran9","Tran10"];
   public chartType:string = "horizontalBar";
-  public chartLegend:boolean = true;
+  public chartLegend:boolean = false;
   public chartData:any[] = [
     {data:[10,10,10,10,10,10,10,10,10,10], label: "Average Memory Usage (KB)"}
   ];
@@ -129,7 +142,15 @@ public url:String = "https://watson-advisor.mybluemix.net/";
   public donChartData:number[] = [1,1,1,1,1,1,1,1,1,1];
   public donChartLabels:string[] = ["Tran1", "Tran2", "Tran3", "Tran4","Tran5","Tran6","Tran7","Tran8","Tran9","Tran10"];
   public donChartOptions:any = {
-    responsive: true
+    responsive: true,
+          tooltips : {
+                callbacks: {
+                    label: function(tooltipItem, data) { 
+
+                      return data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + " ms";
+                    }
+                }
+          }
     
   };
 

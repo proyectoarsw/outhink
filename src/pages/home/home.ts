@@ -59,12 +59,15 @@ client:any = {};
 
     //LineChart
   public lineChartOptions:any={
-    responsive: true
+    responsive: true,
+              tooltips : {
+            displayColors:false
+          }
   };
 
   public lineChartLabels:string[] = ["Date1", "Date2", "Date3","Date4","Date5","Date6","Date7","Date8","Date9","Date10"];
   public lineChartType:string = "line";
-  public lineChartLegend:boolean = true;
+  public lineChartLegend:boolean = false;
   public lineChartData:any[] = [
     {data:[10,10,10,10,10,10,10,10,10,10], label: "Cancelled jobs"}
   ];
@@ -85,7 +88,29 @@ client:any = {};
 
           tooltips : {
             displayColors:false,
-            titleFontSize:10
+            titleFontSize:0,
+                callbacks: {
+                    label: function(tooltipItems, data) { 
+                        return tooltipItems.xLabel + ' ms';
+                    }
+                }
+          },
+          scales:{
+            xAxes:[{
+              ticks: {
+                 beginAtZero: true,
+                  callback: function(label, index, labels) {
+                      return label+' ms';
+                  }
+              },
+                scaleLabel: {
+                    display: false,
+                    labelString: 'Duration'
+                }
+            }],
+            yAxes: [{
+                stacked: true
+            }]
           }
   };
 
@@ -104,10 +129,18 @@ client:any = {};
   ];
 
   // pieChart
-  public pieChartData:number[] = [1,1,1,1,1,1,1,1,1,1];
-  public pieChartLabels:string[] = ["User1","User2","User3","User4","User5","User6","User7","User8","User9","User10"];
+  public pieChartData:number[] = [1,1,1,1,1];
+  public pieChartLabels:string[] = ["User1","User2","User3","User4","User5"];
   public pieChartOptions:any = {
-    responsive: true
+    responsive: true,
+          tooltips : {
+                callbacks: {
+                    label: function(tooltipItem, data) { 
+
+                      return data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + " Jobs";
+                    }
+                }
+          }
     
   };
 
@@ -116,9 +149,17 @@ client:any = {};
 
     // donChart
   public donChartData:number[] = [1,1,1,1,1];
-  public donChartLabels:string[] = ["Job1","Job2","Job3","Job4","job5"];
+  public donChartLabels:string[] = ["Job1","Job2","Job3","Job4","Job5"];
   public donChartOptions:any = {
-    responsive: true
+    responsive: true,
+          tooltips : {
+                callbacks: {
+                    label: function(tooltipItem, data) { 
+
+                      return data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + " Jobs";
+                    }
+                }
+          }
     
   };
 
@@ -227,8 +268,8 @@ client:any = {};
          setTimeout(()=>{this.pieChartData = ar1;}, 1000);
 
          }else{
-          this.pieChartLabels = ["User1","User2","User3","User4","User5","User6","User7","User8","User9","User10"];
-         setTimeout(()=>{this.pieChartData = [1,1,1,1,1,1,1,1,1,1]}, 1000);
+          this.pieChartLabels = ["User1","User2","User3","User4","User5"];
+         setTimeout(()=>{this.pieChartData = [1,1,1,1,1]}, 1000);
         }
         }, error => {
             console.log("Oooops!");
@@ -265,7 +306,7 @@ client:any = {};
          setTimeout(()=>{this.donChartData = ar1;}, 1000);
 
          }else{
-          this.donChartLabels = ["User1","User2","User3","User4","User5"];
+          this.donChartLabels = ["Job1","Job2","Job3","Job4","Job5"];
          setTimeout(()=>{this.donChartData = [1,1,1,1,1]}, 1000);
         }
         }, error => {
