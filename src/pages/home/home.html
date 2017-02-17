@@ -7,8 +7,22 @@
       </button>
     </ion-buttons>-->
 
-    <img src="http://dynamicot.mybluemix.net/images/IBM.svg" width="60px" style="margin-left:10px ;display:inline-block" height="50px"/>
-    <!--<div>Watson Advisor</div>-->
+    
+
+
+    <ion-title>
+      <ion-row style="max-width:70px" responsive-sm>
+        <ion-col style="padding-top: 10px">
+               <img src="http://dynamicot.mybluemix.net/images/IBM.svg" width="60px" style="margin-left:10px ;display:inline-block" height="50px"/>
+
+        </ion-col>
+        <ion-col>
+   Watson Advisor
+        </ion-col>
+      </ion-row>
+    </ion-title>
+
+
 <!--</ion-title>-->
     <ion-buttons end>
   <!--<button ion-button small  *ngIf="user" (click)="logout()"><ion-icon name="log-out"></ion-icon></button>-->
@@ -23,6 +37,9 @@
 <ion-grid>
   <ion-row responsive-sm>
     <ion-col width-50>
+
+      <ion-row responsive-sm>
+        <ion-col>
   <ion-item style="max-width:300px">
   <ion-label>Start</ion-label>
   <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="start" [max]="end"></ion-datetime>
@@ -33,7 +50,15 @@
   <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="end" [min]="start" [max]="initial"></ion-datetime>
 </ion-item>
 
-<button ion-button round (click)="updateChart()" style="background-color: green">Apply</button>
+<button ion-button round (click)="updateChart()" style="background-color: green" *ngIf="!loading">Apply</button>
+        </ion-col>
+        <ion-col style=" display: block;
+    margin-left: auto;
+    margin-right: auto;"  *ngIf="loading">
+              <img src="assets/loading.gif" style="height:100px">
+        </ion-col>
+      </ion-row>
+
 
       <div style="color:green; text-align: center; align-items: center; display: flex; vertical-align: middle">
       <ion-grid>
@@ -44,6 +69,8 @@
        <ion-col> <p>Jobs Cancelled in range</p> </ion-col>
   </ion-row></ion-grid>
         </div>
+
+
 
 </ion-col>
 

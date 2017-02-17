@@ -1,10 +1,16 @@
 <ion-header>
   <ion-navbar>
-<!--    <ion-title>-->
+    <ion-title>
+      <ion-row style="max-width:70px" responsive-sm>
+        <ion-col style="padding-top: 10px">
+               <img src="http://dynamicot.mybluemix.net/images/IBM.svg" width="60px" style="margin-left:10px ;display:inline-block" height="50px"/>
 
-    <img src="http://dynamicot.mybluemix.net/images/IBM.svg" width="60px" style="margin-left:10px ;display:inline-block" height="50px"/>
-    <!--<div>Watson Advisor</div>-->
-<!--</ion-title>-->
+        </ion-col>
+        <ion-col>
+   <h2>Watson Advisor</h2>
+        </ion-col>
+      </ion-row>
+    </ion-title>
     <ion-buttons end>
   <!--<button ion-button small  *ngIf="user" (click)="logout()"><ion-icon name="log-out"></ion-icon></button>-->
   <button ion-button small color="primary"  *ngIf="user.name" (click)="displayMenu($event)"><b>{{user.name}}</b></button>
@@ -28,7 +34,9 @@
   <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="end" [min]="start" [max]="initial"></ion-datetime>
 </ion-item>
 
-<button ion-button round (click)="updateChart()" style="background-color: green">Apply</button>
+<button ion-button round (click)="updateChart()" style="background-color: green" *ngIf="!loading">Apply</button>
+
+<img src="assets/loading.gif" style="height:100px" *ngIf="loading">
 
       <div style="color:green; text-align: center; align-items: center; display: flex; vertical-align: middle">
       <ion-grid>

@@ -26,6 +26,7 @@ logData : Array<any> = [];
 initial : String =  new Date().toISOString();
 
 local: Storage = new Storage();
+loading: boolean = false;
 
 user:any = {};
 client:any = {};
@@ -186,6 +187,8 @@ public url:String = "https://watson-advisor.mybluemix.net/";
 
   public updateChart():void {
 
+    this.loading = true;
+
     this.start = moment(this.start).utc().startOf('day').format();
     this.end = moment(this.end).utc().endOf('day').format();
 
@@ -322,6 +325,8 @@ public url:String = "https://watson-advisor.mybluemix.net/";
          console.log(data.json());
 
          var jobx = data.json().trans;
+
+         this.loading =false;
 
          if(jobx.length > 0){
 

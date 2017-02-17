@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 
 import { NavController, AlertController, ToastController, App, PopoverController } from 'ionic-angular';
 import {Http, Headers} from '@angular/http';
+import { LoadingController } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 import * as moment from "moment";
 
@@ -32,11 +33,13 @@ public totalCancelled : number = 0;
 
 local: Storage = new Storage();
 
+loading: boolean = false;
+
 user:any = {};
 client:any = {};
 
 
-  constructor(private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController) {
+  constructor(private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController,public loadingCtrl: LoadingController) {
     this.http = http;
     
 
@@ -194,6 +197,8 @@ client:any = {};
 
   public updateChart():void {
 
+    //this.presentLoading();
+    this.loading = true;
     this.start = moment(this.start).utc().startOf('day').format();
     this.end = moment(this.end).utc().endOf('day').format();
 
@@ -329,6 +334,8 @@ client:any = {};
 
          var jobx = data.json().jobs;
 
+         this.loading = false;
+
          if(jobx.length > 0){
 
          var ar1 = [];
@@ -345,7 +352,9 @@ client:any = {};
 
          
          this.lineChartLabels = ar2;
-         setTimeout(()=>{this.lineChartData = [{data: ar1, label: "Cancelled jobs"}]}, 1000);
+         setTimeout(()=>{this.lineChartData = [{data: ar1, label: "Cancelled jobs"}]
+         
+      }, 1000);
 
          }else{
           this.lineChartLabels = ["Date1", "Date2", "Date3","Date4","Date5","Date6","Date7","Date8","Date9","Date10"];
@@ -358,6 +367,7 @@ client:any = {};
         }, error => {
             console.log("Oooops!");
         });
+
 
         
         
@@ -390,6 +400,17 @@ client:any = {};
       ev: event
     });
 }
+
+  presentLoading() {
+    let loader = this.loadingCtrl.create({
+  spinner: 'hide',
+    content: `
+      <div style="background-image:url(assets/loading3.gif); height:100px">
+      </div>`,
+    duration: 5000
+    });
+    loader.present();
+  }
 
 
 }
