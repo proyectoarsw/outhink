@@ -7,6 +7,7 @@ import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
 import { LoginPage } from '../pages/login/login';
 import { BasePage } from '../pages/base/base';
+import { PasswordPage } from '../pages/password/password';
 import { PopoverPage } from '../pages/popover/popover';
 import { ChartsModule } from 'ng2-charts';
 import '../../node_modules/chart.js/dist/Chart.bundle.min.js';
@@ -20,7 +21,8 @@ import '../../node_modules/chart.js/dist/Chart.bundle.min.js';
     TabsPage,
     LoginPage,
     BasePage,
-    PopoverPage
+    PopoverPage,
+    PasswordPage
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -35,7 +37,8 @@ import '../../node_modules/chart.js/dist/Chart.bundle.min.js';
     TabsPage,
     LoginPage,
     BasePage,
-    PopoverPage
+    PopoverPage,
+    PasswordPage
   ],
   providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]
 })

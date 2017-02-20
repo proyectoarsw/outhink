@@ -26,6 +26,8 @@ app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 // Then we'll pull in the database client library
 var MongoClient = require("mongodb").MongoClient;
 
+var ObjectId = require("mongodb").ObjectId;
+
 // Now lets get cfenv and ask it to parse the environment variable
 var cfenv = require('cfenv');
 var appenv = cfenv.getAppEnv();
@@ -985,6 +987,21 @@ app.get("/users",function(request, response){
      response.send({success:true, users:items});
     }
   });
+
+});
+
+// Service to update user password
+app.put("/users/password",function(request, response){
+  console.log("Updating user");
+  mongodb.collection("users").update({_id: new ObjectId(request.body.id)},{$set:{password:request.body.password}},function(err, items) {
+    if (err) {
+     response.status(500).send(err);
+    } else {
+     response.send({success:true});
+    }
+  });
+
+  
 
 });
 

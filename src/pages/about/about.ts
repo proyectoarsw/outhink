@@ -422,9 +422,21 @@ public url:String = "https://watson-advisor.mybluemix.net/";
 
   // display menu
   displayMenu(event) {
+
+let ev = {
+  target : {
+    getBoundingClientRect : () => {
+      return {
+        right:'0',
+        bottom:'0'
+      };
+    }
+  }
+};
+
         let popover = this.popoverCtrl.create(PopoverPage);
-    popover.present({
-      ev: event
+    popover.present({ ev
+      //ev: event
     });
 }
 

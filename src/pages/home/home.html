@@ -1,26 +1,7 @@
 <ion-header>
   <ion-navbar>
-<!--    <ion-title start> 
-  <ion-buttons start>
-      <button ion-button small *ngIf="back" (click)="goBase()">
-        <ion-icon name="arrow-round-back"></ion-icon>
-      </button>
-    </ion-buttons>-->
+    <img src="http://dynamicot.mybluemix.net/images/IBM.svg" width="60px" style="margin-left:10px ;display:inline-block" height="50px"/>
 
-    
-
-
-    <ion-title>
-      <ion-row style="max-width:70px" responsive-sm>
-        <ion-col style="padding-top: 10px">
-               <img src="http://dynamicot.mybluemix.net/images/IBM.svg" width="60px" style="margin-left:10px ;display:inline-block" height="50px"/>
-
-        </ion-col>
-        <ion-col>
-   Watson Advisor
-        </ion-col>
-      </ion-row>
-    </ion-title>
 
 
 <!--</ion-title>-->
@@ -38,8 +19,7 @@
   <ion-row responsive-sm>
     <ion-col width-50>
 
-      <ion-row responsive-sm>
-        <ion-col>
+
   <ion-item style="max-width:300px">
   <ion-label>Start</ion-label>
   <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="start" [max]="end"></ion-datetime>
@@ -51,19 +31,19 @@
 </ion-item>
 
 <button ion-button round (click)="updateChart()" style="background-color: green" *ngIf="!loading">Apply</button>
-        </ion-col>
-        <ion-col style=" display: block;
-    margin-left: auto;
-    margin-right: auto;"  *ngIf="loading">
-              <img src="assets/loading.gif" style="height:100px">
-        </ion-col>
+        
+              <ion-row>
+                <ion-col>
+<img src="assets/loading.gif" style="height:100px; margin: auto;
+  display: block;"  *ngIf="loading">
+                </ion-col>
       </ion-row>
 
-
       <div style="color:green; text-align: center; align-items: center; display: flex; vertical-align: middle">
+
       <ion-grid>
   <ion-row responsive-sm>
-    <ion-col><h1 style="font-size: 150px">{{totalCancelled}}</h1></ion-col>
+    <ion-col><h1 style="font-size: 100px">{{totalCancelled}}</h1></ion-col>
   </ion-row>
     <ion-row responsive-sm>
        <ion-col> <p>Jobs Cancelled in range</p> </ion-col>
