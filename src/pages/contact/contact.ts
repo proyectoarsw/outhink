@@ -444,7 +444,7 @@ public url:String = "https://watson-advisor.mybluemix.net/";
 
   // display menu
   displayMenu(event) {
-    let ev = {
+/*    let ev = {
   target : {
     getBoundingClientRect : () => {
       return {
@@ -453,10 +453,10 @@ public url:String = "https://watson-advisor.mybluemix.net/";
       };
     }
   }
-};
+};*/
         let popover = this.popoverCtrl.create(PopoverPage);
-    popover.present({ev
-    //  ev: event
+    popover.present({
+      ev: event
     });
 }
 
