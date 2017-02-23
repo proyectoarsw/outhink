@@ -27,39 +27,40 @@
     margin-right: auto;
     ">
 <ion-col style="background-color: red; color:white">
-  0
+  {{table.red}}
 </ion-col>
 <ion-col style="background-color: blue; color:white">
-  0
+  {{table.blue}}
 </ion-col>
 <ion-col style="background-color: green; color:white">
-  37
+  {{table.green}}
 </ion-col>
 <ion-col style="background-color: black; color:white">
-  37
+  {{table.black}}
 </ion-col>
 
   </ion-row>
 
   <h2> Systems Availability Details </h2>
 
-  <ion-scroll scrollX="true" style="min-height: 80px;" >
-<ion-row style="align-items: center; display: flex; margin:auto">
+  <ion-scroll scrollX="true" scrollY="true" style="min-height:400px;" >
+<ion-row style="align-items: center; display: flex; margin:auto;">
   
 
     <ion-grid style=" min-width: 700px">
 
   <ion-row style="text-align: center;height:30px; background-color: 	green; color: white">
-    <ion-col width-10>St</ion-col>
-    <ion-col width-10>Type</ion-col>
+    <ion-col width-20>St</ion-col>
+    <ion-col width-20>Type</ion-col>
     <ion-col width-60>System</ion-col>
-    <ion-col width-20>Log</ion-col>
   </ion-row >
 
 
 
-    <ion-row  style="text-align: center; word-wrap: break-word; word-break: break-all;height:50px;">
-   <!-- <ion-col *ngFor="let e of errorData.data">{{e.value.count}}</ion-col>-->
+    <ion-row *ngFor="let e of table.rows" style="text-align: center; word-wrap: break-word;" >
+    <ion-col width-20><ion-icon name="square" color="secondary"></ion-icon></ion-col>
+    <ion-col width-20>{{e.type}}</ion-col>
+    <ion-col width-60>{{e.system}}</ion-col>
 
     </ion-row>
 </ion-grid>
