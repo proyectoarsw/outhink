@@ -63,7 +63,7 @@ public url:String = "https://watson-advisor.mybluemix.net/";
 
   public lineChartLabels:string[] = ["Date1", "Date2", "Date3","Date4","Date5","Date6","Date7","Date8","Date9","Date10"];
   public lineChartType:string = "line";
-  public lineChartLegend:boolean = true;
+  public lineChartLegend:boolean = false;
   public lineChartData:any[] = [
     {data:[10,10,10,10,10,10,10,10,10,10], label: "Number of Dumps"}
   ];

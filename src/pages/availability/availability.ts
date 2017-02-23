@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, AlertController, ToastController, App, PopoverController } from 'ionic-angular';
-import {Http, Headers} from '@angular/http';
+import {Http/*, Headers*/} from '@angular/http';
 import { LoadingController } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 

@@ -7,8 +7,7 @@
 <ion-header>
 
 <ion-navbar>
-    <img src="http://dynamicot.mybluemix.net/images/IBM.svg" width="60px" style="margin-left:10px ;display:inline-block" height="50px"/>
-
+    <img src="assets/wa-logo2.svg" width="130px" style="margin-left:10px ;display:inline-block" height="50px;"/>
 
 
 <!--</ion-title>-->
@@ -23,5 +22,49 @@
 
 
 <ion-content padding>
+
+  <ion-row style="max-width: 200px; text-align: center;margin-left: auto;
+    margin-right: auto;
+    ">
+<ion-col style="background-color: red; color:white">
+  0
+</ion-col>
+<ion-col style="background-color: blue; color:white">
+  0
+</ion-col>
+<ion-col style="background-color: green; color:white">
+  37
+</ion-col>
+<ion-col style="background-color: black; color:white">
+  37
+</ion-col>
+
+  </ion-row>
+
+  <h2> Systems Availability Details </h2>
+
+  <ion-scroll scrollX="true" style="min-height: 80px;" >
+<ion-row style="align-items: center; display: flex; margin:auto">
+  
+
+    <ion-grid style=" min-width: 700px">
+
+  <ion-row style="text-align: center;height:30px; background-color: 	green; color: white">
+    <ion-col width-10>St</ion-col>
+    <ion-col width-10>Type</ion-col>
+    <ion-col width-60>System</ion-col>
+    <ion-col width-20>Log</ion-col>
+  </ion-row >
+
+
+
+    <ion-row  style="text-align: center; word-wrap: break-word; word-break: break-all;height:50px;">
+   <!-- <ion-col *ngFor="let e of errorData.data">{{e.value.count}}</ion-col>-->
+
+    </ion-row>
+</ion-grid>
+
+</ion-row>
+</ion-scroll>
 
 </ion-content>
