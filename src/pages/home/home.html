@@ -1,14 +1,15 @@
 <ion-header>
   <ion-navbar>
-    <img src="assets/wa-logo2.svg" width="130px" style="margin-left:10px ;display:inline-block" height="50px;"/>
+<ion-row>
+  <ion-col style="text-align: left">
+    <button ion-button clear color="primary"  *ngIf="user.name" (click)="displayMenu($event)" ><b>{{user.name}}</b></button>
 
+  </ion-col>
+  <ion-col style="text-align: right">
+        <img src="assets/wa-logo2.svg" width="130px" style="margin-right:10px ;display:inline-block" height="50px;"/>
 
-<!--</ion-title>-->
-    <ion-buttons end>
-  <!--<button ion-button small  *ngIf="user" (click)="logout()"><ion-icon name="log-out"></ion-icon></button>-->
-  <button ion-button small color="primary"  *ngIf="user.name" (click)="displayMenu($event)"><b>{{user.name}}</b></button>
-
-</ion-buttons>
+</ion-col>
+</ion-row>
   </ion-navbar>
 </ion-header>
 

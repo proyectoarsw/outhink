@@ -20,8 +20,8 @@ import { Storage } from '@ionic/storage';
 export class HomePage {
 
 http: Http;
-start: String = new Date().toISOString();
-end: String = new Date().toISOString();
+start: String = moment().subtract(1,"days").utc().format();
+end: String = moment().subtract(1,"days").utc().format();
 contentHeader: Headers = new Headers({"Content-Type": "application/json"});
 data : Array<any> = [];
 logData : Array<any> = [];
@@ -54,10 +54,15 @@ client:any = {};
         this.local.get('client').then(token => {
       if(token){
         this.client = token;
+
+        this.updateChart();
       }
     }).catch(error => {
       console.log(error);
     });
+
+
+
   }
 
     //LineChart

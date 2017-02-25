@@ -53,7 +53,7 @@ client:any = {};
       console.log(error);
     });
 
-    this.getInfo();
+    //this.getInfo();
 
   }
 

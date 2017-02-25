@@ -18,8 +18,8 @@ import * as moment from "moment";
 export class AboutPage {
 
 http: Http;
-start: String = new Date().toISOString();
-end: String = new Date().toISOString();
+start: String = moment().subtract(1,"days").utc().format();
+end: String = moment().subtract(1,"days").utc().format();
 contentHeader: Headers = new Headers({"Content-Type": "application/json"});
 data : Array<any> = [];
 logData : Array<any> = [];
@@ -55,6 +55,9 @@ public url:String = "https://watson-advisor.mybluemix.net/";
     }).catch(error => {
       console.log(error);
     });
+
+    this.updateChart();
+
   }
 
     //LineChart
