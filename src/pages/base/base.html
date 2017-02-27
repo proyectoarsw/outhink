@@ -54,10 +54,11 @@ http://dynamicot.mybluemix.net/images/UNIANDES.svg
 
  
 <ion-row>
-  <ion-col style="text-align: left">
-     <button ion-button small clear  *ngIf="user" (click)="logout()"><ion-icon name="log-out"></ion-icon></button>
-    <button ion-button clear color="primary"  *ngIf="user.name" (click)="displayMenu($event)" ><b>{{user.name}}</b></button>
-
+  <ion-col >
+    <ion-row >
+     <button ion-button small clear  *ngIf="user" (click)="logout()" style="height: 40px"><ion-icon name="log-out"></ion-icon></button>
+    <button ion-button clear color="primary"  *ngIf="user.name" style="height: 40px"><b>{{user.name}}</b></button>
+    </ion-row>
   </ion-col>
   <ion-col style="text-align: right">
         <img src="assets/wa-logo2.svg" width="130px" style="margin-right:10px ;display:inline-block" height="50px;"/>
