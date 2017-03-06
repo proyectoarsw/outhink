@@ -23,6 +23,13 @@ data : Array<any> = [];
 errorData : Array<any> = [];
 initial : String =  new Date().toISOString();
 
+color : String = 'rgb(255,255,255)';
+
+r: Number = 255;
+g:Number = 255;
+b: Number = 255;
+
+
 local: Storage = new Storage();
 
 loading: boolean = false;
@@ -49,12 +56,19 @@ public url:String = "https://watson-advisor.mybluemix.net/";
         this.local.get('client').then(token => {
       if(token){
         this.client = token;
+
+        this.color = 'rgb('+ token.r +','+token.g+','+token.b+')';
+        this.r = token.r;
+        this.g = token.g;
+        this.b = token.b;
+
+        this.updateChart();
       }
     }).catch(error => {
       console.log(error);
     });
 
-    this.updateChart();
+    
 
   }
 

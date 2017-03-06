@@ -828,6 +828,8 @@ app.post("/delete",cors(),function(request, response){
 
     mongodb.collection(request.body.collection).remove({});
 
+    response.send({success:true});
+
 });
 
 

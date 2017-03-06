@@ -30,7 +30,7 @@
   <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="end" [min]="start" [max]="initial"></ion-datetime>
 </ion-item>
 
-<button ion-button round (click)="updateChart()" style="background-color: green" *ngIf="!loading">Apply</button>
+<button ion-button round (click)="updateChart()" [style.background-color]='color' *ngIf="!loading">Apply</button>
         
               <ion-row>
                 <ion-col>
@@ -39,7 +39,7 @@
                 </ion-col>
       </ion-row>
 
-      <div style="color:green; text-align: center; align-items: center; display: flex; vertical-align: middle">
+      <div style="text-align: center; align-items: center; display: flex; vertical-align: middle;" [style.color]='color'>
 
       <ion-grid>
   <ion-row responsive-sm>
@@ -56,7 +56,7 @@
 
     <ion-col width-50>
 
-  <div class="col-md-6">
+  <div class="col-md-6" *ngIf="g > 0">
     <div style="display: block;">
 
       <h2>Number of cancelled Jobs in time</h2>
@@ -66,7 +66,14 @@
                 [labels]="lineChartLabels"
                 [options]="lineChartOptions"
                 [legend]="lineChartLegend"
-                [colors]="lineChartColors"
+                [colors]="[ { 
+      backgroundColor: 'rgba('+r+','+g+','+b+',0.2)',
+      borderColor: 'rgba('+r+','+g+','+b+',1)',
+      pointBackgroundColor: 'rgba('+r+','+g+','+b+',1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba('+r+','+g+','+b+',0.8)'
+    }]"
                 [chartType]="lineChartType"></canvas>
     </div>
   </div>
@@ -86,7 +93,10 @@
                     [options]="chartOptions"
                     [legend]="chartLegend"
                     [chartType]="chartType"
-                    [colors]="barChartColors"
+                    [colors]="    [{ 
+      backgroundColor: 'rgba('+r+','+g+','+b+',0.6)',
+      borderColor:'rgba('+r+','+g+','+b+',1)'
+    }]"
                     (chartHover)="chartHovered($event)"
                     (chartClick)="chartClicked($event)"></canvas>
 <!--</ion-scroll>-->
@@ -96,7 +106,7 @@
         <ion-scroll scrollX="true" scrollY="true" style="min-height:300px ">
     <ion-grid style="min-width: 550px">
 
-  <ion-row style="background-color: 	green; color: white; text-align: center; word-wrap: break-word;word-break: break-all;">
+  <ion-row style="color: white; text-align: center; word-wrap: break-word;word-break: break-all;" [style.background-color]='color'>
     <ion-col width-10>#</ion-col>
     <ion-col width-20>Job</ion-col>
     <ion-col width-20>Date</ion-col>
@@ -140,7 +150,8 @@
                     [legend]="pieChartLegend"
                     [chartType]="pieChartType"
                     [options]="pieChartOptions"
-                    [colors]="colors"
+                    [colors]="[{ 
+      backgroundColor: client.colors    }]"
                     (chartHover)="chartHovered($event)"></canvas>
         </div>
       </div>
@@ -160,7 +171,8 @@
                     [legend]="donChartLegend"
                     [chartType]="donChartType"
                     [options]="donChartOptions"
-                    [colors]="colors"
+                    [colors]="[{ 
+      backgroundColor: client.colors    }]"
                     (chartHover)="chartHovered($event)"></canvas>
         </div>
       </div>

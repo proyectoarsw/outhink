@@ -27,6 +27,12 @@ data : Array<any> = [];
 logData : Array<any> = [];
 initial : String =  new Date().toISOString();
 
+color : String = 'rgb(255,255,255)';
+
+r: Number = 255;
+g:Number = 255;
+b: Number = 255;
+
 public url:String = "https://watson-advisor.mybluemix.net/";
 
 public totalCancelled : number = 0;
@@ -55,13 +61,16 @@ client:any = {};
       if(token){
         this.client = token;
 
+        this.color = 'rgb('+ token.r +','+token.g+','+token.b+')';
+        this.r = token.r;
+        this.g = token.g;
+        this.b = token.b;
+
         this.updateChart();
       }
     }).catch(error => {
       console.log(error);
     });
-
-
 
   }
 
@@ -81,13 +90,13 @@ client:any = {};
   ];
 
   public lineChartColors:Array<any> = [
-    { // green
-      backgroundColor: 'rgba(34,139,34,0.2)',
-      borderColor: 'rgba(34,139,34,1)',
-      pointBackgroundColor: 'rgba(34,139,34,1)',
+    { 
+      backgroundColor: 'rgba('+this.r+','+this.g+','+this.b+',0.2)',
+      borderColor: 'rgba('+this.r+','+this.g+','+this.b+',1)',
+      pointBackgroundColor: 'rgba('+this.r+','+this.g+','+this.b+',1)',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(34,139,34,0.8)'
+      pointHoverBorderColor: 'rgba('+this.r+','+this.g+','+this.b+',0.8)'
     }
   ];
   //BarChart
@@ -130,9 +139,9 @@ client:any = {};
   ];
 
     public barChartColors:Array<any> = [
-    { // green
-      backgroundColor: 'rgba(34,139,34,0.6)',
-      borderColor:'rgba(34,139,34,1)'
+    { 
+      backgroundColor: 'rgba('+this.client.r+','+this.client.g+','+this.client.b+',0.6)',
+      borderColor:'rgba('+this.client.r+','+this.client.g+','+this.client.b+',1)'
     }
   ];
 
@@ -176,9 +185,8 @@ client:any = {};
 
   // Color
     public colors:Array<any> = [
-    { // green
-      backgroundColor: ['rgba(16,96,16,0.8)','rgba(0,160,66,0.8)','rgba(68,32,23,0.8)','rgba(62,74,65,0.8)','rgba(118,123,40,0.8)','rgba(181,182,118,0.8)','rgba(173,160,147,0.8)','rgba(154,205,50,0.8)','rgba(107,142,35,0.8)','rgba(50,205,50,0.8)','rgba(0,102,85,0.8)','rgba(136,181,136,0.8)']
-    }
+    { 
+      backgroundColor: this.client.colors    }
   ];
  
   // events
@@ -379,55 +387,14 @@ client:any = {};
 
   }
 
-/*
-    // Go to login screen
-  goLogin(){
-    this._app.getRootNav().popToRoot();
-                 }
-
-    // Go to base screen
-  goBase(){
-    this._app.getRootNav().popTo(BasePage);
-                 }
-
-// Logout
- logout(){
-   this.local.set('user', null);
-   this.goLogin();
-                }
-
-                */
-
   // display menu
   displayMenu(event) {
-/*
-let ev = {
-  target : {
-    getBoundingClientRect : () => {
-      return {
-        right:'0',
-        bottom:'0'
-      };
-    }
-  }
-};
-*/
+
         let popover = this.popoverCtrl.create(PopoverPage);
     popover.present({
       ev: event
     });
 }
-
-  presentLoading() {
-    let loader = this.loadingCtrl.create({
-  spinner: 'hide',
-    content: `
-      <div style="background-image:url(assets/loading3.gif); height:100px">
-      </div>`,
-    duration: 5000
-    });
-    loader.present();
-  }
 
 
 }

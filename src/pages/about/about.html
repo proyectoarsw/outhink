@@ -28,7 +28,7 @@
   <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="end" [min]="start" [max]="initial"></ion-datetime>
 </ion-item>
 
-<button ion-button round (click)="updateChart()" style="background-color: green" *ngIf="!loading">Apply</button>
+<button ion-button round (click)="updateChart()" [style.background-color]='color' *ngIf="!loading">Apply</button>
 
               <ion-row>
                 <ion-col>
@@ -51,33 +51,15 @@
                     [legend]="donChartLegend"
                     [chartType]="donChartType"
                     [options]="donChartOptions"
-                    [colors]="colors"
+                    [colors]="[{ 
+      backgroundColor: client.colors    }]"
                     (chartHover)="chartHovered($event)"></canvas>
         </div>
       </div>
 
 
     </ion-col>
- <!--   <ion-col width-20 style="color:green; text-align: center; align-items: center; display: flex">
-      <div>
-      <h1 style="font-size: 150px">{{totalCancelled}}</h1>
-        <p>Jobs Cancelled in range</p> 
-        </div>
-    </ion-col>
-    <ion-col width-50>
 
-  <div class="col-md-6">
-    <div style="display: block;">
-    <canvas baseChart width="200" height="100" style="max-width:600px;"
-                [datasets]="lineChartData"
-                [labels]="lineChartLabels"
-                [options]="lineChartOptions"
-                [legend]="lineChartLegend"
-                [colors]="lineChartColors"
-                [chartType]="lineChartType"></canvas>
-    </div>
-  </div>
-    </ion-col> -->
   </ion-row>
 </ion-grid>
 
@@ -92,7 +74,10 @@
                     [options]="chartOptions"
                     [legend]="chartLegend"
                     [chartType]="chartType"
-                    [colors]="barChartColors"></canvas>
+                    [colors]="    [{ 
+      backgroundColor: 'rgba('+r+','+g+','+b+',0.6)',
+      borderColor:'rgba('+r+','+g+','+b+',1)'
+    }]"></canvas>
 
     </ion-col>
     <ion-col >
@@ -104,30 +89,15 @@
                     [options]="chartOptions"
                     [legend]="chartLegend"
                     [chartType]="chartType"
-                    [colors]="barChartColors"></canvas>
+                    [colors]="    [{ 
+      backgroundColor: 'rgba('+r+','+g+','+b+',0.6)',
+      borderColor:'rgba('+r+','+g+','+b+',1)'
+    }]"></canvas>
 
     </ion-col>
   </ion-row>
 
 <ion-row responsive-sm>
-  <!--  <ion-col width-50>
-        
-  <h2>Users with most cancelled jobs</h2>
-
-
-      <div class="col-md-6">
-        <div style="display: block;">
-        <canvas baseChart width="200" height="200" style="max-width:400px"
-                    [data]="pieChartData"
-                    [labels]="pieChartLabels"
-                    [legend]="pieChartLegend"
-                    [chartType]="pieChartType"
-                    (chartHover)="chartHovered($event)"></canvas>
-        </div>
-      </div>
-    
-
-    </ion-col> -->
 
 
 </ion-row>

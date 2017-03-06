@@ -28,7 +28,7 @@
   <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="end" [min]="start" [max]="initial"></ion-datetime>
 </ion-item>
 
-<button ion-button round (click)="updateChart()" style="background-color: green" *ngIf="!loading">Apply</button>
+<button ion-button round (click)="updateChart()" [style.background-color]='color' *ngIf="!loading">Apply</button>
 
               <ion-row>
                 <ion-col>
@@ -37,7 +37,7 @@
                 </ion-col>
       </ion-row>
 
-      <div style="color:green; text-align: center; align-items: center; display: flex; vertical-align: middle">
+      <div style="text-align: center; align-items: center; display: flex; vertical-align: middle;" [style.color]='color'>
       <ion-grid>
   <ion-row responsive-sm>
     <ion-col><h1 style="font-size: 100px">{{totalDumps}}</h1></ion-col>
@@ -61,7 +61,14 @@
                 [labels]="lineChartLabels"
                 [options]="lineChartOptions"
                 [legend]="lineChartLegend"
-                [colors]="lineChartColors"
+                [colors]="[ { 
+      backgroundColor: 'rgba('+r+','+g+','+b+',0.2)',
+      borderColor: 'rgba('+r+','+g+','+b+',1)',
+      pointBackgroundColor: 'rgba('+r+','+g+','+b+',1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba('+r+','+g+','+b+',0.8)'
+    }]"
                 [chartType]="lineChartType"></canvas>
     </div>
   </div>
@@ -80,7 +87,10 @@
                     [options]="chartOptions"
                     [legend]="chartLegend"
                     [chartType]="chartType"
-                    [colors]="barChartColors"></canvas>
+                    [colors]="    [{ 
+      backgroundColor: 'rgba('+r+','+g+','+b+',0.6)',
+      borderColor:'rgba('+r+','+g+','+b+',1)'
+    }]"></canvas>
 
     </ion-col>
     <ion-col >
@@ -94,7 +104,10 @@
                     [options]="chartOptions"
                     [legend]="chartLegend"
                     [chartType]="chartType"
-                    [colors]="barChartColors"
+                    [colors]="    [{ 
+      backgroundColor: 'rgba('+r+','+g+','+b+',0.6)',
+      borderColor:'rgba('+r+','+g+','+b+',1)'
+    }]"
                     (chartClick)="chartClicked($event)"></canvas>
         </div>
       </div>
@@ -108,7 +121,7 @@
 
     <ion-grid style=" min-width: 1000px">
 
-  <ion-row style="text-align: center;height:30px; background-color: 	green; color: white">
+  <ion-row style="text-align: center;height:30; color: white;" [style.background-color]="color">
     <ion-col >Error</ion-col>
     <ion-col *ngFor="let d of errorData.data">{{d._id}}</ion-col>
 

@@ -115,11 +115,11 @@ export class LoginPage {
   }
 
   ionViewWillEnter() {
-  this.tabBarElement.style.display = 'none';
+  //this.tabBarElement.style.display = 'none';
 }
 
 ionViewWillLeave() {
-  this.tabBarElement.style.display = 'flex';
+  //this.tabBarElement.style.display = 'flex';
 }
 
 }
