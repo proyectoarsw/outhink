@@ -20,8 +20,8 @@ import { Storage } from '@ionic/storage';
 export class HomePage {
 
 http: Http;
-start: String = moment().subtract(1,"days").utc().format();
-end: String = moment().subtract(1,"days").utc().format();
+start: String = moment().subtract(1,"days").format("YYYY-MM-DDTHH:mm");
+end: String = moment().subtract(1,"days").format("YYYY-MM-DDTHH:mm");
 contentHeader: Headers = new Headers({"Content-Type": "application/json"});
 data : Array<any> = [];
 logData : Array<any> = [];
@@ -48,6 +48,8 @@ client:any = {};
   constructor(private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController,public loadingCtrl: LoadingController) {
     this.http = http;
     
+    console.log(moment().subtract(1,"days").format("YYYY-MM-DDTHH:mm"));
+    console.log(this.start);
 
         this.local.get('user').then(token => {
       if(token){
@@ -65,6 +67,8 @@ client:any = {};
         this.r = token.r;
         this.g = token.g;
         this.b = token.b;
+
+       // this.client.colors = [ 'rgba(184,255,58,0.8)', 'rgba(84,84,84,0.8)', 'rgba(105,116,124,0.8)', 'rgba(107,170,117,0.8)', 'rgba(132,221,99,0.8)', 'rgba(66,75,84,0.8)', 'rgba(198,161,91,0.8)', 'rgba(50,147,111,0.8)', 'rgba(148,197,149,0.8)', 'rgba(116,124,146,0.8)', 'rgba(150,125,105,0.8)', 'rgba(86,142,163,0.8)' ];
 
         this.updateChart();
       }
