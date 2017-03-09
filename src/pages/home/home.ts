@@ -263,7 +263,7 @@ selected = [];
   updateBar():void {
     
     var link = this.url +'jobchart';
-    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
@@ -302,7 +302,7 @@ selected = [];
   updatePie():void {
     
     var link = this.url + 'jobchart2';
-    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
@@ -340,7 +340,7 @@ selected = [];
     updateDon():void {
     
     var link = this.url+'jobchart3';
-    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
@@ -378,7 +378,7 @@ selected = [];
       updateLine():void {
     
     var link = this.url+'jobchart4';
-    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {

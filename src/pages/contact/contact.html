@@ -18,6 +18,23 @@
 <ion-grid>
   <ion-row responsive-sm>
     <ion-col width-50>
+
+      <ion-row>
+        <ion-col col-4>
+          <img [src]="client.url" width="160px" height="70px;"/>
+        </ion-col>
+        <ion-col>
+          <ion-list>
+
+
+  <ion-item style="max-width:120px" *ngFor="let si of selectedCheck; let i = index" >
+    <ion-label>{{si.sid}}</ion-label>
+    <ion-checkbox [(ngModel)]="selectedCheck[i].selected"></ion-checkbox>
+  </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+
   <ion-item style="max-width:300px">
   <ion-label>Start</ion-label>
   <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="start" [max]="end"></ion-datetime>

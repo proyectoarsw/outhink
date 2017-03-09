@@ -4,7 +4,7 @@ import { NavController, App, PopoverController } from 'ionic-angular';
 
 import {Http, Headers} from '@angular/http';
 import { PopoverPage } from '../popover/popover';
-//import { LoginPage } from '../login/login';
+
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/map';
 import * as moment from "moment";
@@ -37,6 +37,9 @@ loading: boolean = false;
 user:any = {};
 client:any = {};
 
+selectedCheck =[];
+selected = [];
+
 public totalDumps : number = 0;
 
 public url:String = "https://watson-advisor.mybluemix.net/";
@@ -56,6 +59,10 @@ public url:String = "https://watson-advisor.mybluemix.net/";
         this.local.get('client').then(token => {
       if(token){
         this.client = token;
+
+                for(let elem of this.client.sids){
+          this.selectedCheck.push({selected:true,sid:elem});
+        };
 
         this.color = 'rgb('+ token.r +','+token.g+','+token.b+')';
         this.r = token.r;
@@ -147,27 +154,6 @@ public url:String = "https://watson-advisor.mybluemix.net/";
     {data:[10,10,10,10,10], label: "Number of Dumps"}
   ];
 
-  // pieChart
-  public pieChartData:number[] = [1,1,1,1,1,1,1,1,1,1];
-  public pieChartLabels:string[] = ["User1","User2","User3","User4","User5","User6","User7","User8","User9","User10"];
-  public pieChartOptions:any = {
-    responsive: true
-    
-  };
-
-  public pieChartLegend:boolean = true;
-  public pieChartType:string = 'pie';
-
-    // donChart
-  public donChartData:number[] = [1,1,1,1,1];
-  public donChartLabels:string[] = ["Error1", "Error2", "Error3", "Error4","Error5"];
-  public donChartOptions:any = {
-    responsive: true
-    
-  };
-
-  public donChartLegend:boolean = true;
-  public donChartType:string = 'doughnut';
  
   // events
   public chartClicked(e:any):void {
@@ -183,29 +169,46 @@ public url:String = "https://watson-advisor.mybluemix.net/";
     }
 
   }
- 
-  public chartHovered(e:any):void {
-    //console.log(e);
-  }  
 
   public updateChart():void {
 
     this.loading = true;
+
+    // Check if there is something selected
+    this.selected = [];
+    var coun = 0;
+
+    this.selectedCheck.forEach(function(elem){
+      if(elem.selected){coun ++}
+    });
+
+// Add sids
+
+    if(coun > 0){
+
+          for(let elem of this.selectedCheck){
+      if(elem.selected){this.selected.push(elem.sid)}
+    };
+
+    }else{
+             for(let elem of this.selectedCheck){
+          elem.selected = true;
+          this.selected.push(elem.sid);
+    };
+    }
 
     this.start = moment(this.start).utc().startOf('day').format();
     this.end = moment(this.end).utc().endOf('day').format();
 
     this.updateBar();
     this.updateBar2();
-   // this.updatePie();
-    //this.updateDon();
     this.updateLine();
   }
 
   updateBar():void {
     
     var link = this.url+'dumpchart';
-    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
@@ -242,7 +245,7 @@ public url:String = "https://watson-advisor.mybluemix.net/";
     updateBar2():void {
     
     var link = this.url+'dumpchart2';
-    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
@@ -288,87 +291,11 @@ public url:String = "https://watson-advisor.mybluemix.net/";
         
 
   }
-  
-  updatePie():void {
-    
-    var link = this.url+'jobchart2';
-    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
-        
-        this.http.post(link, data, { headers: this.contentHeader })
-        .subscribe(data => {
-         console.log(data.json());
-
-         var jobx = data.json().jobs;
-
-         if(jobx.length > 0){
-
-         var ar1 = [];
-         var ar2 = [];
-
-         jobx.forEach(function(job){
-            ar1.push(job.value);
-            ar2.push(job._id);
-         });
-
-         
-         this.pieChartLabels = ar2;
-         setTimeout(()=>{this.pieChartData = ar1;}, 1000);
-
-         }else{
-          this.pieChartLabels = ["User1","User2","User3","User4","User5","User6","User7","User8","User9","User10"];
-         setTimeout(()=>{this.pieChartData = [1,1,1,1,1,1,1,1,1,1]}, 1000);
-        }
-        }, error => {
-            console.log("Oooops!");
-        });
-
-        
-        
-
-  }
-
-    updateDon():void {
-    
-    var link = this.url+'dumpchart2';
-    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
-        
-        this.http.post(link, data, { headers: this.contentHeader })
-        .subscribe(data => {
-         console.log(data.json());
-
-         var jobx = data.json().dumps;
-
-         if(jobx.length > 0){
-
-         var ar1 = [];
-         var ar2 = [];
-
-         jobx.forEach(function(job){
-            ar1.push(job.value);
-            ar2.push(job._id);
-         });
-
-         
-         this.donChartLabels = ar2;
-         setTimeout(()=>{this.donChartData = ar1;}, 1000);
-
-         }else{
-          this.donChartLabels = ["Error1", "Error2", "Error3", "Error4","Error5"];
-         setTimeout(()=>{this.donChartData = [1,1,1,1,1]}, 1000);
-        }
-        }, error => {
-            console.log("Oooops!");
-        });
-
-        
-        
-
-  }
 
       updateLine():void {
     
     var link = this.url+'dumpchart3';
-    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name});
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
@@ -415,7 +342,7 @@ public url:String = "https://watson-advisor.mybluemix.net/";
      updateTable(err,index):void {
     
     var link = this.url+'dumpchart4';
-    var data = JSON.stringify({start: this.start, end:this.end, error:err, client:this.client.name});
+    var data = JSON.stringify({start: this.start, end:this.end, error:err, client:this.client.name, sids:this.selected});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
@@ -439,37 +366,9 @@ public url:String = "https://watson-advisor.mybluemix.net/";
       
   }
 
-/*
-    // Go to login screen
-  goLogin(){
-    this._app.getRootNav().popToRoot();
-                 }
-
-    // Go to base screen
-  goBase(){
-    this._app.getRootNav().popTo(BasePage);
-                 }
-
-// Logout
- logout(){
-   this.local.set('user', null);
-   this.goLogin();
-                }
-
-                */
-
   // display menu
   displayMenu(event) {
-/*    let ev = {
-  target : {
-    getBoundingClientRect : () => {
-      return {
-        right:'0',
-        bottom:'0'
-      };
-    }
-  }
-};*/
+
         let popover = this.popoverCtrl.create(PopoverPage);
     popover.present({
       ev: event
