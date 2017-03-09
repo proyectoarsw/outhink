@@ -44,6 +44,9 @@ loading: boolean = false;
 user:any = {};
 client:any = {};
 
+selectedCheck =[];
+selected = [];
+
 
   constructor(private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController,public loadingCtrl: LoadingController) {
     this.http = http;
@@ -62,6 +65,11 @@ client:any = {};
         this.local.get('client').then(token => {
       if(token){
         this.client = token;
+       // this.client.sids = ["ERP","PRD"];
+
+        for(let elem of this.client.sids){
+          this.selectedCheck.push({selected:true,sid:elem});
+        };
 
         this.color = 'rgb('+ token.r +','+token.g+','+token.b+')';
         this.r = token.r;
@@ -214,8 +222,33 @@ client:any = {};
 
   public updateChart():void {
 
-    //this.presentLoading();
+
+
     this.loading = true;
+
+// Check if there is something selected
+    this.selected = [];
+    var coun = 0;
+
+    this.selectedCheck.forEach(function(elem){
+      if(elem.selected){coun ++}
+    });
+
+// Add sids
+
+    if(coun > 0){
+
+          for(let elem of this.selectedCheck){
+      if(elem.selected){this.selected.push(elem.sid)}
+    };
+
+    }else{
+             for(let elem of this.selectedCheck){
+          elem.selected = true;
+          this.selected.push(elem.sid);
+    };
+    }
+
     this.start = moment(this.start).utc().startOf('day').format();
     this.end = moment(this.end).utc().endOf('day').format();
 
@@ -223,6 +256,8 @@ client:any = {};
     this.updatePie();
     this.updateDon();
     this.updateLine();
+
+    console.log(this.selected.toString());
   }
 
   updateBar():void {
