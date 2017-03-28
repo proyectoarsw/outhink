@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, AlertController, ToastController, App, PopoverController } from 'ionic-angular';
+import {Http, Headers} from '@angular/http';
+import 'rxjs/add/operator/map';
+import * as moment from "moment";
+
+import { Storage } from '@ionic/storage';
 
 /*
   Generated class for the Chat page.
@@ -13,10 +18,351 @@ import { NavController, NavParams } from 'ionic-angular';
 })
 export class ChatPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {}
+http: Http;
+start: String = moment().subtract(1,"days").format("YYYY-MM-DDTHH:mm");
+end: String = moment().subtract(1,"days").format("YYYY-MM-DDTHH:mm");
+contentHeader: Headers = new Headers({"Content-Type": "application/json"});
+data : Array<any> = [];
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ChatPage');
+color : String = 'rgb(255,255,255)';
+
+r: Number = 255;
+g:Number = 255;
+b: Number = 255;
+
+public url:String = "https://watson-advisor.mybluemix.net/";
+
+local: Storage = new Storage();
+
+loading: boolean = false;
+
+user:any = {};
+client:any = {};
+
+selectedCheck =[];
+selected = [];
+
+message: String = "";
+
+// Chart variables
+
+showBigNumber: boolean = false;
+bigNumber = 0;
+
+showLineChart: boolean = false;
+//lineChartData: Array<any> = [];
+
+showBarChart: boolean = false;
+//barChartData: Array<any> = [];
+
+showDoughnutChart: boolean = false;
+//doughnutChartData: Array<any> = [];
+
+
+
+  constructor(private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController) {
+
+    this.http = http;
+    
+
+
+        this.local.get('user').then(token => {
+      if(token){
+        this.user = token;
+      }
+    }).catch(error => {
+      console.log(error);
+    });
+
+        this.local.get('client').then(token => {
+      if(token){
+        this.client = token;
+
+        this.color = 'rgb('+ token.r +','+token.g+','+token.b+')';
+        this.r = token.r;
+        this.g = token.g;
+        this.b = token.b;
+
+      }
+    }).catch(error => {
+      console.log(error);
+    });
+
+  }
+
+    //LineChart
+  public lineChartOptions:any={
+    responsive: true,
+              tooltips : {
+            displayColors:false
+          }
+  };
+
+  public lineChartLabels:string[] = ["Date1", "Date2", "Date3","Date4","Date5","Date6","Date7","Date8","Date9","Date10"];
+  public lineChartType:string = "line";
+  public lineChartLegend:boolean = false;
+  public lineChartData:any[] = [
+    {data:[10,10,10,10,10,10,10,10,10,10], label: ""}
+  ];
+
+  public lineChartColors:Array<any> = [
+    { 
+      backgroundColor: 'rgba('+this.r+','+this.g+','+this.b+',0.2)',
+      borderColor: 'rgba('+this.r+','+this.g+','+this.b+',1)',
+      pointBackgroundColor: 'rgba('+this.r+','+this.g+','+this.b+',1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba('+this.r+','+this.g+','+this.b+',0.8)'
+    }
+  ];
+
+   //BarChart
+  public chartOptions:any={
+    responsive: true,
+
+          tooltips : {
+            displayColors:false,
+            titleFontSize:0,
+                callbacks: {
+                    label: function(tooltipItems, data) { 
+                        return tooltipItems.xLabel + ' ms';
+                    }
+                }
+          },
+          scales:{
+            xAxes:[{
+              ticks: {
+                 beginAtZero: true,
+                  callback: function(label, index, labels) {
+                      return label+' ms';
+                  }
+              },
+                scaleLabel: {
+                    display: false,
+                    labelString: 'Duration'
+                }
+            }],
+            yAxes: [{
+                stacked: true
+            }]
+          }
+  };
+
+  public chartLabels:string[] = ["", "", ""];
+  public chartType:string = "horizontalBar";
+  public chartLegend:boolean = false;
+  public chartData:any[] = [
+    {data:[10,10,10], label: "Total duration (ms)"}
+  ];
+
+    public barChartColors:Array<any> = [
+    { 
+      backgroundColor: 'rgba('+this.client.r+','+this.client.g+','+this.client.b+',0.6)',
+      borderColor:'rgba('+this.client.r+','+this.client.g+','+this.client.b+',1)'
+    }
+  ];
+
+    // donChart
+  public donChartData:number[] = [1,1,1,1,1];
+  public donChartLabels:string[] = ["","","","",""];
+  public donChartOptions:any = {
+    responsive: true,
+          tooltips : {
+                callbacks: {
+                    label: function(tooltipItem, data) { 
+
+                      return data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + "";
+                    }
+                }
+          }
+    
+  };
+
+  public donChartLegend:boolean = true;
+  public donChartType:string = 'doughnut';
+
+  // Color
+    public colors:Array<any> = [
+    { 
+      backgroundColor: this.client.colors    }
+  ];
+
+
+// Send message to conversation
+public sendMessage(){
+
+    var link = this.url +'message';
+    var data = JSON.stringify({message: this.message});
+        
+        this.http.post(link, data, { headers: this.contentHeader })
+        .subscribe(data => {
+         console.log(data.json());
+
+        }, error => {
+            console.log("Oooops!");
+        });
+        
+
+}
+
+ public updateChart():void {
+
+
+
+    this.loading = true;
+/*
+// Add sids
+
+    if(coun > 0){
+
+          for(let elem of this.selectedCheck){
+      if(elem.selected){this.selected.push(elem.sid)}
+    };
+
+    }else{
+             for(let elem of this.selectedCheck){
+          elem.selected = true;
+          this.selected.push(elem.sid);
+    };
+    }
+
+    this.start = moment(this.start).utc().startOf('day').format();
+    this.end = moment(this.end).utc().endOf('day').format();
+
+    this.updateBar();
+    this.updatePie();
+    this.updateDon();
+    this.updateLine();
+
+    console.log(this.selected.toString());
+    */
+  }
+
+    updateBar():void {
+    
+    var link = this.url +'jobchart';
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
+        
+        this.http.post(link, data, { headers: this.contentHeader })
+        .subscribe(data => {
+         console.log(data.json());
+
+         this.data = data.json().jobs;
+
+         if(this.data.length > 0){
+
+          var ar1 = [];
+          var ar2 = [];
+
+          this.data.forEach(function(job){
+              ar1.push(job.duration);
+              ar2.push(job.job_name);
+          });
+
+          
+          this.chartLabels = ar2;
+          setTimeout(()=>{this.chartData = [{data:ar1, label: "Total duration (ms)"}];}, 1000);
+         
+        }else{
+            this.chartLabels = ["Job1", "Job2", "Job3"];
+            setTimeout(()=>{this.chartData = [{data:[10,10,10], label: "Total duration (ms)"}];}, 1000);
+        }
+
+        }, error => {
+            console.log("Oooops!");
+        });
+        
+
+  }
+
+
+    updateDon():void {
+    
+    var link = this.url+'jobchart3';
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
+        
+        this.http.post(link, data, { headers: this.contentHeader })
+        .subscribe(data => {
+         console.log(data.json());
+
+         var jobx = data.json().jobs;
+
+         if(jobx.length > 0){
+
+         var ar1 = [];
+         var ar2 = [];
+
+         jobx.forEach(function(job){
+            ar1.push(job.value);
+            ar2.push(job._id);
+         });
+
+         
+         this.donChartLabels = ar2;
+         setTimeout(()=>{this.donChartData = ar1;}, 1000);
+
+         }else{
+          this.donChartLabels = ["Job1","Job2","Job3","Job4","Job5"];
+         setTimeout(()=>{this.donChartData = [1,1,1,1,1]}, 1000);
+        }
+        }, error => {
+            console.log("Oooops!");
+        });
+
+        
+        
+
+  }
+
+      updateLine():void {
+    
+    var link = this.url+'jobchart4';
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
+        
+        this.http.post(link, data, { headers: this.contentHeader })
+        .subscribe(data => {
+         console.log(data.json());
+
+         var jobx = data.json().jobs;
+
+         this.loading = false;
+
+         if(jobx.length > 0){
+
+         var ar1 = [];
+         var ar2 = [];
+         var tot = 0;
+
+         jobx.forEach(function(job){
+            ar1.push(job.value);
+            ar2.push(moment(job._id).add(1,"day").format("D/M/YYYY"));
+            tot += job.value;
+         });
+
+         this.bigNumber = tot;
+
+         
+         this.lineChartLabels = ar2;
+         setTimeout(()=>{this.lineChartData = [{data: ar1, label: "Cancelled jobs"}]
+         
+      }, 1000);
+
+         }else{
+          this.lineChartLabels = ["Date1", "Date2", "Date3","Date4","Date5","Date6","Date7","Date8","Date9","Date10"];
+         setTimeout(()=>{this.lineChartData = [
+    {data:[10,10,10,10,10,10,10,10,10,10], label: "Cancelled jobs"}
+         ]}, 1000);
+
+         this.bigNumber = 0;
+        }
+        }, error => {
+            console.log("Oooops!");
+        });
+
+
+        
+        
+
   }
 
 }
