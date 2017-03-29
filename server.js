@@ -857,15 +857,17 @@ app.post("/message",cors(),function(request, response){
     conversation.message({
   input: { text: request.body.message },
   workspace_id: 'a9dd6272-b4d4-4b43-9a85-172021f5e9e1'
- }, function(err, response) {
+ }, function(err, resp) {
      if (err) {
        console.error(err);
+       response.send({success:false});
      } else {
-       console.log(JSON.stringify(response, null, 2));
+       console.log(JSON.stringify(resp, null, 2));
+       response.send({success:true, response:resp});
      }
 });
 
-    response.send({success:true});
+    
 
 });
 
