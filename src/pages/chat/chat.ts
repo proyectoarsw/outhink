@@ -13,10 +13,19 @@ import { NavController, NavParams } from 'ionic-angular';
 })
 export class ChatPage {
 
+  messages = [];
+  message = "";
+
   constructor(public navCtrl: NavController, public navParams: NavParams) {}
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad ChatPage');
+
+  }
+
+  sendMessage(){
+    this.messages.push(this.message);
+
+    this.message = "";
   }
 
 }

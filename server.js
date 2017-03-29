@@ -434,8 +434,14 @@ app.post("/dumpchart",cors(),function(request, response){
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
   },
-        customer:request.body.client}},
+        customer:request.body.client,
+      sid:{"$in":request.body.sids}}},
     function(err, collection){
+
+      if(err){
+        console.log(err);
+        response.send({success:false});
+      }else{
 
       collection.find().sort({value:-1}).limit(5).toArray(function(er, results) {
 
@@ -444,6 +450,7 @@ app.post("/dumpchart",cors(),function(request, response){
           response.send({success:true, dumps:results});
     
 });
+      }
 
     }
   );
@@ -465,8 +472,14 @@ app.post("/dumpchart2",cors(),function(request, response){
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
   },
-        customer:request.body.client}},
+        customer:request.body.client,
+      sid:{"$in":request.body.sids}}},
     function(err, collection){
+
+            if(err){
+        console.log(err);
+        response.send({success:false});
+      }else{
 
       collection.find().sort({value:-1}).limit(5).toArray(function(er, results) {
 
@@ -475,6 +488,8 @@ app.post("/dumpchart2",cors(),function(request, response){
           response.send({success:true, dumps:results});
     
 });
+
+      }
 
     }
   );
@@ -496,8 +511,14 @@ app.post("/dumpchart3",cors(),function(request, response){
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
   },
-        customer:request.body.client}},
+        customer:request.body.client,
+      sid:{"$in":request.body.sids}}},
     function(err, collection){
+
+            if(err){
+        console.log(err);
+        response.send({success:false});
+      }else{
 
       collection.find().toArray(function(er, results) {
 
@@ -506,6 +527,7 @@ app.post("/dumpchart3",cors(),function(request, response){
           response.send({success:true, dumps:results});
     
 });
+      }
 
     }
   );
@@ -538,9 +560,15 @@ app.post("/dumpchart4",cors(),function(request, response){
     "$lt": new Date(request.body.end)
   },
   runtime_error: request.body.error,
-        customer:request.body.client},
+        customer:request.body.client,
+      sid:{"$in":request.body.sids}},
 out:{replace: 'tempdum4' + request.body.error}},
     function(err, collection){
+
+            if(err){
+        console.log(err);
+        response.send({success:false});
+      }else{
 
       collection.find().limit(10).toArray(function(er, results) {
 
@@ -549,6 +577,7 @@ out:{replace: 'tempdum4' + request.body.error}},
           response.send({success:true, dumps:results});
     
 });
+      }
 
     }
   );
@@ -570,7 +599,8 @@ app.post("/transchart",cors(),function(request, response){
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
   },
-        customer:request.body.client}},
+        customer:request.body.client,
+      sid:{"$in":request.body.sids}}},
     function(err, collection){
 
       collection.find().sort({value:-1}).limit(10).toArray(function(er, results) {
@@ -601,7 +631,8 @@ app.post("/memorychart",cors(),function(request, response){
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
   },
-        customer:request.body.client}},
+        customer:request.body.client,
+      sid:{"$in":request.body.sids}}},
     function(err, collection){
 
       collection.find().sort({value:-1}).limit(10).toArray(function(er, results) {
@@ -632,7 +663,8 @@ app.post("/memorychart2",cors(),function(request, response){
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
   },
-        customer:request.body.client}},
+        customer:request.body.client,
+      sid:{"$in":request.body.sids}}},
     function(err, collection){
 
       collection.find().sort({value:-1}).limit(5).toArray(function(er, results) {
@@ -657,7 +689,8 @@ app.post("/jobchart",cors(),function(request, response){
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
   },
-        customer:request.body.client},{job_name:1, duration:1, log:1}).sort({duration:-1}).limit(3).toArray(function(er, results) {
+        customer:request.body.client,
+      sid:{"$in":request.body.sids}},{job_name:1, duration:1, log:1}).sort({duration:-1}).limit(3).toArray(function(er, results) {
 
         console.log("Results: "+ results.length);
 
@@ -682,7 +715,8 @@ app.post("/jobchart2",cors(),function(request, response){
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
   },
-        customer:request.body.client}},
+        customer:request.body.client,
+      sid:{"$in":request.body.sids}}},
     function(err, collection){
 
       collection.find().sort({value:-1}).limit(5).toArray(function(er, results) {
@@ -713,7 +747,8 @@ app.post("/jobchart3",cors(),function(request, response){
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
   },
-        customer:request.body.client}},
+        customer:request.body.client,
+      sid:{"$in":request.body.sids}}},
     function(err, collection){
 
       collection.find().sort({value:-1}).limit(5).toArray(function(er, results) {
@@ -744,7 +779,8 @@ app.post("/jobchart4",cors(),function(request, response){
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
   },
-        customer:request.body.client}},
+        customer:request.body.client,
+      sid:{"$in":request.body.sids}}},
     function(err, collection){
 
       collection.find().toArray(function(er, results) {

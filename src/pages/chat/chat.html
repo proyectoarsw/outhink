@@ -15,18 +15,21 @@
 
 <ion-content padding>
 
-
+<ion-list no-lines>
+  <ion-item *ngFor="let item of messages">
+  <button ion-button item-right round >
+    {{ item }}
+  </button> 
+  </ion-item>
+</ion-list>
 
 </ion-content>
 
-<ion-footer>
-<ion-list inset padding>
- <ion-item>
-  <ion-input type="text" placeholder="Input 1"></ion-input>
- </ion-item>
- <ion-item>
-  <ion-input type="text" placeholder="Input 2"></ion-input>
- </ion-item>
- <button item-right>Forgot</button>
+<ion-footer >
+<ion-list inset >
+<ion-item style="max-height: 60px">
+ <ion-input type="text" placeholder="Message" [(ngModel)]="message"></ion-input>
+ <button ion-button item-right round style="height: 40px; width: 80px" (click)="sendMessage()">Send</button>
+</ion-item>
 </ion-list>
 </ion-footer>
