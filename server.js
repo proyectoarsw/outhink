@@ -6,6 +6,8 @@ var moment = require('moment');
 
 var bodyParser = require('body-parser');
 
+var ConversationV1 = require('watson-developer-cloud/conversation/v1');
+
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
@@ -52,6 +54,22 @@ var ca = [new Buffer(credentials.ca_certificate_base64, 'base64')];
 
 // This is a global variable we'll use for handing the MongoDB client around
 var mongodb;
+
+// Initialize conversation
+
+//var conversation_services = services["conversation"];
+
+// This check ensures there is a services for Watson Conversation
+//assert(!util.isUndefined(conversation_services), "Must be bound to conversation services");
+
+// We now take the first bound Watson conversation service and extract it's credentials object
+//var credentials_conversation = conversation_services[0].credentials;
+
+var conversation = new ConversationV1({
+  username: process.env.CONVERSATION_USERNAME,
+  password: process.env.CONVERSATION_PASSWORD,
+  version_date: ConversationV1.VERSION_DATE_2017_02_03
+});
 
 
 function initDBConnection() {
@@ -868,6 +886,26 @@ app.post("/delete",cors(),function(request, response){
 
 });
 
+// Service to send message to conversation
+app.post("/message",cors(),function(request, response){
+  console.log("Send message");
+
+    conversation.message({
+  input: { text: request.body.message },
+  workspace_id: 'a9dd6272-b4d4-4b43-9a85-172021f5e9e1'
+ }, function(err, resp) {
+     if (err) {
+       console.error(err);
+       response.send({success:false});
+     } else {
+       console.log(JSON.stringify(resp, null, 2));
+       response.send({success:true, response:resp});
+     }
+});
+
+    
+
+});
 
 ////////// GET Services
 

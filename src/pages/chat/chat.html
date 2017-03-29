@@ -15,6 +15,80 @@
 
 <ion-content padding>
 
+  <!-- big number-->
+        <div style="text-align: center; align-items: center; display: flex; vertical-align: middle;" [style.color]='color' *ngIf="showBigNumber">
+      <ion-grid>
+  <ion-row responsive-sm>
+    <ion-col><h1 style="font-size: 100px">{{totalDumps}}</h1></ion-col>
+  </ion-row>
+    <ion-row responsive-sm>
+       <ion-col> <p>Dumps in range</p> </ion-col>
+  </ion-row></ion-grid>
+        </div>
+
+  <!-- line chart -->
+
+      <div style="display: block;" *ngIf="showLineChart">
+
+        <h2>Number of Dumps in time</h2>
+
+    <canvas baseChart width="200" height="100" style="max-width:600px;"
+                [datasets]="lineChartData"
+                [labels]="lineChartLabels"
+                [options]="lineChartOptions"
+                [legend]="lineChartLegend"
+                [colors]="[ { 
+      backgroundColor: 'rgba('+r+','+g+','+b+',0.2)',
+      borderColor: 'rgba('+r+','+g+','+b+',1)',
+      pointBackgroundColor: 'rgba('+r+','+g+','+b+',1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba('+r+','+g+','+b+',0.8)'
+    }]"
+                [chartType]="lineChartType"></canvas>
+    </div>
+
+  <!-- bar chart -->
+
+  <div style="display: block;" *ngIf="showBarChart">
+
+        <h2>Top 5 programs with more Dumps</h2>
+
+<canvas baseChart width="200" height="200" style="max-width:500px;"
+                    [datasets]="chartData"
+                    [labels]="chartLabels"
+                    [options]="chartOptions"
+                    [legend]="chartLegend"
+                    [chartType]="chartType"
+                    [colors]="    [{ 
+      backgroundColor: 'rgba('+r+','+g+','+b+',0.6)',
+      borderColor:'rgba('+r+','+g+','+b+',1)'
+    }]"></canvas>
+
+  </div>
+
+  <!-- doughnut chart -->
+
+        <div style="display: block;" *ngIf="showDoughnutChart">
+
+  <h2>Top 5 most cancelled Jobs by quantity</h2>
+
+
+
+        <canvas baseChart width="200" height="200" style="max-width:400px"
+                    [data]="donChartData"
+                    [labels]="donChartLabels"
+                    [legend]="donChartLegend"
+                    [chartType]="donChartType"
+                    [options]="donChartOptions"
+                    [colors]="[{ 
+      backgroundColor: client.colors    }]"
+                    (chartHover)="chartHovered($event)"></canvas>
+      </div>
+
+      <!---------->
+
+
 <ion-list no-lines>
   <ion-item *ngFor="let item of messages">
   <button ion-button item-right round >
@@ -31,5 +105,6 @@
  <ion-input type="text" placeholder="Message" [(ngModel)]="message"></ion-input>
  <button ion-button item-right round style="height: 40px; width: 80px" (click)="sendMessage()">Send</button>
 </ion-item>
+
 </ion-list>
 </ion-footer>
