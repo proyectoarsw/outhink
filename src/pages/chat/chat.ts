@@ -50,7 +50,7 @@ client:any = {};
 selected = [];
 
 //message: String = "";
-messages = [];
+messages = [{text:"Hello I'm Watson, what do you need ?", resp:true}];
 
 // Chart variables
 
@@ -226,11 +226,9 @@ public sendMessage(){
 
         this.messages.push({text:respp.response.output.text[0], resp:true});
 
-        setTimeout(()=>{
-          this.content.scrollTop = this.content.scrollHeight;
-        }, 600);
-
-        this.loadChart(respp.response.intents[0].intent,respp.response.entities)
+        if(respp.response.intents.length > 0){
+          this.loadChart(respp.response.intents[0].intent,respp.response.entities)
+        }
 
 
         }, error => {
