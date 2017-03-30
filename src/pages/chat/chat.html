@@ -13,24 +13,25 @@
 </ion-header>
 
 
-<ion-content padding>
+<ion-content padding #content>
 
   <!-- big number-->
         <div style="text-align: center; align-items: center; display: flex; vertical-align: middle;" [style.color]='color' *ngIf="showBigNumber">
       <ion-grid>
   <ion-row responsive-sm>
-    <ion-col><h1 style="font-size: 100px">{{totalDumps}}</h1></ion-col>
+    <ion-col><h1 style="font-size: 100px">{{bigNumber}}</h1></ion-col>
   </ion-row>
-    <ion-row responsive-sm>
+    <!--<ion-row responsive-sm>
        <ion-col> <p>Dumps in range</p> </ion-col>
-  </ion-row></ion-grid>
+  </ion-row>-->
+  </ion-grid>
         </div>
 
   <!-- line chart -->
 
       <div style="display: block;" *ngIf="showLineChart">
 
-        <h2>Number of Dumps in time</h2>
+       <!-- <h2>Number of Dumps in time</h2>-->
 
     <canvas baseChart width="200" height="100" style="max-width:600px;"
                 [datasets]="lineChartData"
@@ -52,7 +53,7 @@
 
   <div style="display: block;" *ngIf="showBarChart">
 
-        <h2>Top 5 programs with more Dumps</h2>
+        <!--<h2>Top 5 programs with more Dumps</h2>-->
 
 <canvas baseChart width="200" height="200" style="max-width:500px;"
                     [datasets]="chartData"
@@ -71,7 +72,7 @@
 
         <div style="display: block;" *ngIf="showDoughnutChart">
 
-  <h2>Top 5 most cancelled Jobs by quantity</h2>
+ <!-- <h2>Top 5 most cancelled Jobs by quantity</h2>-->
 
 
 
@@ -82,18 +83,23 @@
                     [chartType]="donChartType"
                     [options]="donChartOptions"
                     [colors]="[{ 
-      backgroundColor: client.colors    }]"
-                    (chartHover)="chartHovered($event)"></canvas>
+      backgroundColor: client.colors    }]"></canvas>
       </div>
 
       <!---------->
 
 
 <ion-list no-lines>
-  <ion-item *ngFor="let item of messages">
-  <button ion-button item-right round >
-    {{ item }}
-  </button> 
+  <ion-item *ngFor="let item of messages" style=" margin: 5px;" text-wrap>
+    <!--<ion-label  [item-right]="item.resp ? 'false' : 'true'">-->
+      <p style="max-width:200px ; border-radius: 15px ;padding:10px; background-color: #387ef5; color:white" item-right *ngIf="!item.resp">
+    {{ item.text }}
+      </p>
+
+      <p style="max-width:200px ; border-radius: 15px ;padding:10px; background-color: #32db64; color:white" *ngIf="item.resp">
+    {{ item.text }}
+      </p>
+
   </ion-item>
 </ion-list>
 
@@ -101,10 +107,15 @@
 
 <ion-footer >
 <ion-list inset >
+    <form [formGroup]="form" (ngSubmit)="sendMessage()">
 <ion-item style="max-height: 60px">
- <ion-input type="text" placeholder="Message" [(ngModel)]="message"></ion-input>
- <button ion-button item-right round style="height: 40px; width: 80px" (click)="sendMessage()">Send</button>
+
+ <ion-input type="text" placeholder="Message" value="" formControlName="message"></ion-input>
+ <button ion-button item-right round style="height: 40px; width: 80px" type="submit" [disabled]="!form.valid" *ngIf="!loading">Send</button>
+ <img item-right src="assets/loading.gif" style="height:40px; margin: auto;
+  display: block;"  *ngIf="loading">
 </ion-item>
+  </form>
 
 </ion-list>
 </ion-footer>

@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController, AlertController, ToastController, App, PopoverController } from 'ionic-angular';
 import {Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
 import * as moment from "moment";
+import {Validators, FormBuilder } from '@angular/forms';
 
 import { Storage } from '@ionic/storage';
 
@@ -14,15 +15,22 @@ import { Storage } from '@ionic/storage';
 */
 @Component({
   selector: 'page-chat',
-  templateUrl: 'chat.html'
+  templateUrl: 'chat.html',
+  queries: {
+    content: new ViewChild('content')
+  }
 })
 export class ChatPage {
+
+  content = document.getElementById("content");
 
 http: Http;
 start: String = moment().subtract(1,"days").format("YYYY-MM-DDTHH:mm");
 end: String = moment().subtract(1,"days").format("YYYY-MM-DDTHH:mm");
 contentHeader: Headers = new Headers({"Content-Type": "application/json"});
 data : Array<any> = [];
+
+public form: any;
 
 color : String = 'rgb(255,255,255)';
 
@@ -39,10 +47,9 @@ loading: boolean = false;
 user:any = {};
 client:any = {};
 
-selectedCheck =[];
 selected = [];
 
-message: String = "";
+//message: String = "";
 messages = [];
 
 // Chart variables
@@ -59,9 +66,11 @@ showBarChart: boolean = false;
 showDoughnutChart: boolean = false;
 //doughnutChartData: Array<any> = [];
 
+queryCustomer = "";
 
 
-  constructor(private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController) {
+
+  constructor(private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController, private formBuilder: FormBuilder) {
 
     this.http = http;
     
@@ -78,6 +87,8 @@ showDoughnutChart: boolean = false;
         this.local.get('client').then(token => {
       if(token){
         this.client = token;
+        this.queryCustomer = token.name;
+        this.selected = token.sids; 
 
         this.color = 'rgb('+ token.r +','+token.g+','+token.b+')';
         this.r = token.r;
@@ -88,6 +99,10 @@ showDoughnutChart: boolean = false;
     }).catch(error => {
       console.log(error);
     });
+
+      this.form = this.formBuilder.group({
+    message:['', Validators.compose([Validators.required])]
+  });
 
   }
 
@@ -192,16 +207,31 @@ showDoughnutChart: boolean = false;
 // Send message to conversation
 public sendMessage(){
 
+    this.messages.push({text:this.form.value.message, resp: false});
+    
+
+
     var link = this.url +'message';
-    var data = JSON.stringify({message: this.message});
+    var data = JSON.stringify({message: this.form.value.message});
+
+        this.form.patchValue({
+        message: ""
+});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
-         console.log(data.json());
+          
+          var respp = data.json();
+         console.log(respp);
 
-        this.messages.push(this.message);
+        this.messages.push({text:respp.response.output.text[0], resp:true});
 
-        this.message = "";
+        setTimeout(()=>{
+          this.content.scrollTop = this.content.scrollHeight;
+        }, 600);
+
+        this.loadChart(respp.response.intents[0].intent,respp.response.entities)
+
 
         }, error => {
             console.log("Oooops!");
@@ -210,49 +240,105 @@ public sendMessage(){
 
 }
 
- public updateChart():void {
 
+loadChart(intent, entities){
+  switch (intent) {
+    case 'timeline_cancelled_jobs':
+        this.processEntities(entities);
+        this.updateLine('jobchart4');
+        break;
+    case 'most_duration_cancelled_jobs':
+        this.processEntities(entities);
+        this.updateBar('jobchart');
+        break;
+    case 'most_cancelled_jobs':
+        this.processEntities(entities);
+        this.updateDon('jobchart3');
+        break;
+    case 'users_most_cancelled_jobs':
+        this.processEntities(entities);
+        this.updateDon('jobchart2');
+        break;
+    case 'cancelled_jobs_number':
+        this.processEntities(entities);
+        this.updateLine('jobchart4');
+        break;
 
+} 
+}
 
-    this.loading = true;
-/*
-// Add sids
+processEntities(entities){
 
-    if(coun > 0){
+  this.loading = true;
 
-          for(let elem of this.selectedCheck){
-      if(elem.selected){this.selected.push(elem.sid)}
-    };
+  var date1;
+  var date2;
+  var custt;
+  var sidd = [];
+  var elem;
 
-    }else{
-             for(let elem of this.selectedCheck){
-          elem.selected = true;
-          this.selected.push(elem.sid);
-    };
+  for (var i = 0; i < entities.length; i ++){
+    elem = entities[i];
+    if(elem.entity === 'customer'){
+      custt = elem.value;
+    }else if(elem.entity === 'sid'){
+      sidd.push(elem.value);
+    }else if(elem.entity === 'sys-date'){
+      if(!date1){
+        date1 = moment(elem.value).format("YYYY-MM-DDTHH:mm");
+      }else if(!date2){
+        date2 = moment(elem.value).format("YYYY-MM-DDTHH:mm");
+      }
     }
+  }
+
+  if(date1){
+    this.start = date1;
+  }
+  if(date2){
+    this.end = date2
+  }
+  if(custt){
+    this.queryCustomer = custt;
+  }
+  if(sidd.length > 0){
+    this.selected = sidd;
+  }
 
     this.start = moment(this.start).utc().startOf('day').format();
     this.end = moment(this.end).utc().endOf('day').format();
 
-    this.updateBar();
-    this.updatePie();
-    this.updateDon();
-    this.updateLine();
+    console.log("Dates : "+ this.start + " - "+ this.end);
 
-    console.log(this.selected.toString());
-    */
-  }
 
-    updateBar():void {
+}
+
+    hideCharts(){
+      this.showBigNumber= false;
+
+    this.showLineChart = false;
+
+    this.showBarChart = false;
+
+    this.showDoughnutChart = false;
+    }
+
+
+    updateBar(urll):void {
     
-    var link = this.url +'jobchart';
-    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
+    var link = this.url + urll;
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.queryCustomer, sids:this.selected});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
          console.log(data.json());
 
          this.data = data.json().jobs;
+
+         this.loading = false;
+
+         this.hideCharts();
+         this.showBarChart = true;
 
          if(this.data.length > 0){
 
@@ -281,16 +367,21 @@ public sendMessage(){
   }
 
 
-    updateDon():void {
+    updateDon(urll):void {
     
-    var link = this.url+'jobchart3';
-    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
+    var link = this.url+ urll;
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.queryCustomer, sids:this.selected});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
          console.log(data.json());
 
          var jobx = data.json().jobs;
+
+         this.loading = false;
+
+          this.hideCharts();
+         this.showDoughnutChart = true;
 
          if(jobx.length > 0){
 
@@ -319,11 +410,11 @@ public sendMessage(){
 
   }
 
-      updateLine():void {
+      updateLine(urll):void {
     
-    var link = this.url+'jobchart4';
-    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
-        
+    var link = this.url+ urll;
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.queryCustomer, sids:this.selected});
+        console.log(data);
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
          console.log(data.json());
@@ -331,6 +422,10 @@ public sendMessage(){
          var jobx = data.json().jobs;
 
          this.loading = false;
+
+        this.hideCharts();
+         this.showLineChart = true;
+         this.showBigNumber = true;
 
          if(jobx.length > 0){
 
