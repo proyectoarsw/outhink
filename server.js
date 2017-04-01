@@ -559,10 +559,11 @@ app.post("/dumpchart4",cors(),function(request, response){
     mongodb.collection("dumps").mapReduce(
     function(){
 
-        emit(this.datee, {count:1,users:[this.user],programs:[this.terminated_program]});
+       // emit(this.datee, {count:1,users:[this.user],programs:[this.terminated_program]});
+       emit(this.datee,1);
       },
     function(key,values){
-
+/*
       var progs = [];
       var usrs = [];
 
@@ -571,6 +572,8 @@ app.post("/dumpchart4",cors(),function(request, response){
         if (usrs.indexOf(item.users[0])==-1) usrs.push(item.users[0]);
       });
       return {count:values.length,users:usrs,programs:progs};
+      */
+      return Array.sum(values);
     },
     {
   query:{datee:{
