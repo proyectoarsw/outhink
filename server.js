@@ -172,7 +172,18 @@ app.post("/workload", function(request, response) {
   console.log("Insert workload records");
   console.log(request.body);
 
-  mongodb.collection("workload").insertMany(request.body, function(err, r) {
+  var items = request.body;
+
+  var item = {};
+
+  for(var x=0; x < items.length; x ++){
+
+    item = items[x];
+
+    item.datee = moment(item.date,"DD.MM.YYYY").toDate();
+  }
+
+  mongodb.collection("workload").insertMany(items, function(err, r) {
     if (err) {
     console.log("Error: " + err);
      response.status(500).send(err);

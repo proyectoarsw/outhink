@@ -68,6 +68,8 @@ showDoughnutChart: boolean = false;
 
 queryCustomer = "";
 
+usingLocalConversation = false;
+
 
 
   constructor(private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController, private formBuilder: FormBuilder) {
@@ -210,6 +212,8 @@ public sendMessage(){
     this.messages.push({text:this.form.value.message, resp: false});
     
 
+  //  if(us)
+
 
     var link = this.url +'message';
     var data = JSON.stringify({message: this.form.value.message});
@@ -224,12 +228,16 @@ public sendMessage(){
           var respp = data.json();
          console.log(respp);
 
+        if(respp.response.output.text.length > 0){
+
         this.messages.push({text:respp.response.output.text[0], resp:true});
 
+        }
+/*
         setTimeout(()=>{
           this.content.scrollTop = this.content.scrollHeight;
         }, 600);
-
+*/
         this.loadChart(respp.response.intents[0].intent,respp.response.entities)
 
 
@@ -263,6 +271,8 @@ loadChart(intent, entities){
         this.processEntities(entities);
         this.updateLine('jobchart4');
         break;
+    case 'dynamicot_ot':
+        this.getOT();
 
 } 
 }
@@ -321,7 +331,49 @@ processEntities(entities){
     this.showBarChart = false;
 
     this.showDoughnutChart = false;
-    }
+  }
+  
+  getOT():void {
+    //TODO
+    var link = "";
+    var data = JSON.stringify({});
+        
+        this.http.post(link, data, { headers: this.contentHeader })
+        .subscribe(data => {
+         console.log(data.json());
+
+         this.data = data.json().jobs;
+
+         this.loading = false;
+
+         this.hideCharts();
+         this.showBarChart = true;
+
+         if(this.data.length > 0){
+
+          var ar1 = [];
+          var ar2 = [];
+
+          this.data.forEach(function(job){
+              ar1.push(job.duration);
+              ar2.push(job.job_name);
+          });
+
+          
+          this.chartLabels = ar2;
+          setTimeout(()=>{this.chartData = [{data:ar1, label: "Total duration (ms)"}];}, 1000);
+         
+        }else{
+            this.chartLabels = ["Job1", "Job2", "Job3"];
+            setTimeout(()=>{this.chartData = [{data:[10,10,10], label: "Total duration (ms)"}];}, 1000);
+        }
+
+        }, error => {
+            console.log("Oooops!");
+        });
+        
+
+  }
 
 
     updateBar(urll):void {
