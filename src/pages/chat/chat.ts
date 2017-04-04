@@ -228,6 +228,11 @@ public sendMessage(){
       if (ott.length > 8){
         this.ot = ott;
         this.getOT();
+
+                this.form.patchValue({
+        message: ""
+});
+
       }
 
     }else{
@@ -428,7 +433,7 @@ processEntities(entities){
           //otts.forEach(function(item){
             var item = otts[0];
             console.log(item);
-           this.messages.push({text:item.cus + ', ' + item.sys + ', ' + item.clt + ', ' + item.rc + ', ' + item.tl , resp:true});               
+           this.messages.push({text:item.cus + ', ' + item.sys + ', ' + item.clt + ', ' + item.rc + ', ' + item.tl + ', ' + item.datetime , resp:true});               
           //});
 
          

@@ -40,15 +40,15 @@
 
   <!-- line chart -->
 
-      <div style="display: block;" *ngIf="showLineChart">
+      <div style="display: block; margin-right: auto; margin-left: auto; margin-bottom: 0" *ngIf="showLineChart">
 
        <!-- <h2>Number of Dumps in time</h2>-->
 
-         <ion-row responsive-sm>
+         <ion-row responsive-sm style="margin-right: auto; margin-left: auto;">
                <ion-col><h1 style="font-size: 100px">{{bigNumber}}</h1></ion-col>
 
            <ion-col>
-    <canvas baseChart width="200" height="100" 
+    <canvas baseChart 
                 [datasets]="lineChartData"
                 [labels]="lineChartLabels"
                 [options]="lineChartOptions"
@@ -73,7 +73,7 @@
 
         <!--<h2>Top 5 programs with more Dumps</h2>-->
 
-<canvas baseChart width="200" height="200" style="max-width:600px;"
+<canvas baseChart height="250px"
                     [datasets]="chartData"
                     [labels]="chartLabels"
                     [options]="chartOptions"
@@ -94,7 +94,7 @@
 
 
 
-        <canvas baseChart width="200" height="200" style="max-width:500px " 
+        <canvas baseChart  
                     [data]="donChartData"
                     [labels]="donChartLabels"
                     [legend]="donChartLegend"
