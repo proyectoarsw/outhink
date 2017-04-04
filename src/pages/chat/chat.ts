@@ -70,6 +70,10 @@ queryCustomer = "";
 
 usingLocalConversation = false;
 
+ot = "";
+
+chatInput = "";
+
 
 
   constructor(private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController, private formBuilder: FormBuilder) {
@@ -212,11 +216,22 @@ public sendMessage(){
     this.messages.push({text:this.form.value.message, resp: false});
     
 
-  //  if(us)
+    if(this.usingLocalConversation){
+
+      var ott = this.form.value.message.trim();
+
+      if (ott.length > 8){
+        this.ot = ott;
+        this.getOT();
+      }
+
+    }else{
 
 
     var link = this.url +'message';
     var data = JSON.stringify({message: this.form.value.message});
+
+    this.chatInput = this.form.value.message;
 
         this.form.patchValue({
         message: ""
@@ -231,18 +246,19 @@ public sendMessage(){
         if(respp.response.output.text.length > 0){
 
         this.messages.push({text:respp.response.output.text[0], resp:true});
-
+        }
 
         if(respp.response.intents.length > 0){
           this.loadChart(respp.response.intents[0].intent,respp.response.entities)
         }
-
+        
 
         }, error => {
             console.log("Oooops!");
         });
+    
+  }
         
-
 }
 
 
@@ -268,8 +284,38 @@ loadChart(intent, entities){
         this.processEntities(entities);
         this.updateLine('jobchart4');
         break;
+    case 'heaviest_transactions':
+        this.processEntities(entities);
+        this.updateDon2('transchart');
+        break;
+    case 'transactions_average_memory':
+      this.processEntities(entities);
+      this.updateBar('memorychart');
+      break;
+    case 'transactions_private_average_memory':
+      this.processEntities(entities);
+      this.updateBar('memorychart2');
+      break;
+    case 'timeline_dumps':
+      this.processEntities(entities);
+      this.updateLine2('dumpchart3');
+      break;
+    case 'must_dumps_programs':
+      this.processEntities(entities);
+      this.updateBar('dumpchart');
+      break;
+    case 'errors_dumps':
+      this.processEntities(entities);
+      this.updateBar('dumpchart2');
+      break;
     case 'dynamicot_ot':
-        this.getOT();
+        if(this.checkOT()){
+          this.getOT();
+        }else{
+          this.usingLocalConversation = true;
+          this.messages.push({text:"Please provide the Transport Order Number", resp:true});
+        }
+        break;
 
 } 
 }
@@ -321,7 +367,7 @@ processEntities(entities){
 }
 
     hideCharts(){
-      this.showBigNumber= false;
+    this.showBigNumber= false;
 
     this.showLineChart = false;
 
@@ -329,11 +375,72 @@ processEntities(entities){
 
     this.showDoughnutChart = false;
   }
+
+  checkOT():boolean {
+
+    var sp = this.chatInput.split("TO");
+
+    if(sp.length > 1){
+
+      var sp2 = sp[sp.length-1].trim();
+
+      if(sp2.length > 0){
+        this.ot = sp2;
+        return true;
+      }
+
+    }else{
+      return false;
+    }
+
+
+  }
   
   getOT():void {
+
+    this.loading = true;
+
     //TODO
-    var link = "";
-    var data = JSON.stringify({});
+    var link = "http://dynamicot.mybluemix.net/alfabeta/filter/?OT=" + this.ot;
+    //var data = JSON.stringify({ot:this.ot});
+        
+        this.http.get(link, { headers: this.contentHeader })
+        .subscribe(data => {
+         console.log(data.json());
+
+         this.data = data.json();
+
+         this.loading = false;
+
+         this.usingLocalConversation = false;
+
+         if(this.data.length > 0){
+
+           this.messages.push({text:'Here are the TOs you asked for', resp:false});   
+
+          this.data.forEach(function(item){
+           this.messages.push({text:item.customer + ', ' + item.system + ', ' + item.clt + ', ' + item.rc + ', ' + item.tl , resp:false});               
+          });
+
+         
+        }else{
+          this.messages.push({text:"There is no information about that TO", resp:true});   
+        }
+
+        }, error => {
+            this.messages.push({text:"There is no information about that TO", resp:true});  
+            this.loading = false;
+            this.usingLocalConversation = false;
+        });
+        
+
+  }
+
+
+    updateBar(urll):void {
+    
+    var link = this.url + urll;
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.queryCustomer, sids:this.selected});
         
         this.http.post(link, data, { headers: this.contentHeader })
         .subscribe(data => {
@@ -372,8 +479,7 @@ processEntities(entities){
 
   }
 
-
-    updateBar(urll):void {
+      updateBar2(urll):void {
     
     var link = this.url + urll;
     var data = JSON.stringify({start: this.start, end:this.end, client:this.queryCustomer, sids:this.selected});
@@ -382,7 +488,7 @@ processEntities(entities){
         .subscribe(data => {
          console.log(data.json());
 
-         this.data = data.json().jobs;
+         this.data = data.json().trans;
 
          this.loading = false;
 
@@ -459,6 +565,49 @@ processEntities(entities){
 
   }
 
+  updateDon2(urll):void {
+    
+    var link = this.url+ urll;
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.queryCustomer, sids:this.selected});
+        
+        this.http.post(link, data, { headers: this.contentHeader })
+        .subscribe(data => {
+         console.log(data.json());
+
+         var jobx = data.json().trans;
+
+         this.loading = false;
+
+          this.hideCharts();
+         this.showDoughnutChart = true;
+
+         if(jobx.length > 0){
+
+         var ar1 = [];
+         var ar2 = [];
+
+         jobx.forEach(function(job){
+            ar1.push(job.value);
+            ar2.push(job._id);
+         });
+
+         
+         this.donChartLabels = ar2;
+         setTimeout(()=>{this.donChartData = ar1;}, 1000);
+
+         }else{
+          this.donChartLabels = ["Job1","Job2","Job3","Job4","Job5"];
+         setTimeout(()=>{this.donChartData = [1,1,1,1,1]}, 1000);
+        }
+        }, error => {
+            console.log("Oooops!");
+        });
+
+        
+        
+
+  }
+
       updateLine(urll):void {
     
     var link = this.url+ urll;
@@ -469,6 +618,57 @@ processEntities(entities){
          console.log(data.json());
 
          var jobx = data.json().jobs;
+
+         this.loading = false;
+
+        this.hideCharts();
+         this.showLineChart = true;
+         this.showBigNumber = true;
+
+         if(jobx.length > 0){
+
+         var ar1 = [];
+         var ar2 = [];
+         var tot = 0;
+
+         jobx.forEach(function(job){
+            ar1.push(job.value);
+            ar2.push(moment(job._id).add(1,"day").format("D/M/YYYY"));
+            tot += job.value;
+         });
+
+         this.bigNumber = tot;
+
+         
+         this.lineChartLabels = ar2;
+         setTimeout(()=>{this.lineChartData = [{data: ar1, label: "Cancelled jobs"}]
+         
+      }, 1000);
+
+         }else{
+          this.lineChartLabels = ["Date1", "Date2", "Date3","Date4","Date5","Date6","Date7","Date8","Date9","Date10"];
+         setTimeout(()=>{this.lineChartData = [
+    {data:[10,10,10,10,10,10,10,10,10,10], label: "Cancelled jobs"}
+         ]}, 1000);
+
+         this.bigNumber = 0;
+        }
+        }, error => {
+            console.log("Oooops!");
+        });
+        
+      }
+
+      updateLine2(urll):void {
+    
+    var link = this.url+ urll;
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.queryCustomer, sids:this.selected});
+        console.log(data);
+        this.http.post(link, data, { headers: this.contentHeader })
+        .subscribe(data => {
+         console.log(data.json());
+
+         var jobx = data.json().dumps;
 
          this.loading = false;
 
