@@ -4,6 +4,7 @@ import {Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
 import * as moment from "moment";
 import {Validators, FormBuilder } from '@angular/forms';
+import { PopoverPage } from '../popover/popover';
 
 import { Storage } from '@ionic/storage';
 
@@ -73,6 +74,10 @@ usingLocalConversation = false;
 ot = "";
 
 chatInput = "";
+
+ots = {"DEVK9A06MY" : [{"datetime":"2017-04-03 12:12:47","rn":"1491239054","sys":"PRD","req":"DEVK9A06MY","clt":"400","own":"jicorred@co.ibm.com","ans":"SUCCESS to import order.","rc":"0","tl":"OK (Return Code = 0)","cus":"CAFAM"}],
+"ED1K912629" : [{"datetime":"2017-04-03 15:21:33","rn":"1491250128","sys":"EP1","req":"ED1K912629","clt":"300","own":"jicorred@co.ibm.com","ans":"SUCCESS to import order.","rc":"0","tl":"OK (Return Code = 0)","cus":"GRUPO_ARGOS"},{"datetime":"2017-04-03 15:04:51","rn":"1491249126","sys":"EQ1","req":"ED1K912629","clt":"210","own":"jicorred@co.ibm.com","ans":"SUCCESS to import order.","rc":"0","tl":"OK (Return Code = 0)","cus":"GRUPO_ARGOS"}]
+}
 
 
 
@@ -290,23 +295,23 @@ loadChart(intent, entities){
         break;
     case 'transactions_average_memory':
       this.processEntities(entities);
-      this.updateBar('memorychart');
+      this.updateBar2('memorychart');
       break;
     case 'transactions_private_average_memory':
       this.processEntities(entities);
-      this.updateBar('memorychart2');
+      this.updateBar2('memorychart2');
       break;
     case 'timeline_dumps':
       this.processEntities(entities);
       this.updateLine2('dumpchart3');
       break;
-    case 'must_dumps_programs':
+    case 'most_dumps_programs':
       this.processEntities(entities);
-      this.updateBar('dumpchart');
+      this.updateBar3('dumpchart');
       break;
     case 'errors_dumps':
       this.processEntities(entities);
-      this.updateBar('dumpchart2');
+      this.updateBar3('dumpchart2');
       break;
     case 'dynamicot_ot':
         if(this.checkOT()){
@@ -398,40 +403,44 @@ processEntities(entities){
   
   getOT():void {
 
-    this.loading = true;
+    //this.loading = true;
 
     //TODO
-    var link = "http://dynamicot.mybluemix.net/alfabeta/filter/?OT=" + this.ot;
+    //var link = "http://dynamicot.mybluemix.net/alfabeta/filter/?OT=" + this.ot;
     //var data = JSON.stringify({ot:this.ot});
         
-        this.http.get(link, { headers: this.contentHeader })
-        .subscribe(data => {
-         console.log(data.json());
+       // this.http.get(link, { headers: this.contentHeader })
+        //.subscribe(data => {
+        // console.log(data.json());
 
-         this.data = data.json();
+        // this.data = data.json();
+
+        var otts = this.ots[this.ot]
 
          this.loading = false;
 
          this.usingLocalConversation = false;
 
-         if(this.data.length > 0){
+         if(otts && otts.length > 0){
 
-           this.messages.push({text:'Here are the TOs you asked for', resp:false});   
+           this.messages.push({text:'Here are the TOs you asked for', resp:true});   
 
-          this.data.forEach(function(item){
-           this.messages.push({text:item.customer + ', ' + item.system + ', ' + item.clt + ', ' + item.rc + ', ' + item.tl , resp:false});               
-          });
+          //otts.forEach(function(item){
+            var item = otts[0];
+            console.log(item);
+           this.messages.push({text:item.cus + ', ' + item.sys + ', ' + item.clt + ', ' + item.rc + ', ' + item.tl , resp:true});               
+          //});
 
          
         }else{
           this.messages.push({text:"There is no information about that TO", resp:true});   
         }
 
-        }, error => {
-            this.messages.push({text:"There is no information about that TO", resp:true});  
-            this.loading = false;
-            this.usingLocalConversation = false;
-        });
+       // }, error => {
+       //     this.messages.push({text:"There is no information about that TO", resp:true});  
+       //     this.loading = false;
+       //     this.usingLocalConversation = false;
+       // });
         
 
   }
@@ -501,18 +510,59 @@ processEntities(entities){
           var ar2 = [];
 
           this.data.forEach(function(job){
-              ar1.push(job.duration);
-              ar2.push(job.job_name);
+              ar1.push(job.value);
+              ar2.push(job._id);
           });
 
           
           this.chartLabels = ar2;
-          setTimeout(()=>{this.chartData = [{data:ar1, label: "Total duration (ms)"}];}, 1000);
+          setTimeout(()=>{this.chartData = [{data:ar1, label: "Average Memory Usage (KB)"}];}, 1000);
          
         }else{
-            this.chartLabels = ["Job1", "Job2", "Job3"];
-            setTimeout(()=>{this.chartData = [{data:[10,10,10], label: "Total duration (ms)"}];}, 1000);
+            this.chartLabels = ["Tran1", "Tran2", "Tran3", "Tran4","Tran5","Tran6","Tran7","Tran8","Tran9","Tran10"];
+            setTimeout(()=>{this.chartData = [{data:[10,10,10], label: "Average Memory Usage (KB)"}];}, 1000);
         }
+
+        }, error => {
+            console.log("Oooops!");
+        });
+        
+
+  }
+
+  updateBar3(urll):void {
+    
+    var link = this.url + urll;
+    var data = JSON.stringify({start: this.start, end:this.end, client:this.queryCustomer, sids:this.selected});
+        
+        this.http.post(link, data, { headers: this.contentHeader })
+        .subscribe(data => {
+         console.log(data.json());
+
+         this.data = data.json().dumps;
+
+         this.loading = false;
+
+         this.hideCharts();
+         this.showBarChart = true;
+
+         if(this.data.length > 0){
+
+          var ar1 = [];
+          var ar2 = [];
+
+          this.data.forEach(function(job){
+              ar1.push(job.value);
+              ar2.push(job._id);
+          });
+
+          
+          this.chartLabels = ar2;
+          setTimeout(()=>{this.chartData = [{data:ar1, label: "Number of Dumps"}];}, 1000);
+         
+        }else{
+            this.chartLabels = ["Program1", "Program2", "Program3", "Program4","Program5"];
+            setTimeout(()=>{this.chartData = [{data:[10,10,10,10,10], label: "Number of Dumps"}];}, 1000);        }
 
         }, error => {
             console.log("Oooops!");
@@ -692,14 +742,14 @@ processEntities(entities){
 
          
          this.lineChartLabels = ar2;
-         setTimeout(()=>{this.lineChartData = [{data: ar1, label: "Cancelled jobs"}]
+         setTimeout(()=>{this.lineChartData = [{data: ar1, label: "Number of dumps"}]
          
       }, 1000);
 
          }else{
           this.lineChartLabels = ["Date1", "Date2", "Date3","Date4","Date5","Date6","Date7","Date8","Date9","Date10"];
          setTimeout(()=>{this.lineChartData = [
-    {data:[10,10,10,10,10,10,10,10,10,10], label: "Cancelled jobs"}
+    {data:[10,10,10,10,10,10,10,10,10,10], label: "Number of dumps"}
          ]}, 1000);
 
          this.bigNumber = 0;
@@ -709,6 +759,15 @@ processEntities(entities){
         });
         
       }
+
+        // display menu
+  displayMenu(event) {
+
+        let popover = this.popoverCtrl.create(PopoverPage);
+    popover.present({ 
+      ev: event
+    });
+}
 
 
 }
