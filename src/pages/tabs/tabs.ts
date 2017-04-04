@@ -4,6 +4,7 @@ import { HomePage } from '../home/home';
 import { AboutPage } from '../about/about';
 import { ContactPage } from '../contact/contact';
 import { ChatPage } from '../chat/chat';
+import { WorkloadPage } from '../workload/workload';
 //import { AvailabilityPage } from '../availability/availability';
 
 @Component({
@@ -17,6 +18,7 @@ export class TabsPage {
   tab3Root: any = ContactPage;
   //tab4Root: any = AvailabilityPage;
   tab5Root: any = ChatPage;
+  tab6Root: any = WorkloadPage;
 
   constructor() {
 

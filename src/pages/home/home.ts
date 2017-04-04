@@ -6,8 +6,6 @@ import { LoadingController } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 import * as moment from "moment";
 
-//import { BasePage } from '../base/base';
-
 import { PopoverPage } from '../popover/popover';
 
 import { Storage } from '@ionic/storage';
@@ -25,7 +23,6 @@ end: String = moment().subtract(1,"days").format("YYYY-MM-DDTHH:mm");
 contentHeader: Headers = new Headers({"Content-Type": "application/json"});
 data : Array<any> = [];
 logData : Array<any> = [];
-initial : String =  new Date().toISOString();
 
 color : String = 'rgb(255,255,255)';
 
@@ -50,9 +47,6 @@ selected = [];
 
   constructor(private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController,public loadingCtrl: LoadingController) {
     this.http = http;
-    
-    console.log(moment().subtract(1,"days").format("YYYY-MM-DDTHH:mm"));
-    console.log(this.start);
 
         this.local.get('user').then(token => {
       if(token){

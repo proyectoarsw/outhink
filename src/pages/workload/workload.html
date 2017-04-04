@@ -1,0 +1,113 @@
+<!--
+  Generated template for the Workload page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+<ion-row>
+  <ion-col style="text-align: left">
+    <button ion-button clear color="primary"  *ngIf="user.name" (click)="displayMenu($event)" ><b>{{user.name}}</b></button>
+
+  </ion-col>
+  <ion-col style="text-align: right">
+        <img src="assets/wa-logo2.svg" width="130px" style="margin-right:10px ;display:inline-block" height="50px;"/>
+
+</ion-col>
+</ion-row>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-grid>
+  <ion-row responsive-sm>
+    <ion-col width-30>
+
+      <ion-row>
+        <ion-col col-4>
+          <img [src]="client.url" width="160px" height="70px;"/>
+        </ion-col>
+        <ion-col>
+          <ion-list>
+
+
+  <ion-item style="max-width:120px" *ngFor="let si of selectedCheck; let i = index" >
+    <ion-label>{{si.sid}}</ion-label>
+    <ion-checkbox [(ngModel)]="selectedCheck[i].selected"></ion-checkbox>
+  </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+
+  <ion-item style="max-width:300px">
+  <ion-label>Start</ion-label>
+  <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="start" [max]="end"></ion-datetime>
+</ion-item>
+
+  <ion-item style="max-width:300px">
+  <ion-label>End</ion-label>
+  <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="end" [min]="start" [max]="initial"></ion-datetime>
+</ion-item>
+
+<button ion-button round (click)="updateChart()" [style.background-color]='color' *ngIf="!loading">Apply</button>
+
+              <ion-row>
+                <ion-col>
+<img src="assets/loading.gif" style="height:100px; margin: auto;
+  display: block;"  *ngIf="loading">
+                </ion-col>
+      </ion-row>
+
+    </ion-col>
+
+  </ion-row>
+
+  <ion-row>
+
+    <ion-col >
+        
+    <ion-grid style="min-width: 700px">
+
+  <ion-row style="color: white; text-align: center; word-wrap: break-word;word-break: break-all;" [style.background-color]='color'>
+    <ion-col >Task</ion-col>
+    <ion-col >Steps</ion-col>
+    <ion-col >Date</ion-col>
+    <ion-col >Time</ion-col>
+    <ion-col >Message</ion-col>
+    <ion-col >Type</ion-col>
+    <ion-col >Class</ion-col>
+  </ion-row >
+
+
+    <ion-scroll scrollX="true" scrollY="true" style="min-height:300px ">
+    <ion-row *ngFor="let d of logData" style="text-align: center; word-wrap: break-word; word-break: break-all;">
+    <ion-col width-10>{{d.message_no}}</ion-col>
+    <ion-col width-20>{{d.job}}</ion-col>
+    <ion-col width-20>{{d.date}}</ion-col>
+    <ion-col width-10>{{d.time}}</ion-col>
+    <ion-col width-20>{{d.message_text}}</ion-col>
+    <ion-col width-10>{{d.message_type}}</ion-col>
+    <ion-col width-10>{{d.message_class}}</ion-col>
+
+    </ion-row>
+
+    </ion-scroll>
+</ion-grid>
+        
+
+
+
+    </ion-col>
+
+  </ion-row>
+
+  </ion-grid>
+
+  
+
+</ion-content>

@@ -53,14 +53,14 @@ client:any = {};
       console.log(error);
     });
 
-    //this.getInfo();
+    this.getInfo();
 
   }
 
 
     getInfo():void {
     
-    var link = 'https://coemart.mybluemix.net/api/nutresa';
+    var link = 'https://coemart.mybluemix.net/api2/nutresa';
         
         this.http.get(link, { headers: this.contentHeader })
         .subscribe(data => {
