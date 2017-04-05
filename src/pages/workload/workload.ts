@@ -82,23 +82,16 @@ selected = [];
     this.loading = true;
     
     var link = this.url+'workloadchart';
-    var data = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
+    var da = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
         
-        this.http.post(link, data, { headers: this.contentHeader })
+        this.http.post(link, da, { headers: this.contentHeader })
         .subscribe(data => {
          console.log(data.json());
 
          this.loading = false;
 
-         var items = data.json().items;
+         data = data.json().items;
 
-         if(items.length > 0){
-
-
-
-         }else{
-
-        }
         }, error => {
             console.log("Oooops!");
         });

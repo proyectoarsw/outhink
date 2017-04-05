@@ -829,6 +829,118 @@ app.post("/jobchart4",cors(),function(request, response){
 });
 
 
+// Service to get Workload table
+app.post("/workloadchart",cors(),function(request, response){
+  console.log("Getting workloadchart");
+
+    mongodb.collection("workload").mapReduce(
+    function(){
+
+        emit(this.task_type, this);
+      },
+    function(key,values){
+
+        var steps = 0;
+        var time = 0;
+        var avg_proc_time = 0;
+        var cpu_time = 0;
+        var db_time = 0;
+        var time2 = 0;
+        var wait_time = 0;
+        var rol_in = 0;
+        var roll_wait_time = 0;
+        var load_gen_time = 0;
+        var lock_time = 0;
+        var CPIC_RFC = 0;
+        var time3 = 0;
+        var gui_time = 0;
+        var trips = 0;
+        var kb = 0;
+        var vmc_calls = 0;
+        var t_vmc_cpu = 0;
+        var t_vmcelaps = 0;
+        var avgvmc_cpu = 0;
+        var avgvmcelap = 0;
+
+        var item;
+
+        let len = values.length;
+
+      for(var i = 0; i < len; i ++){
+
+        item = values[i];
+
+        steps += item.steps;
+        time += item.time;
+        avg_proc_time += item.avg_proc_time;
+        cpu_time += item.cpu_time;
+        db_time += item.db_time;
+        time2 += item.time2;
+        wait_time += item.wait_time;
+        rol_in += item.rol_in;
+        roll_wait_time += item.roll_wait_time;
+        load_gen_time += item.load_gen_time;
+        lock_time += item.lock_time;
+        CPIC_RFC += item["CPIC/RFC"];
+        time3 += item.time3;
+        gui_time += item.gui_time;
+        trips += item.trips;
+        kb += item.kb;
+        vmc_calls += item.vmc_calls;
+        t_vmc_cpu += item.t_vmc_cpu;
+        t_vmcelaps += item.t_vmcelaps;
+        avgvmc_cpu += item.avgvmc_cpu;
+        avgvmcelap += item.avgvmcelap;
+      }
+
+      return {
+        steps:steps/len,
+        time:time/len,
+        avg_proc_time:avg_proc_time/len,
+        cpu_time:cpu_time/len,
+        db_time:db_time/len,
+        time2:time/len,
+        wait_time:wait_time/len,
+        rol_in:rol_in/len,
+        roll_wait_time:roll_wait_time/len,
+        load_gen_time:load_gen_time/len,
+        lock_time:lock_time/len,
+        "CPIC/RFC":CPIC_RFC/len,
+        time3:time/len,
+        gui_time:gui_time/len,
+        trips:trips/len,
+        kb:kb/len,
+        vmc_calls:vmc_calls/len,
+        t_vmc_cpu:t_vmc_cpu/len,
+        t_vmcelaps:t_vmcelaps/len,
+        avgvmcelap:avgvmcelap/len
+      };
+
+
+    },
+    {out:{replace: 'tempworkload'},
+  query:{date:{
+    "$gte": new Date(request.body.start),
+    "$lt": new Date(request.body.end)
+  },
+        customer:request.body.client,
+      sid:{"$in":request.body.sids}}},
+    function(err, collection){
+
+      collection.find().toArray(function(er, results) {
+
+        console.log("Results: "+ results.length);
+
+          response.send({success:true, items:results});
+    
+});
+
+    }
+  );
+
+});
+
+
 //////////////  Users POST Services
 
 
