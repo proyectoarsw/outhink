@@ -23,6 +23,7 @@ end: String = moment().subtract(1,"days").format("YYYY-MM-DDTHH:mm");
 contentHeader: Headers = new Headers({"Content-Type": "application/json"});
 data : Array<any> = [];
 logData : Array<any> = [];
+initial : String =  new Date().toISOString();
 
 color : String = 'rgb(255,255,255)';
 
