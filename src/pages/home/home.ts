@@ -251,8 +251,6 @@ selected = [];
     this.updatePie();
     this.updateDon();
     this.updateLine();
-
-    console.log(this.selected.toString());
   }
 
   updateBar():void {

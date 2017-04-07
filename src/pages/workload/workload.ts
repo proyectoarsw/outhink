@@ -80,17 +80,43 @@ selected = [];
   updateChart():void {
 
     this.loading = true;
+
+    // Check if there is something selected
+    this.selected = [];
+    var coun = 0;
+
+    this.selectedCheck.forEach(function(elem){
+      if(elem.selected){coun ++}
+    });
+
+// Add sids
+
+    if(coun > 0){
+
+          for(let elem of this.selectedCheck){
+      if(elem.selected){this.selected.push(elem.sid)}
+    };
+
+    }else{
+             for(let elem of this.selectedCheck){
+          elem.selected = true;
+          this.selected.push(elem.sid);
+    };
+  }
+  
+    this.start = moment(this.start).utc().startOf('day').format();
+    this.end = moment(this.end).utc().endOf('day').format();
     
     var link = this.url+'workloadchart';
     var da = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
         
         this.http.post(link, da, { headers: this.contentHeader })
-        .subscribe(data => {
-         console.log(data.json());
+        .subscribe(dat => {
+         console.log(dat.json());
 
          this.loading = false;
 
-         data = data.json().items;
+         this.data = dat.json().items;
 
         }, error => {
             console.log("Oooops!");

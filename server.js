@@ -864,7 +864,7 @@ app.post("/workloadchart",cors(),function(request, response){
 
         var item;
 
-        let len = values.length;
+        var len = values.length;
 
       for(var i = 0; i < len; i ++){
 
@@ -893,33 +893,34 @@ app.post("/workloadchart",cors(),function(request, response){
         avgvmcelap += item.avgvmcelap;
       }
 
-      return {
-        steps:steps/len,
-        time:time/len,
-        avg_proc_time:avg_proc_time/len,
-        cpu_time:cpu_time/len,
-        db_time:db_time/len,
-        time2:time/len,
-        wait_time:wait_time/len,
-        rol_in:rol_in/len,
-        roll_wait_time:roll_wait_time/len,
-        load_gen_time:load_gen_time/len,
-        lock_time:lock_time/len,
-        "CPIC/RFC":CPIC_RFC/len,
-        time3:time/len,
-        gui_time:gui_time/len,
-        trips:trips/len,
-        kb:kb/len,
-        vmc_calls:vmc_calls/len,
-        t_vmc_cpu:t_vmc_cpu/len,
-        t_vmcelaps:t_vmcelaps/len,
-        avgvmcelap:avgvmcelap/len
-      };
+      var rss =  {};
+        rss.steps = steps/len;
+        rss.time = time/len;
+        rss.avg_proc_time = avg_proc_time/len;
+        rss.cpu_time  = cpu_time/len;
+        rss.db_time = db_time/len;
+        rss.time2 = time/len;
+        rss.wait_time = wait_time/len;
+        rss.rol_in = rol_in/len;
+        rss.roll_wait_time = roll_wait_time/len;
+        rss.load_gen_time = load_gen_time/len;
+        rss.lock_time = lock_time/len;
+        rss.time3 = time/len;
+        rss.gui_time = gui_time/len;
+        rss.trips = trips/len;
+        rss.kb = kb/len;
+        rss.vmc_calls = vmc_calls/len;
+        rss.t_vmc_cpu = t_vmc_cpu/len;
+        rss.t_vmcelaps = t_vmcelaps/len;
+        rss.avgvmcelap = avgvmcelap/len;
+        rss["CPIC/RFC"] = CPIC_RFC/len;
+
+      return rss;
 
 
     },
     {out:{replace: 'tempworkload'},
-  query:{date:{
+  query:{datee:{
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
   },
@@ -927,6 +928,10 @@ app.post("/workloadchart",cors(),function(request, response){
       sid:{"$in":request.body.sids}}},
     function(err, collection){
 
+      if(err){
+        console.log(err);
+        response.send({success:false});
+      }else{
       collection.find().toArray(function(er, results) {
 
         console.log("Results: "+ results.length);
@@ -934,6 +939,7 @@ app.post("/workloadchart",cors(),function(request, response){
           response.send({success:true, items:results});
     
 });
+      }
 
     }
   );

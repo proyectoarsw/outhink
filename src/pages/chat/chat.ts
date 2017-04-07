@@ -361,17 +361,15 @@ processEntities(entities){
   if(date2){
     this.end = date2
   }
-  if(custt){
+  /*if(custt){
     this.queryCustomer = custt;
-  }
-  if(sidd.length > 0){
+  }*/
+  /*if(sidd.length > 0){
     this.selected = sidd;
-  }
+  }*/
 
     this.start = moment(this.start).utc().startOf('day').format();
     this.end = moment(this.end).utc().endOf('day').format();
-
-    console.log("Dates : "+ this.start + " - "+ this.end);
 
 
 }
