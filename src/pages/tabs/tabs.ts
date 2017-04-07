@@ -27,8 +27,19 @@ export class TabsPage {
   tab6Root: any = WorkloadPage;
 
   showExperience = false;
+  showTransactions = false;
 
   constructor() {
+
+                this.local.get('client').then(token => {
+      if(token){
+        if(token.name == 'Nutresa'){
+          this.showTransactions = true;
+        }
+      }
+    }).catch(error => {
+      console.log(error);
+    });
 
             this.local.get('user').then(token => {
       if(token){
@@ -37,10 +48,13 @@ export class TabsPage {
         if(token.username == 'mehernan@co.ibm.com' || token.username == 'jarincon@co.ibm.com' || token.username == 'demo@co.ibm.com'){
           this.showExperience = true;
         }
+
       }
     }).catch(error => {
       console.log(error);
     });
+
+
 
   }
 }
