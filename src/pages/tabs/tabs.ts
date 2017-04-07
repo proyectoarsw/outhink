@@ -34,7 +34,7 @@ export class TabsPage {
       if(token){
         this.user = token;
 
-        if(token.username == 'mehernan@co.ibm.com' || token.username == 'jarincon@co.ibm.com' || token.username == 'demo@demo.com'){
+        if(token.username == 'mehernan@co.ibm.com' || token.username == 'jarincon@co.ibm.com' || token.username == 'demo@co.ibm.com'){
           this.showExperience = true;
         }
       }
