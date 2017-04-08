@@ -7,16 +7,16 @@
 <ion-header>
 
   <ion-navbar>
-<ion-row>
-  <ion-col style="text-align: left">
-    <button ion-button clear color="primary"  *ngIf="user.name" (click)="displayMenu($event)" ><b>{{user.name}}</b></button>
+    <ion-row>
+      <ion-col style="text-align: left">
+        <button ion-button clear color="primary" *ngIf="user.name" (click)="displayMenu($event)"><b>{{user.name}}</b></button>
 
-  </ion-col>
-  <ion-col style="text-align: right">
-        <img src="assets/wa-logo2.svg" width="130px" style="margin-right:10px ;display:inline-block" height="50px;"/>
+      </ion-col>
+      <ion-col style="text-align: right">
+        <img src="assets/wa-logo2.svg" width="130px" style="margin-right:10px ;display:inline-block" height="50px;" />
 
-</ion-col>
-</ion-row>
+      </ion-col>
+    </ion-row>
   </ion-navbar>
 
 </ion-header>
@@ -25,120 +25,109 @@
 <ion-content padding>
 
   <ion-grid>
-  <ion-row responsive-sm>
-    <ion-col width-30>
+    <ion-row responsive-sm>
+      <ion-col width-30>
 
-      <ion-row>
-        <ion-col col-4>
-          <img [src]="client.url" width="160px" height="70px;"/>
-        </ion-col>
-        <ion-col>
-          <ion-list>
-
-
-  <ion-item style="max-width:120px" *ngFor="let si of selectedCheck; let i = index" >
-    <ion-label>{{si.sid}}</ion-label>
-    <ion-checkbox [(ngModel)]="selectedCheck[i].selected"></ion-checkbox>
-  </ion-item>
-          </ion-list>
-        </ion-col>
-      </ion-row>
-
-  <ion-item style="max-width:300px">
-  <ion-label>Start</ion-label>
-  <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="start" [max]="end"></ion-datetime>
-</ion-item>
-
-  <ion-item style="max-width:300px">
-  <ion-label>End</ion-label>
-  <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="end" [min]="start" [max]="initial"></ion-datetime>
-</ion-item>
-
-<button ion-button round (click)="updateChart()" [style.background-color]='color' *ngIf="!loading">Apply</button>
-
-              <ion-row>
-                <ion-col>
-<img src="assets/loading.gif" style="height:100px; margin: auto;
-  display: block;"  *ngIf="loading">
-                </ion-col>
-      </ion-row>
-
-    </ion-col>
-
-  </ion-row>
-
-  <ion-row>
-
-    <ion-col >
-        
-    <ion-grid style="min-width: 700px">
-
-  <ion-row style="color: white; text-align: center; word-wrap: break-word;word-break: break-all;" [style.background-color]='color'>
-    <ion-col >Task</ion-col>
-    <ion-col >Steps</ion-col>
-    <ion-col >Time</ion-col>
-    <ion-col >AvgProcTime</ion-col>
-    <ion-col >CPUTime</ion-col>
-    <ion-col >DBTime</ion-col>
-    <ion-col >Time2</ion-col>
-    <ion-col >WaitTime</ion-col>
-    <ion-col >RollIn</ion-col>
-    <ion-col >RollWaitTime</ion-col>
-    <ion-col >LoadGenTime</ion-col>
-    <ion-col >LockTime</ion-col>
-    <ion-col >CPIC/RFC</ion-col>
-    <ion-col >Time3</ion-col>
-    <ion-col >GuiTime</ion-col>
-    <ion-col >Trips</ion-col>
-    <ion-col >KB</ion-col>
-    <ion-col >VMCCalls</ion-col>
-    <ion-col >VMCCPUTime</ion-col>
-    <ion-col >VMCElapsTime</ion-col>
-    <ion-col >AvgVMCCPU</ion-col>
-    <ion-col >AvgVMCElap</ion-col>
-
-  </ion-row >
+        <ion-row>
+          <ion-col col-4>
+            <img [src]="client.url" width="160px" height="70px;" />
+          </ion-col>
+          <ion-col>
+            <ion-list>
 
 
-    <ion-scroll scrollX="true" scrollY="true" style="min-height:300px ">
-    <ion-row *ngFor="let d of data" style="text-align: center; word-wrap: break-word; word-break: break-all;">
-    <ion-col >{{d._id}}</ion-col>
-    <ion-col >{{d.value.steps}}</ion-col>
-    <ion-col >{{d.value.time}}</ion-col>
-    <ion-col >{{d.value.avg_proc_time}}</ion-col>
-    <ion-col >{{d.value.cpu_time}}</ion-col>
-    <ion-col >{{d.value.db_time}}</ion-col>
-    <ion-col>{{d.value.time2}}</ion-col>
-    <ion-col >{{d.value.wait_time}}</ion-col>
-    <ion-col >{{d.value.rol_in}}</ion-col>
-    <ion-col >{{d.value.roll_wait_time}}</ion-col>
-    <ion-col >{{d.value.load_gen_time}}</ion-col>
-    <ion-col >{{d.value.lock_time}}</ion-col>
-    <ion-col >{{d.value["CPIC/RFC"]}}</ion-col>
-    <ion-col>{{d.value.time3}}</ion-col>
-    <ion-col >{{d.value.gui_time}}</ion-col>
-    <ion-col >{{d.value.trips}}</ion-col>
-    <ion-col >{{d.value.kb}}</ion-col>
-    <ion-col >{{d.value.vmc_calls}}</ion-col>
-    <ion-col >{{d.value.t_vmc_cpu}}</ion-col>
-    <ion-col >{{d.value.t_vmcelaps}}</ion-col>
-    <ion-col>{{d.value.avgvmc_cpu}}</ion-col>
-    <ion-col>{{d.value.avgvmcelap}}</ion-col>
+              <ion-item style="max-width:120px" *ngFor="let si of selectedCheck; let i = index">
+                <ion-label>{{si.sid}}</ion-label>
+                <ion-checkbox [(ngModel)]="selectedCheck[i].selected"></ion-checkbox>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+
+        <ion-item style="max-width:300px">
+          <ion-label>Start</ion-label>
+          <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="start" [max]="end"></ion-datetime>
+        </ion-item>
+
+        <ion-item style="max-width:300px">
+          <ion-label>End</ion-label>
+          <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="end" [min]="start" [max]="initial"></ion-datetime>
+        </ion-item>
+
+        <button ion-button round (click)="updateChart()" [style.background-color]='color' *ngIf="!loading">Apply</button>
+
+        <ion-row>
+          <ion-col>
+            <img src="assets/loading.gif" style="height:100px; margin: auto;
+  display: block;" *ngIf="loading">
+          </ion-col>
+        </ion-row>
+
+      </ion-col>
 
     </ion-row>
 
-    </ion-scroll>
-</ion-grid>
-        
-
-
-
-    </ion-col>
-
-  </ion-row>
-
   </ion-grid>
 
-  
+<div style="max-width:1300px; overflow-x:scroll">
+    <ion-grid style="min-width: 2000px">
 
+      <ion-row style="color: white; text-align: center; word-wrap: break-word;" [style.background-color]='color'>
+        <ion-col>Task Type</ion-col>
+        <ion-col>Dialog Steps</ion-col>
+        <ion-col>Avg Response Time</ion-col>
+        <ion-col>Avg Processing Time</ion-col>
+        <ion-col>Avg CPU Time</ion-col>
+        <ion-col>Avg DB Time</ion-col>
+        <ion-col>Avg Time/DB Proc Cal</ion-col>
+        <ion-col>Avg Wait Time</ion-col>
+        <ion-col>Avg Roll in Time</ion-col>
+        <ion-col>Roll Wait Time</ion-col>
+        <ion-col>Avg Load + Gen Time</ion-col>
+        <ion-col>Avg Lock Time</ion-col>
+        <ion-col>Avg CPIC/RFC Time</ion-col>
+        <ion-col>avg FE Network Time</ion-col>
+        <ion-col>Avg GuiTime/Dialog Step</ion-col>
+        <ion-col>Roundtrips</ion-col>
+        <ion-col>Requested Data (KB)</ion-col>
+        <ion-col>VMC Calls</ion-col>
+        <ion-col>Total VMC CPU Time</ion-col>
+        <ion-col>Total VMC Elapsed Time</ion-col>
+        <ion-col>Avg VMC CPU Time</ion-col>
+        <ion-col>Avg VMC Elapsed Time</ion-col>
+
+      </ion-row>
+
+
+      <ion-scroll scrollY="true" style="min-height:300px">
+        <ion-row *ngFor="let d of data" style="text-align: center; word-wrap: break-word; word-break: break-all;">
+          <ion-col>{{d._id}}</ion-col>
+          <ion-col>{{d.value.steps}}</ion-col>
+          <ion-col>{{d.value.time}}</ion-col>
+          <ion-col>{{d.value.avg_proc_time}}</ion-col>
+          <ion-col>{{d.value.cpu_time}}</ion-col>
+          <ion-col>{{d.value.db_time}}</ion-col>
+          <ion-col>{{d.value.time2}}</ion-col>
+          <ion-col>{{d.value.wait_time}}</ion-col>
+          <ion-col>{{d.value.rol_in}}</ion-col>
+          <ion-col>{{d.value.roll_wait_time}}</ion-col>
+          <ion-col>{{d.value.load_gen_time}}</ion-col>
+          <ion-col>{{d.value.lock_time}}</ion-col>
+          <ion-col>{{d.value["CPIC/RFC"]}}</ion-col>
+          <ion-col>{{d.value.time3}}</ion-col>
+          <ion-col>{{d.value.gui_time}}</ion-col>
+          <ion-col>{{d.value.trips}}</ion-col>
+          <ion-col>{{d.value.kb}}</ion-col>
+          <ion-col>{{d.value.vmc_calls}}</ion-col>
+          <ion-col>{{d.value.t_vmc_cpu}}</ion-col>
+          <ion-col>{{d.value.t_vmcelaps}}</ion-col>
+          <ion-col>{{d.value.avgvmc_cpu}}</ion-col>
+          <ion-col>{{d.value.avgvmcelap}}</ion-col>
+
+        </ion-row>
+
+      </ion-scroll>
+    </ion-grid>
+
+</div>
 </ion-content>
