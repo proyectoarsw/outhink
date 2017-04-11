@@ -836,7 +836,7 @@ app.post("/workloadchart",cors(),function(request, response){
     mongodb.collection("workload").mapReduce(
     function(){
 
-        emit(this.task_type, this);
+        emit(this.task_type, {count:1, item:this});
       },
     function(key,values){
 
@@ -863,12 +863,15 @@ app.post("/workloadchart",cors(),function(request, response){
         var avgvmcelap = 0;
 
         var item;
+        var val;
 
-        var len = values.length;
+        var len = 0;
 
-      for(var i = 0; i < len; i ++){
+      for(var i = 0; i < values.length; i ++){
 
-        item = values[i];
+        val = values[i];
+        item = val.item;
+        
 
         steps += item.steps;
         time += item.time;
@@ -891,29 +894,31 @@ app.post("/workloadchart",cors(),function(request, response){
         t_vmcelaps += item.t_vmcelaps;
         avgvmc_cpu += item.avgvmc_cpu;
         avgvmcelap += item.avgvmcelap;
+
+        len += val.count;
       }
 
       var rss =  {};
-        rss.steps = steps/len;
-        rss.time = time/len;
-        rss.avg_proc_time = avg_proc_time/len;
-        rss.cpu_time  = cpu_time/len;
-        rss.db_time = db_time/len;
-        rss.time2 = time/len;
-        rss.wait_time = wait_time/len;
-        rss.rol_in = rol_in/len;
-        rss.roll_wait_time = roll_wait_time/len;
-        rss.load_gen_time = load_gen_time/len;
-        rss.lock_time = lock_time/len;
-        rss.time3 = time/len;
-        rss.gui_time = gui_time/len;
-        rss.trips = trips/len;
-        rss.kb = kb/len;
-        rss.vmc_calls = vmc_calls/len;
-        rss.t_vmc_cpu = t_vmc_cpu/len;
-        rss.t_vmcelaps = t_vmcelaps/len;
-        rss.avgvmcelap = avgvmcelap/len;
-        rss["CPIC/RFC"] = CPIC_RFC/len;
+        rss.steps = (steps/len);
+        rss.time = (time/len);
+        rss.avg_proc_time = (avg_proc_time/len);
+        rss.cpu_time  = (cpu_time/len);
+        rss.db_time = (db_time/len);
+        rss.time2 = (time/len);
+        rss.wait_time = (wait_time/len);
+        rss.rol_in = (rol_in/len);
+        rss.roll_wait_time = (roll_wait_time/len);
+        rss.load_gen_time = (load_gen_time/len);
+        rss.lock_time = (lock_time/len);
+        rss.time3 = (time/len);
+        rss.gui_time = (gui_time/len);
+        rss.trips = (trips/len);
+        rss.kb = (kb/len);
+        rss.vmc_calls = (vmc_calls/len);
+        rss.t_vmc_cpu = (t_vmc_cpu/len);
+        rss.t_vmcelaps = (t_vmcelaps/len);
+        rss.avgvmcelap = (avgvmcelap/len);
+        rss["CPIC/RFC"] = (CPIC_RFC/len);
 
       return rss;
 
