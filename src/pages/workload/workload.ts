@@ -77,6 +77,33 @@ selected = [];
 
   }
 
+  // Line chart
+
+  public lineChartOptions:any={
+    responsive: true,
+              tooltips : {
+            displayColors:false
+          }
+  };
+
+  public lineChartLabels:string[] = ["Date1", "Date2", "Date3","Date4","Date5","Date6","Date7","Date8","Date9","Date10"];
+  public lineChartType:string = "line";
+  public lineChartLegend:boolean = false;
+  public lineChartData:any[] = [
+    {data:[10,10,10,10,10,10,10,10,10,10], label: "Value"}
+  ];
+
+  public lineChartColors:Array<any> = [
+    { 
+      backgroundColor: 'rgba('+this.r+','+this.g+','+this.b+',0.2)',
+      borderColor: 'rgba('+this.r+','+this.g+','+this.b+',1)',
+      pointBackgroundColor: 'rgba('+this.r+','+this.g+','+this.b+',1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba('+this.r+','+this.g+','+this.b+',0.8)'
+    }
+  ];
+
   updateChart():void {
 
     this.loading = true;

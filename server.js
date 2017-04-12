@@ -952,6 +952,38 @@ app.post("/workloadchart",cors(),function(request, response){
 
 });
 
+// Service to get workload value organized by date
+app.post("/workloadchart2",cors(),function(request, response){
+  console.log("Getting workloadchart");
+
+    mongodb.collection("workload").mapReduce(
+    function(){
+
+        emit(this.date, this[request.body.item]);
+      },
+    function(key,values){return Array.sum(values);},
+    {out:{replace: 'tempworkload2'},
+  query:{datee:{
+    "$gte": new Date(request.body.start),
+    "$lt": new Date(request.body.end)
+  },
+        customer:request.body.client,
+      sid:{"$in":request.body.sids}}},
+    function(err, collection){
+
+      collection.find().toArray(function(er, results) {
+
+        console.log("Results: "+ results.length);
+
+          response.send({success:true, items:results});
+    
+});
+
+    }
+  );
+
+});
+
 
 //////////////  Users POST Services
 

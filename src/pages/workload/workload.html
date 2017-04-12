@@ -130,4 +130,23 @@
     </ion-grid>
 
 </div>
+
+    <div style="display: block;">
+
+    <canvas baseChart width="200" height="100" style="max-width:1500px;"
+                [datasets]="lineChartData"
+                [labels]="lineChartLabels"
+                [options]="lineChartOptions"
+                [legend]="lineChartLegend"
+                [colors]="[ { 
+      backgroundColor: 'rgba('+r+','+g+','+b+',0.2)',
+      borderColor: 'rgba('+r+','+g+','+b+',1)',
+      pointBackgroundColor: 'rgba('+r+','+g+','+b+',1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba('+r+','+g+','+b+',0.8)'
+    }]"
+                [chartType]="lineChartType"></canvas>
+    </div>
+
 </ion-content>
