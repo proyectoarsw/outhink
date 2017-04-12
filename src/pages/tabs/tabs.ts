@@ -33,7 +33,7 @@ export class TabsPage {
 
                 this.local.get('client').then(token => {
       if(token){
-        if(token.name == 'Nutresa'){
+        if(token.name == 'Nutresa' || token.name == 'Sura'){
           this.showTransactions = true;
         }
       }
@@ -45,7 +45,7 @@ export class TabsPage {
       if(token){
         this.user = token;
 
-        if(token.username == 'mehernan@co.ibm.com' || token.username == 'jarincon@co.ibm.com' || token.username == 'demo@co.ibm.com'){
+        if(token.username == 'mehernan@co.ibm.com' || token.username == 'jarincon@co.ibm.com' || token.username == 'demo@co.ibm.com' || token.username == 'rvargass@co.ibm.com'){
           this.showExperience = true;
         }
 

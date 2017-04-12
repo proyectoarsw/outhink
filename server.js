@@ -917,6 +917,7 @@ app.post("/workloadchart",cors(),function(request, response){
         rss.vmc_calls = (vmc_calls/len);
         rss.t_vmc_cpu = (t_vmc_cpu/len);
         rss.t_vmcelaps = (t_vmcelaps/len);
+        rss.avgvmc_cpu = (avgvmc_cpu/len)
         rss.avgvmcelap = (avgvmcelap/len);
         rss["CPIC/RFC"] = (CPIC_RFC/len);
 

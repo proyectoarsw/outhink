@@ -69,7 +69,7 @@
 
   </ion-grid>
 
-<div style="max-width:1300px; overflow-x:scroll">
+<div style="max-width:1600px; overflow-x:scroll">
     <ion-grid style="min-width: 2000px">
 
       <ion-row style="color: white; text-align: center; word-wrap: break-word;" [style.background-color]='color'>
@@ -99,8 +99,8 @@
       </ion-row>
 
 
-      <ion-scroll scrollY="true" style="min-height:300px">
-        <ion-row *ngFor="let d of data" style="text-align: center; word-wrap: break-word; word-break: break-all;">
+      <div style="overflow-y:scroll ; max-height:300px; margin-right:-20px">
+        <ion-row *ngFor="let d of data" style="text-align: center; word-wrap: break-word; word-break: break-all">
           <ion-col>{{d._id}}</ion-col>
           <ion-col>{{d.value.steps}}</ion-col>
           <ion-col>{{d.value.time}}</ion-col>
@@ -126,7 +126,7 @@
 
         </ion-row>
 
-      </ion-scroll>
+      </div>
     </ion-grid>
 
 </div>
