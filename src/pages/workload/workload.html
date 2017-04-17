@@ -65,6 +65,28 @@
 
       </ion-col>
 
+      <ion-col>
+
+            <div style="display: block;">
+
+    <canvas baseChart width="200" height="100" style="max-width:600px;"
+                [datasets]="lineChartData"
+                [labels]="lineChartLabels"
+                [options]="lineChartOptions"
+                [legend]="lineChartLegend"
+                [colors]="[ { 
+      backgroundColor: 'rgba('+r+','+g+','+b+',0.2)',
+      borderColor: 'rgba('+r+','+g+','+b+',1)',
+      pointBackgroundColor: 'rgba('+r+','+g+','+b+',1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba('+r+','+g+','+b+',0.8)'
+    }]"
+                [chartType]="lineChartType"></canvas>
+    </div>
+
+      </ion-col>
+
     </ion-row>
 
   </ion-grid>
@@ -99,30 +121,30 @@
       </ion-row>
 
 
-      <div style="overflow-y:scroll ; max-height:300px; margin-right:-20px">
+      <div style="overflow-y:scroll ; max-height:235px; margin-right:-20px">
         <ion-row *ngFor="let d of data" style="text-align: center; word-wrap: break-word; word-break: break-all">
           <ion-col>{{d._id}}</ion-col>
-          <ion-col>{{d.value.steps}}</ion-col>
-          <ion-col>{{d.value.time}}</ion-col>
-          <ion-col>{{d.value.avg_proc_time}}</ion-col>
-          <ion-col>{{d.value.cpu_time}}</ion-col>
-          <ion-col>{{d.value.db_time}}</ion-col>
-          <ion-col>{{d.value.time2}}</ion-col>
-          <ion-col>{{d.value.wait_time}}</ion-col>
-          <ion-col>{{d.value.rol_in}}</ion-col>
-          <ion-col>{{d.value.roll_wait_time}}</ion-col>
-          <ion-col>{{d.value.load_gen_time}}</ion-col>
-          <ion-col>{{d.value.lock_time}}</ion-col>
-          <ion-col>{{d.value["CPIC/RFC"]}}</ion-col>
-          <ion-col>{{d.value.time3}}</ion-col>
-          <ion-col>{{d.value.gui_time}}</ion-col>
-          <ion-col>{{d.value.trips}}</ion-col>
-          <ion-col>{{d.value.kb}}</ion-col>
-          <ion-col>{{d.value.vmc_calls}}</ion-col>
-          <ion-col>{{d.value.t_vmc_cpu}}</ion-col>
-          <ion-col>{{d.value.t_vmcelaps}}</ion-col>
-          <ion-col>{{d.value.avgvmc_cpu}}</ion-col>
-          <ion-col>{{d.value.avgvmcelap}}</ion-col>
+          <ion-col (click)="updateLineChart('steps',d._id)">{{d.value.steps}}</ion-col>
+          <ion-col (click)="updateLineChart('time',d._id)">{{d.value.time}}</ion-col>
+          <ion-col (click)="updateLineChart('avg_proc_time',d._id)">{{d.value.avg_proc_time}}</ion-col>
+          <ion-col (click)="updateLineChart('cpu_time',d._id)">{{d.value.cpu_time}}</ion-col>
+          <ion-col (click)="updateLineChart('db_time',d._id)">{{d.value.db_time}}</ion-col>
+          <ion-col (click)="updateLineChart('time2',d._id)">{{d.value.time2}}</ion-col>
+          <ion-col (click)="updateLineChart('wait_time',d._id)">{{d.value.wait_time}}</ion-col>
+          <ion-col (click)="updateLineChart('rol_in',d._id)">{{d.value.rol_in}}</ion-col>
+          <ion-col (click)="updateLineChart('roll_wait_time',d._id)">{{d.value.roll_wait_time}}</ion-col>
+          <ion-col (click)="updateLineChart('load_gen_time',d._id)">{{d.value.load_gen_time}}</ion-col>
+          <ion-col (click)="updateLineChart('lock_time',d._id)">{{d.value.lock_time}}</ion-col>
+          <ion-col (click)="updateLineChart('CPIC/RFC',d._id)">{{d.value["CPIC/RFC"]}}</ion-col>
+          <ion-col (click)="updateLineChart('time3',d._id)">{{d.value.time3}}</ion-col>
+          <ion-col (click)="updateLineChart('gui_time',d._id)">{{d.value.gui_time}}</ion-col>
+          <ion-col (click)="updateLineChart('trips',d._id)">{{d.value.trips}}</ion-col>
+          <ion-col (click)="updateLineChart('kb',d._id)">{{d.value.kb}}</ion-col>
+          <ion-col (click)="updateLineChart('vmc_calls',d._id)">{{d.value.vmc_calls}}</ion-col>
+          <ion-col (click)="updateLineChart('vmc_cpu',d._id)">{{d.value.t_vmc_cpu}}</ion-col>
+          <ion-col (click)="updateLineChart('t_vmcelaps',d._id)">{{d.value.t_vmcelaps}}</ion-col>
+          <ion-col (click)="updateLineChart('avgvmc_cpu',d._id)">{{d.value.avgvmc_cpu}}</ion-col>
+          <ion-col (click)="updateLineChart('avgvmcelap',d._id)">{{d.value.avgvmcelap}}</ion-col>
 
         </ion-row>
 
@@ -131,22 +153,6 @@
 
 </div>
 
-    <div style="display: block;">
 
-    <canvas baseChart width="200" height="100" style="max-width:1500px;"
-                [datasets]="lineChartData"
-                [labels]="lineChartLabels"
-                [options]="lineChartOptions"
-                [legend]="lineChartLegend"
-                [colors]="[ { 
-      backgroundColor: 'rgba('+r+','+g+','+b+',0.2)',
-      borderColor: 'rgba('+r+','+g+','+b+',1)',
-      pointBackgroundColor: 'rgba('+r+','+g+','+b+',1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba('+r+','+g+','+b+',0.8)'
-    }]"
-                [chartType]="lineChartType"></canvas>
-    </div>
 
 </ion-content>

@@ -959,17 +959,23 @@ app.post("/workloadchart2",cors(),function(request, response){
     mongodb.collection("workload").mapReduce(
     function(){
 
-        emit(this.date, this[request.body.item]);
+        emit(this.datee, this[it]);
       },
-    function(key,values){return Array.sum(values);},
+    function(key,values){return Array.avg(values);},
     {out:{replace: 'tempworkload2'},
   query:{datee:{
     "$gte": new Date(request.body.start),
     "$lt": new Date(request.body.end)
   },
         customer:request.body.client,
-      sid:{"$in":request.body.sids}}},
+      sid:{"$in":request.body.sids},
+    task_type:request.body.task},
+    scope: {it: request.body.item}},
     function(err, collection){
+
+      if(err){
+        response.send({success:false, error:err.toString()});
+      }else{
 
       collection.find().toArray(function(er, results) {
 
@@ -978,7 +984,7 @@ app.post("/workloadchart2",cors(),function(request, response){
           response.send({success:true, items:results});
     
 });
-
+      }
     }
   );
 

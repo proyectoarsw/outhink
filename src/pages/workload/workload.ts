@@ -23,7 +23,9 @@ export class WorkloadPage {
 
 http: Http;
 start: String = moment().subtract(1,"days").format("YYYY-MM-DDTHH:mm");
+lastStart: String = moment().subtract(1,"days").format("YYYY-MM-DDTHH:mm");
 end: String = moment().subtract(1,"days").format("YYYY-MM-DDTHH:mm");
+lastEnd: String = moment().subtract(1,"days").format("YYYY-MM-DDTHH:mm");
 contentHeader: Headers = new Headers({"Content-Type": "application/json"});
 data : Array<any> = [];
 
@@ -44,6 +46,8 @@ client:any = {};
 
 selectedCheck =[];
 selected = [];
+
+lastSelected = [];
 
   constructor(private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController,public loadingCtrl: LoadingController) {
     this.http = http;
@@ -130,9 +134,14 @@ selected = [];
           this.selected.push(elem.sid);
     };
   }
+
+    this.lastSelected = this.selected.slice();
   
+
     this.start = moment(this.start).utc().startOf('day').format();
+    this.lastStart = moment(this.start).utc().startOf('day').format();
     this.end = moment(this.end).utc().endOf('day').format();
+    this.lastEnd = moment(this.end).utc().startOf('day').format();
     
     var link = this.url+'workloadchart';
     var da = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
@@ -176,6 +185,51 @@ selected = [];
          this.loading = false;
 
          this.data = datt;
+
+        }, error => {
+            console.log("Oooops!");
+        });
+
+  }
+
+  updateLineChart(item, task):void {
+
+    console.log("item: "+ item+", task: "+task);
+
+    this.loading = true;
+    
+    var link = this.url+'workloadchart2';
+    var da = JSON.stringify({start: this.lastStart, end:this.lastEnd, client:this.client.name, sids:this.lastSelected, item:item, task:task});
+        
+        this.http.post(link, da, { headers: this.contentHeader })
+        .subscribe(dat => {
+        console.log(dat.json());
+
+         var items = dat.json().items;
+
+         this.loading = false;
+
+         if(items.length > 0){
+
+         var ar1 = [];
+         var ar2 = [];
+
+         items.forEach(function(item){
+            ar1.push(Number(item.value).toLocaleString('en-IN', { maximumFractionDigits: 1 }));
+            ar2.push(moment(item._id).add(1,"day").format("D/M/YYYY"));
+         });
+
+         
+         this.lineChartLabels = ar2;
+         setTimeout(()=>{this.lineChartData = [{data: ar1, label: ""}]
+      }, 1000);
+
+         }else{
+          this.lineChartLabels = ["Date1", "Date2", "Date3","Date4","Date5","Date6","Date7","Date8","Date9","Date10"];
+         setTimeout(()=>{this.lineChartData = [
+    {data:[10,10,10,10,10,10,10,10,10,10], label: ""}
+         ]}, 1000);
+        }
 
         }, error => {
             console.log("Oooops!");
