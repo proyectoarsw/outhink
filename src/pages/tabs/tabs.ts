@@ -28,6 +28,7 @@ export class TabsPage {
 
   showExperience = false;
   showTransactions = false;
+  showWorkload = false;
 
   constructor() {
 
@@ -47,6 +48,11 @@ export class TabsPage {
 
         if(token.username == 'mehernan@co.ibm.com' || token.username == 'jarincon@co.ibm.com' || token.username == 'demo@co.ibm.com' || token.username == 'rvargass@co.ibm.com'){
           this.showExperience = true;
+          this.showWorkload = true;
+        }
+
+        if(token.username == 'mehernan@co.ibm.com'){
+          this.showWorkload = true;
         }
 
       }

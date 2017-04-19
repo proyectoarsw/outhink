@@ -931,7 +931,8 @@ app.post("/workloadchart",cors(),function(request, response){
     "$lt": new Date(request.body.end)
   },
         customer:request.body.client,
-      sid:{"$in":request.body.sids}}},
+      sid:{"$in":request.body.sids},
+      instance:{"$regex":request.body.instance}}},
     function(err, collection){
 
       if(err){
@@ -942,7 +943,7 @@ app.post("/workloadchart",cors(),function(request, response){
 
         console.log("Results: "+ results.length);
 
-          response.send({success:true, items:results});
+        response.send({success:true, items:results});
     
 });
       }
@@ -969,9 +970,10 @@ app.post("/workloadchart2",cors(),function(request, response){
   },
         customer:request.body.client,
       sid:{"$in":request.body.sids},
-    task_type:request.body.task},
-    scope: {it: request.body.item}},
-    function(err, collection){
+      task_type:request.body.task,
+      instance:{"$regex":request.body.instance}},
+      scope: {it: request.body.item}},
+      function(err, collection){
 
       if(err){
         response.send({success:false, error:err.toString()});
@@ -987,6 +989,26 @@ app.post("/workloadchart2",cors(),function(request, response){
       }
     }
   );
+
+});
+
+// Service to get workload servers
+app.post("/workloadchart3",cors(),function(request, response){
+  console.log("Getting workloadchart");
+
+  mongodb.collection('workload').distinct('instance', {customer:request.body.client, sid:{"$in":request.body.sids}},
+  function(er, results) {
+
+    if(er){
+      response.send({success:false, error:er.toString()});
+    }else{
+      response.send({success:true, items:results});
+    }
+
+  });
+
+
+
 
 });
 

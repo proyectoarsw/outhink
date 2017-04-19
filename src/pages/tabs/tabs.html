@@ -1,6 +1,6 @@
 <ion-tabs>
   <!--<ion-tab [root]="tab4Root" tabTitle="Availability" tabIcon="speedometer"></ion-tab>-->
-  <ion-tab [root]='tab6Root' tabTitle='Workload' tabIcon='analytics'></ion-tab>
+  <ion-tab [root]='tab6Root' tabTitle='Workload' tabIcon='analytics' *ngIf="showWorkload"></ion-tab>
   <ion-tab [root]='tab5Root' tabTitle='Experience' tabIcon='chatbubbles' *ngIf="showExperience"></ion-tab>
   <ion-tab [root]='tab1Root' tabTitle='Jobs' tabIcon='clock'></ion-tab>
   <ion-tab [root]='tab2Root' tabTitle='Transactions' tabIcon='trending-up'  *ngIf="showTransactions"></ion-tab>

@@ -44,15 +44,23 @@
           </ion-col>
         </ion-row>
 
-        <ion-item style="max-width:300px">
+        <ion-item style="max-width:450px">
           <ion-label>Start</ion-label>
           <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="start" [max]="end"></ion-datetime>
         </ion-item>
 
-        <ion-item style="max-width:300px">
+        <ion-item style="max-width:450px">
           <ion-label>End</ion-label>
           <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="end" [min]="start" [max]="initial"></ion-datetime>
         </ion-item>
+
+        <ion-item style="max-width:450px">
+        <ion-label>Server</ion-label>
+        <ion-select [(ngModel)]="server">
+          <ion-option value="^.*" >ALL</ion-option>
+          <ion-option *ngFor="let s of servers" [value]="s" >{{s}}</ion-option>
+        </ion-select>
+      </ion-item>
 
         <button ion-button round (click)="updateChart()" [style.background-color]='color' *ngIf="!loading">Apply</button>
 

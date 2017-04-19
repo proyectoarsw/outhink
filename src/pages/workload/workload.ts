@@ -49,6 +49,12 @@ selected = [];
 
 lastSelected = [];
 
+servers = [];
+
+server = "^.*";
+
+lastServer = "^.*";
+
   constructor(private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController,public loadingCtrl: LoadingController) {
     this.http = http;
 
@@ -68,10 +74,14 @@ lastSelected = [];
           this.selectedCheck.push({selected:true,sid:elem});
         };
 
+        this.selected = this.client.sids;
+
         this.color = 'rgb('+ token.r +','+token.g+','+token.b+')';
         this.r = token.r;
         this.g = token.g;
         this.b = token.b;
+
+        this.updateServers();
 
         this.updateChart();
       }
@@ -136,6 +146,8 @@ lastSelected = [];
   }
 
     this.lastSelected = this.selected.slice();
+
+    this.lastServer = this.server.slice();
   
 
     this.start = moment(this.start).utc().startOf('day').format();
@@ -144,13 +156,11 @@ lastSelected = [];
     this.lastEnd = moment(this.end).utc().startOf('day').format();
     
     var link = this.url+'workloadchart';
-    var da = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected});
+    var da = JSON.stringify({start: this.start, end:this.end, client:this.client.name, sids:this.selected, instance:this.server});
         
         this.http.post(link, da, { headers: this.contentHeader })
         .subscribe(dat => {
-         console.log(dat.json());
-
-         
+         console.log(dat.json());         
 
          var datt = dat.json().items;
 
@@ -190,16 +200,22 @@ lastSelected = [];
             console.log("Oooops!");
         });
 
+        // Clean linechart
+
+        this.lineChartLabels = ["Date1", "Date2", "Date3","Date4","Date5","Date6","Date7","Date8","Date9","Date10"];
+         setTimeout(()=>{this.lineChartData = [
+        {data:[10,10,10,10,10,10,10,10,10,10], label: ""}
+         ]}, 1000);
+
+
   }
 
   updateLineChart(item, task):void {
 
-    console.log("item: "+ item+", task: "+task);
-
     this.loading = true;
     
     var link = this.url+'workloadchart2';
-    var da = JSON.stringify({start: this.lastStart, end:this.lastEnd, client:this.client.name, sids:this.lastSelected, item:item, task:task});
+    var da = JSON.stringify({start: this.lastStart, end:this.lastEnd, client:this.client.name, sids:this.lastSelected, item:item, task:task, instance:this.lastServer});
         
         this.http.post(link, da, { headers: this.contentHeader })
         .subscribe(dat => {
@@ -230,6 +246,33 @@ lastSelected = [];
     {data:[10,10,10,10,10,10,10,10,10,10], label: ""}
          ]}, 1000);
         }
+
+        }, error => {
+            console.log("Oooops!");
+        });
+
+  }
+
+    updateServers():void {
+
+    //this.loading = true;
+    
+    var link = this.url+'workloadchart3';
+    var da = JSON.stringify({client:this.client.name, sids:this.selected});
+        
+        this.http.post(link, da, { headers: this.contentHeader })
+        .subscribe(dat => {
+        console.log(dat.json());
+
+         var items = dat.json().items;
+
+         //this.loading = false;
+
+         if(items.length > 0){
+
+          this.servers = items;
+
+         }
 
         }, error => {
             console.log("Oooops!");
