@@ -406,19 +406,17 @@ processEntities(entities){
   
   getOT():void {
 
-    //this.loading = true;
+    this.loading = true;
 
     //TODO
-    //var link = "http://dynamicot.mybluemix.net/alfabeta/filter/?OT=" + this.ot;
+    var link = "https://dynamic-ot-node.mybluemix.net/test/?OT=" + this.ot;
     //var data = JSON.stringify({ot:this.ot});
         
-       // this.http.get(link, { headers: this.contentHeader })
-        //.subscribe(data => {
-        // console.log(data.json());
+       this.http.get(link, { headers: this.contentHeader })
+        .subscribe(data => {
+         console.log(data.json());
 
-        // this.data = data.json();
-
-        var otts = this.ots[this.ot]
+        var otts = data.json().items;
 
          this.loading = false;
 
@@ -428,22 +426,21 @@ processEntities(entities){
 
            this.messages.push({text:'Here are the TOs you asked for', resp:true});   
 
-          //otts.forEach(function(item){
-            var item = otts[0];
-            console.log(item);
-           this.messages.push({text:item.cus + ', ' + item.sys + ', ' + item.clt + ', ' + item.rc + ', ' + item.tl + ', ' + item.datetime , resp:true});               
-          //});
+          for(var i = 0; i < otts.length; i++){
+            var item = otts[i];
+           this.messages.push({text:item.CUSTOMER + ', ' + item.SID + ', ' + item.CL + ', ' + item.RC + ', ' + item.OT + ', ' + item.LAST_MOD  + ', ' + item.RS_TXT, resp:true});               
+          };
 
          
         }else{
           this.messages.push({text:"There is no information about that TO", resp:true});   
         }
 
-       // }, error => {
-       //     this.messages.push({text:"There is no information about that TO", resp:true});  
-       //     this.loading = false;
-       //     this.usingLocalConversation = false;
-       // });
+        }, error => {
+            this.messages.push({text:"There is no information about that TO", resp:true});  
+            this.loading = false;
+            this.usingLocalConversation = false;
+        });
         
 
   }
