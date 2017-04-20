@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, AlertController, ToastController, App, PopoverController } from 'ionic-angular';
+import { NavController, AlertController, ToastController, App, PopoverController, Content } from 'ionic-angular';
 import {Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
 import * as moment from "moment";
@@ -23,7 +23,7 @@ import { Storage } from '@ionic/storage';
 })
 export class ChatPage {
 
-  content = document.getElementById("content");
+@ViewChild(Content) content: Content;
 
 http: Http;
 start: String = moment().subtract(1,"days").format("YYYY-MM-DDTHH:mm");
@@ -51,7 +51,7 @@ client:any = {};
 selected = [];
 
 //message: String = "";
-messages = [{text:"Hello I'm Watson, what do you need ?", resp:true}];
+messages : any[]= [{text:"Hello I'm Watson, what do you need ?", resp:true}];
 
 // Chart variables
 
@@ -152,7 +152,7 @@ ots = {"DEVK9A06MY" : [{"datetime":"2017-04-03 12:12:47","rn":"1491239054","sys"
             titleFontSize:0,
                 callbacks: {
                     label: function(tooltipItems, data) { 
-                        return tooltipItems.xLabel + ' ms';
+                        return tooltipItems.xLabel + '';
                     }
                 }
           },
@@ -161,12 +161,12 @@ ots = {"DEVK9A06MY" : [{"datetime":"2017-04-03 12:12:47","rn":"1491239054","sys"
               ticks: {
                  beginAtZero: true,
                   callback: function(label, index, labels) {
-                      return label+' ms';
+                      return label+'';
                   }
               },
                 scaleLabel: {
                     display: false,
-                    labelString: 'Duration'
+                    labelString: ''
                 }
             }],
             yAxes: [{
@@ -219,6 +219,8 @@ ots = {"DEVK9A06MY" : [{"datetime":"2017-04-03 12:12:47","rn":"1491239054","sys"
 public sendMessage(){
 
     this.messages.push({text:this.form.value.message, resp: false});
+
+    setTimeout(()=>{this.scrollToBottom();}, 500);
     
 
     if(this.usingLocalConversation){
@@ -256,6 +258,8 @@ public sendMessage(){
         if(respp.response.output.text.length > 0){
 
         this.messages.push({text:respp.response.output.text[0], resp:true});
+
+        setTimeout(()=>{this.scrollToBottom();}, 500);
         }
 
         if(respp.response.intents.length > 0){
@@ -459,8 +463,8 @@ processEntities(entities){
 
          this.loading = false;
 
-         this.hideCharts();
-         this.showBarChart = true;
+         /*this.hideCharts();
+         this.showBarChart = true;*/
 
          if(this.data.length > 0){
 
@@ -472,13 +476,21 @@ processEntities(entities){
               ar2.push(job.job_name);
           });
 
-          
+        var mess = this.messages[this.messages.length - 1];
+
+         mess.chart = "bar";
+         mess.data = {labels: ar2, data:[{data:ar1, label: "Total duration (ms)"}]};
+
+          /*
           this.chartLabels = ar2;
           setTimeout(()=>{this.chartData = [{data:ar1, label: "Total duration (ms)"}];}, 1000);
+          */
          
         }else{
+
+          /*
             this.chartLabels = ["Job1", "Job2", "Job3"];
-            setTimeout(()=>{this.chartData = [{data:[10,10,10], label: "Total duration (ms)"}];}, 1000);
+            setTimeout(()=>{this.chartData = [{data:[10,10,10], label: "Total duration (ms)"}];}, 1000);*/
         }
 
         }, error => {
@@ -501,8 +513,9 @@ processEntities(entities){
 
          this.loading = false;
 
+/*
          this.hideCharts();
-         this.showBarChart = true;
+         this.showBarChart = true;*/
 
          if(this.data.length > 0){
 
@@ -514,13 +527,21 @@ processEntities(entities){
               ar2.push(job._id);
           });
 
+         var mess = this.messages[this.messages.length - 1];
+
+         mess.chart = "bar";
+         mess.data = {labels: ar2, data:[{data:ar1, label: "Average Memory Usage (KB)"}]};
           
-          this.chartLabels = ar2;
-          setTimeout(()=>{this.chartData = [{data:ar1, label: "Average Memory Usage (KB)"}];}, 1000);
+          /*this.chartLabels = ar2;
+          setTimeout(()=>{this.chartData = [{data:ar1, label: "Average Memory Usage (KB)"}];}, 1000);*/
          
         }else{
+
+          this.messages.push({text:"Sorry there is no information", resp:true});
+
+          /*
             this.chartLabels = ["Tran1", "Tran2", "Tran3", "Tran4","Tran5","Tran6","Tran7","Tran8","Tran9","Tran10"];
-            setTimeout(()=>{this.chartData = [{data:[10,10,10], label: "Average Memory Usage (KB)"}];}, 1000);
+            setTimeout(()=>{this.chartData = [{data:[10,10,10], label: "Average Memory Usage (KB)"}];}, 1000);*/
         }
 
         }, error => {
@@ -542,9 +563,10 @@ processEntities(entities){
          this.data = data.json().dumps;
 
          this.loading = false;
-
+/*
          this.hideCharts();
          this.showBarChart = true;
+         */
 
          if(this.data.length > 0){
 
@@ -556,13 +578,25 @@ processEntities(entities){
               ar2.push(job._id);
           });
 
+         var mess = this.messages[this.messages.length - 1];
+
+         mess.chart = "bar";
+         mess.data = {labels: ar2, data:[{data:ar1, label: "Number of Dumps"}]};
+
+/*
           
           this.chartLabels = ar2;
           setTimeout(()=>{this.chartData = [{data:ar1, label: "Number of Dumps"}];}, 1000);
+          */
          
         }else{
+
+          this.messages.push({text:"Sorry there is no information", resp:true});
+
+/*
             this.chartLabels = ["Program1", "Program2", "Program3", "Program4","Program5"];
-            setTimeout(()=>{this.chartData = [{data:[10,10,10,10,10], label: "Number of Dumps"}];}, 1000);        }
+            setTimeout(()=>{this.chartData = [{data:[10,10,10,10,10], label: "Number of Dumps"}];}, 1000);  */      }
+            
 
         }, error => {
             console.log("Oooops!");
@@ -584,9 +618,9 @@ processEntities(entities){
          var jobx = data.json().jobs;
 
          this.loading = false;
-
+/*
           this.hideCharts();
-         this.showDoughnutChart = true;
+         this.showDoughnutChart = true;*/
 
          if(jobx.length > 0){
 
@@ -598,13 +632,21 @@ processEntities(entities){
             ar2.push(job._id);
          });
 
-         
-         this.donChartLabels = ar2;
-         setTimeout(()=>{this.donChartData = ar1;}, 1000);
+         var mess = this.messages[this.messages.length - 1];
 
-         }else{
-          this.donChartLabels = ["Job1","Job2","Job3","Job4","Job5"];
-         setTimeout(()=>{this.donChartData = [1,1,1,1,1]}, 1000);
+         mess.chart = "don";
+         mess.data = {labels: ar2, data:ar1};
+
+         /*
+         this.donChartLabels = ar2;
+         setTimeout(()=>{this.donChartData = ar1;}, 1000);*/
+
+        }else{
+          
+        this.messages.push({text:"Sorry there is no information", resp:true});
+
+         /* this.donChartLabels = ["Job1","Job2","Job3","Job4","Job5"];
+         setTimeout(()=>{this.donChartData = [1,1,1,1,1]}, 1000);*/
         }
         }, error => {
             console.log("Oooops!");
@@ -627,27 +669,38 @@ processEntities(entities){
          var jobx = data.json().trans;
 
          this.loading = false;
-
+/*
           this.hideCharts();
-         this.showDoughnutChart = true;
+         this.showDoughnutChart = true;*/
 
          if(jobx.length > 0){
 
          var ar1 = [];
          var ar2 = [];
 
-         jobx.forEach(function(job){
+         var job;
+
+         for(var i = 0; i < jobx.length && i < 5; i++){
+           job = jobx[i];
             ar1.push(job.value);
             ar2.push(job._id);
-         });
+         }
 
-         
+        var mess = this.messages[this.messages.length - 1];
+
+         mess.chart = "don";
+         mess.data = {labels: ar2, data:ar1};
+
+         /*
          this.donChartLabels = ar2;
-         setTimeout(()=>{this.donChartData = ar1;}, 1000);
+         setTimeout(()=>{this.donChartData = ar1;}, 1000);*/
 
-         }else{
+        }else{
+
+          this.messages.push({text:"Sorry there is no information", resp:true});
+          /*
           this.donChartLabels = ["Job1","Job2","Job3","Job4","Job5"];
-         setTimeout(()=>{this.donChartData = [1,1,1,1,1]}, 1000);
+         setTimeout(()=>{this.donChartData = [1,1,1,1,1]}, 1000);*/
         }
         }, error => {
             console.log("Oooops!");
@@ -671,9 +724,9 @@ processEntities(entities){
 
          this.loading = false;
 
-        this.hideCharts();
+       /* this.hideCharts();
          this.showLineChart = true;
-         this.showBigNumber = true;
+         this.showBigNumber = true;*/
 
          if(jobx.length > 0){
 
@@ -687,6 +740,12 @@ processEntities(entities){
             tot += job.value;
          });
 
+        var mess = this.messages[this.messages.length - 1];
+
+         mess.chart = "line";
+         mess.data = {labels: ar2, data:[{data: ar1, label: "Cancelled jobs"}], data2:tot};
+
+         /*
          this.bigNumber = tot;
 
          
@@ -694,14 +753,20 @@ processEntities(entities){
          setTimeout(()=>{this.lineChartData = [{data: ar1, label: "Cancelled jobs"}]
          
       }, 1000);
-
+*/
          }else{
+
+          this.messages.push({text:"Sorry there is no information", resp:true});
+
+
+           /*
           this.lineChartLabels = ["Date1", "Date2", "Date3","Date4","Date5","Date6","Date7","Date8","Date9","Date10"];
          setTimeout(()=>{this.lineChartData = [
     {data:[10,10,10,10,10,10,10,10,10,10], label: "Cancelled jobs"}
          ]}, 1000);
 
          this.bigNumber = 0;
+         */
         }
         }, error => {
             console.log("Oooops!");
@@ -721,10 +786,11 @@ processEntities(entities){
          var jobx = data.json().dumps;
 
          this.loading = false;
-
+/*
         this.hideCharts();
          this.showLineChart = true;
          this.showBigNumber = true;
+         */
 
          if(jobx.length > 0){
 
@@ -738,6 +804,12 @@ processEntities(entities){
             tot += job.value;
          });
 
+         var mess = this.messages[this.messages.length - 1];
+
+         mess.chart = "line";
+         mess.data = {labels: ar2, data:[{data: ar1, label: "Number of dumps"}], data2:tot};
+
+/*
          this.bigNumber = tot;
 
          
@@ -745,20 +817,30 @@ processEntities(entities){
          setTimeout(()=>{this.lineChartData = [{data: ar1, label: "Number of dumps"}]
          
       }, 1000);
+      */
 
          }else{
+
+          this.messages.push({text:"Sorry there is no information", resp:true});
+
+           /*
           this.lineChartLabels = ["Date1", "Date2", "Date3","Date4","Date5","Date6","Date7","Date8","Date9","Date10"];
          setTimeout(()=>{this.lineChartData = [
     {data:[10,10,10,10,10,10,10,10,10,10], label: "Number of dumps"}
          ]}, 1000);
 
          this.bigNumber = 0;
+         */
         }
         }, error => {
             console.log("Oooops!");
         });
         
       }
+
+  scrollToBottom() {
+    this.content.scrollToBottom();
+  }
 
         // display menu
   displayMenu(event) {
