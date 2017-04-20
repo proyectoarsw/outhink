@@ -17,8 +17,7 @@ export class TabsPage {
   local: Storage = new Storage();
 
   user: any = {};
-  // this tells the tabs component which Pages
-  // should be each tab's root Page
+
   tab1Root: any = HomePage;
   tab2Root: any = AboutPage;
   tab3Root: any = ContactPage;
@@ -26,7 +25,7 @@ export class TabsPage {
   tab5Root: any = ChatPage;
   tab6Root: any = WorkloadPage;
 
-  showExperience = false;
+  showExperience = true;
   showTransactions = false;
   showWorkload = false;
   showJobs = true;
@@ -42,12 +41,9 @@ export class TabsPage {
 
 
 
-        if (token.username == 'mehernan@co.ibm.com' || token.username == 'jarincon@co.ibm.com' || token.username == 'demo@co.ibm.com' || token.username == 'rvargass@co.ibm.com') {
-          this.showExperience = true;
-          //this.showWorkload = true;
-        }else{
-          this.showExperience = false;
-        }
+       // if (token.username == 'mehernan@co.ibm.com' || token.username == 'jarincon@co.ibm.com' || token.username == 'demo@co.ibm.com' || token.username == 'rvargass@co.ibm.com') {
+          //this.showExperience = true;
+       // }
 
         //this.showDumps = true;
         //this.showJobs = true;
