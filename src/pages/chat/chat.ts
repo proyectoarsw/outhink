@@ -218,8 +218,6 @@ ots = {"DEVK9A06MY" : [{"datetime":"2017-04-03 12:12:47","rn":"1491239054","sys"
 public sendMessage(){
 
     this.addMessage(this.form.value.message, false);
-
-    setTimeout(()=>{this.scrollToBottom();}, 500);
     
 
     if(this.usingLocalConversation){
@@ -258,11 +256,13 @@ public sendMessage(){
 
         this.addMessage(respp.response.output.text[0], true);
 
+        }
+
         if(respp.response.intents.length > 0){
           this.loadChart(respp.response.intents[0].intent,respp.response.entities)
         }
         
-        }
+        
         }, error => {
             console.log("Oooops!");
         });
