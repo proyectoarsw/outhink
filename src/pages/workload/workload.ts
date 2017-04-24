@@ -9,12 +9,6 @@ import { PopoverPage } from '../popover/popover';
 
 import { Storage } from '@ionic/storage';
 
-/*
-  Generated class for the Workload page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-workload',
   templateUrl: 'workload.html'
@@ -169,27 +163,27 @@ lastServer = "^.*";
          for(var i = 0; i < datt.length; i ++){
           itt = datt[i].value;
 
-          itt.steps = Number(itt.steps).toLocaleString('en-IN', { maximumFractionDigits: 0 });
-          itt.time  = Number(itt.time).toLocaleString('en-IN', { maximumFractionDigits: 1 });
-          itt.avg_proc_time = Number(itt.avg_proc_time).toLocaleString('en-IN', { maximumFractionDigits: 1 });
-          itt.cpu_time = Number(itt.cpu_time).toLocaleString('en-IN', { maximumFractionDigits: 1 });
-          itt.db_time = Number(itt.db_time).toLocaleString('en-IN', { maximumFractionDigits: 1 });
-          itt.time2 = Number(itt.time2).toLocaleString('en-IN', { maximumFractionDigits: 1 });
-          itt.wait_time = Number(itt.wait_time).toLocaleString('en-IN', { maximumFractionDigits: 1 });
-          itt.rol_in = Number(itt.rol_in).toLocaleString('en-IN', { maximumFractionDigits: 1 });
-          itt.roll_wait_time = Number(itt.roll_wait_time).toLocaleString('en-IN', { maximumFractionDigits: 1 });
-          itt.load_gen_time = Number(itt.load_gen_time).toLocaleString('en-IN', { maximumFractionDigits: 1 });
-          itt.lock_time = Number(itt.lock_time).toLocaleString('en-IN', { maximumFractionDigits: 1 });
-          itt["CPIC/RFC"] = Number(itt["CPIC/RFC"]).toLocaleString('en-IN', { maximumFractionDigits: 1 });
-          itt.time3 = Number(itt.time3).toLocaleString('en-IN', { maximumFractionDigits: 1 });
-          itt.gui_time = Number(itt.gui_time).toLocaleString('en-IN', { maximumFractionDigits: 1 });
-          itt.trips = Number(itt.trips).toLocaleString('en-IN', { maximumFractionDigits: 0 });
-          itt.kb = Number(itt.kb).toLocaleString('en-IN', { maximumFractionDigits: 1 });
-          itt.vmc_calls = Number(itt.vmc_calls).toLocaleString('en-IN', { maximumFractionDigits: 0 });
-          itt.t_vmc_cpu = Number(itt.t_vmc_cpu).toLocaleString('en-IN', { maximumFractionDigits: 0 });
-          itt.t_vmcelaps = Number(itt.t_vmcelaps).toLocaleString('en-IN', { maximumFractionDigits: 0 });
-          itt.avgvmc_cpu = Number(itt.avgvmc_cpu).toLocaleString('en-IN', { maximumFractionDigits: 1 });
-          itt.avgvmcelap = Number(itt.avgvmcelap).toLocaleString('en-IN', { maximumFractionDigits: 1 });
+          itt.steps = Number(itt.steps).toLocaleString('de-DE', { maximumFractionDigits: 0 });
+          itt.time  = Number(itt.time).toLocaleString('de-DE', { maximumFractionDigits: 1 });
+          itt.avg_proc_time = Number(itt.avg_proc_time).toLocaleString('de-DE', { maximumFractionDigits: 1 });
+          itt.cpu_time = Number(itt.cpu_time).toLocaleString('de-DE', { maximumFractionDigits: 1 });
+          itt.db_time = Number(itt.db_time).toLocaleString('de-DE', { maximumFractionDigits: 1 });
+          itt.time2 = Number(itt.time2).toLocaleString('de-DE', { maximumFractionDigits: 1 });
+          itt.wait_time = Number(itt.wait_time).toLocaleString('de-DE', { maximumFractionDigits: 1 });
+          itt.rol_in = Number(itt.rol_in).toLocaleString('de-DE', { maximumFractionDigits: 1 });
+          itt.roll_wait_time = Number(itt.roll_wait_time).toLocaleString('de-DE', { maximumFractionDigits: 1 });
+          itt.load_gen_time = Number(itt.load_gen_time).toLocaleString('de-DE', { maximumFractionDigits: 1 });
+          itt.lock_time = Number(itt.lock_time).toLocaleString('de-DE', { maximumFractionDigits: 1 });
+          itt["CPIC/RFC"] = Number(itt["CPIC/RFC"]).toLocaleString('de-DE', { maximumFractionDigits: 1 });
+          itt.time3 = Number(itt.time3).toLocaleString('de-DE', { maximumFractionDigits: 1 });
+          itt.gui_time = Number(itt.gui_time).toLocaleString('de-DE', { maximumFractionDigits: 1 });
+          itt.trips = Number(itt.trips).toLocaleString('de-DE', { maximumFractionDigits: 0 });
+          itt.kb = Number(itt.kb).toLocaleString('de-DE', { maximumFractionDigits: 1 });
+          itt.vmc_calls = Number(itt.vmc_calls).toLocaleString('de-DE', { maximumFractionDigits: 0 });
+          itt.t_vmc_cpu = Number(itt.t_vmc_cpu).toLocaleString('de-DE', { maximumFractionDigits: 0 });
+          itt.t_vmcelaps = Number(itt.t_vmcelaps).toLocaleString('de-DE', { maximumFractionDigits: 0 });
+          itt.avgvmc_cpu = Number(itt.avgvmc_cpu).toLocaleString('de-DE', { maximumFractionDigits: 1 });
+          itt.avgvmcelap = Number(itt.avgvmcelap).toLocaleString('de-DE', { maximumFractionDigits: 1 });
          }
 
          this.loading = false;
@@ -231,7 +225,7 @@ lastServer = "^.*";
          var ar2 = [];
 
          items.forEach(function(item){
-            ar1.push(Number(item.value).toLocaleString('en-IN', { maximumFractionDigits: 1 }));
+            ar1.push((Number(item.value).toLocaleString('en-IN', { maximumFractionDigits: 1 })).replace(',',''));
             ar2.push(moment(item._id).add(1,"day").format("D/M/YYYY"));
          });
 

@@ -40,8 +40,6 @@ client:any = {};
 selectedCheck =[];
 selected = [];
 
-public totalCancelled : number = 0;
-
 public url:String = "https://watson-advisor.mybluemix.net/";
 
 
@@ -90,7 +88,7 @@ public url:String = "https://watson-advisor.mybluemix.net/";
             titleFontSize:0,
                 callbacks: {
                     label: function(tooltipItems, data) { 
-                        return tooltipItems.xLabel + ' KB';
+                        return tooltipItems.xLabel.toLocaleString('de-DE', { maximumFractionDigits: 1 }) + ' KB';
                     }
                 }
           },
@@ -140,7 +138,7 @@ public url:String = "https://watson-advisor.mybluemix.net/";
                 callbacks: {
                     label: function(tooltipItem, data) { 
 
-                      return data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + " ms";
+                      return data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].toLocaleString('de-DE', { maximumFractionDigits: 1 }) + " ms";
                     }
                 }
           }
