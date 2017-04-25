@@ -10,6 +10,8 @@ import { PopoverPage } from '../popover/popover';
 
 import { Storage } from '@ionic/storage';
 
+import { Push, PushToken } from '@ionic/cloud-angular';
+
 
 @Component({
   selector: 'page-home',
@@ -46,7 +48,7 @@ export class HomePage {
   selected = [];
 
 
-  constructor(private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController, public loadingCtrl: LoadingController) {
+  constructor(public push: Push, private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController, public loadingCtrl: LoadingController) {
     this.http = http;
 
     this.local.get('user').then(token => {
@@ -78,6 +80,13 @@ export class HomePage {
     }).catch(error => {
       console.log(error);
     });
+
+    // Handle push notifications
+
+    this.push.rx.notification()
+      .subscribe((msg) => {
+        alert(msg.title + ': ' + msg.text);
+      });
 
   }
 
@@ -404,16 +413,16 @@ export class HomePage {
 
           this.lineChartLabels = ar2;
           setTimeout(() => {
-          this.lineChartData = [{ data: ar1, label: "Cancelled jobs" }]
+            this.lineChartData = [{ data: ar1, label: "Cancelled jobs" }]
 
           }, 1000);
 
         } else {
           this.lineChartLabels = ["Date1", "Date2", "Date3", "Date4", "Date5", "Date6", "Date7", "Date8", "Date9", "Date10"];
           setTimeout(() => {
-          this.lineChartData = [
-            { data: [10, 10, 10, 10, 10, 10, 10, 10, 10, 10], label: "Cancelled jobs" }
-          ]
+            this.lineChartData = [
+              { data: [10, 10, 10, 10, 10, 10, 10, 10, 10, 10], label: "Cancelled jobs" }
+            ]
           }, 1000);
 
           this.totalCancelled = '0';

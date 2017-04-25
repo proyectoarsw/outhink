@@ -14,6 +14,25 @@ import { ChatPage } from '../pages/chat/chat';
 import { WorkloadPage } from '../pages/workload/workload';
 import { ChartsModule } from 'ng2-charts';
 import '../../node_modules/chart.js/dist/Chart.bundle.min.js';
+import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
+
+const cloudSettings: CloudSettings = {
+  'core': {
+    'app_id': '82a189c0'
+  },
+  'push': {
+    'sender_id': '12341234',
+    'pluginConfig': {
+      'ios': {
+        'badge': true,
+        'sound': true
+      },
+      'android': {
+        'iconColor': '#343434'
+      }
+    }
+  }
+};
 
 @NgModule({
   declarations: [
@@ -32,7 +51,8 @@ import '../../node_modules/chart.js/dist/Chart.bundle.min.js';
   ],
   imports: [
     IonicModule.forRoot(MyApp),
-    ChartsModule
+    ChartsModule,
+    CloudModule.forRoot(cloudSettings)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
