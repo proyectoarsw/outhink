@@ -4,7 +4,7 @@ import { Storage } from '@ionic/storage';
 import { BasePage } from '../base/base';
 import { PasswordPage } from '../password/password';
 
-import { Push, PushToken } from '@ionic/cloud-angular';
+import { Push } from '@ionic/cloud-angular';
 
 @Component({
   selector: 'page-popover',
