@@ -10,7 +10,7 @@ import { PopoverPage } from '../popover/popover';
 
 import { Storage } from '@ionic/storage';
 
-import { Push, PushToken } from '@ionic/cloud-angular';
+import { Push } from '@ionic/cloud-angular';
 
 
 @Component({
