@@ -325,6 +325,12 @@ export class ChatPage {
         this.processEntities(entities);
         this.updateBar3('dumpchart2');
         break;
+      case 'alerts_barchart':
+        this.processEntities(entities);
+        this.updateBar4('http://myhive.mybluemix.net/postdb2month');
+        alert('enter');
+        break;
+
       case 'dynamicot_ot':
         if (this.checkOT()) {
           this.getOT();
@@ -576,6 +582,23 @@ export class ChatPage {
           this.addMessage("Sorry there is no information", true);
         }
 
+
+      }, error => {
+        console.log("Oooops!");
+      });
+
+
+  }
+    updateBar4(urll): void {
+
+    var link = this.url + urll+"/:"+this.queryCustomer+"/:"+this.start+"/:"+this.end;
+    //var data = JSON.stringify({ start: this.start, end: this.end, client: this.queryCustomer, sids: this.selected });
+
+    this.http.get(link)
+      .subscribe(data => {
+        console.log(link);
+
+        console.log(data);
 
       }, error => {
         console.log("Oooops!");
