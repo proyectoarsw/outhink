@@ -20,6 +20,18 @@ const util = require('util')
 // and so is assert
 const assert = require('assert');
 
+// For disabling http
+app.enable('trust proxy');
+app.use (function (req, res, next) {
+        if (req.secure) {
+                // request was via https, so do no special handling
+                next();
+        } else {
+                // request was via http, so redirect to https
+                res.redirect('https://' + req.headers.host + req.url);
+        }
+});
+
 app.use(express.static(path.resolve(__dirname, 'www')));
 app.set('port', process.env.PORT || 3000);
 
@@ -74,12 +86,6 @@ var conversation = new ConversationV1({
 
 function initDBConnection() {
 
-  // This is the MongoDB connection. From the application environment, we got the
-  // credentials and the credentials contain a URI for the database. Here, we
-  // connect to that URI, and also pass a number of SSL settings to the
-  // call. Among those SSL settings is the SSL CA, into which we pass the array
-  // wrapped and now decoded ca_certificate_base64,
-
   MongoClient.connect(credentials.uri + '?authMode=scram-sha1&rm.tcpNoDelay=true', {
     mongos: {
       poolSize: 1,
@@ -90,46 +96,13 @@ function initDBConnection() {
     }
   },
     function (err, db) {
-      // Here we handle the async response. This is a simple example and
-      // we're not going to inject the database connection into the
-      // middleware, just save it in a global variable, as long as there
-      // isn't an error.
+
       if (err) {
         console.log(err);
       } else {
         console.log("Connected to MongoDB");
 
         mongodb = db.db("db");
-
-        //mongodb.collection("users").remove({});
-        //mongodb.collection("joblog").remove({});
-
-
-        // Mapreduce
-        /*
-                    mongodb.mapReduce(
-                      function(){
-        
-                        for(var g = 0; g < this.customers.length; g++){
-                          emit(this.customers[g].name, this);
-                        }
-        
-                        },
-                      function(key,values){return values[0];},
-                      {out:{replace: 'tempcollection'}},
-                      function(err, collection){
-        
-                        collection.find().toArray(function(er, results) {
-                          console.log(results[0]._id);
-                          console.log(results[0].value);
-        
-                    db.close();
-                  });
-        
-                      }
-                    );
-        */
-
 
       }
     }
@@ -1385,9 +1358,6 @@ app.get("/server", function (request, response) {
   response.send("Server Alive");
 
 });
-
-
-
 
 
 app.listen(app.get('port'), function () {
