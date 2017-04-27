@@ -818,7 +818,7 @@ export class ChatPage {
           var mess = this.messages[this.messages.length - 1];
 
           mess.chart = "line";
-          mess.data = { labels: ar2, data: [{ data: ar1, label: "Cancelled jobs" }], data2: tot };
+          mess.data = { labels: ar2, data: [{ data: ar1, label: "Cancelled jobs" }], data2: tot.toLocaleString('de-DE') };
 
           this.scrollToBottom();
 
@@ -861,7 +861,7 @@ export class ChatPage {
           var mess = this.messages[this.messages.length - 1];
 
           mess.chart = "line";
-          mess.data = { labels: ar2, data: [{ data: ar1, label: "Number of dumps" }], data2: tot };
+          mess.data = { labels: ar2, data: [{ data: ar1, label: "Number of dumps" }], data2: tot.toLocaleString('de-DE') };
 
           this.scrollToBottom();
 
@@ -905,7 +905,7 @@ export class ChatPage {
           var mess = this.messages[this.messages.length - 1];
 
           mess.chart = "line";
-          mess.data = { labels: ar2, data: [{ data: ar1, label: "Number of alerts" }], data2: tot };
+          mess.data = { labels: ar2, data: [{ data: ar1, label: "Number of alerts" }], data2: tot.toLocaleString('de-DE') };
 
           this.scrollToBottom();
 
