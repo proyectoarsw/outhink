@@ -8,6 +8,10 @@ var bodyParser = require('body-parser');
 
 var ConversationV1 = require('watson-developer-cloud/conversation/v1');
 
+// Ionic API
+var request = require("request");
+var token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4OWE4MTIwYi0wZjdkLTQzZWItODgyMC0yOGIxYmRhODIyY2IifQ.fuo2-uG6uvCvkKZI6UifbpcUrZMQoajaAjX-98f3p0U';
+
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
@@ -22,14 +26,14 @@ const assert = require('assert');
 
 // For disabling http
 app.enable('trust proxy');
-app.use (function (req, res, next) {
-        if (req.secure) {
-                // request was via https, so do no special handling
-                next();
-        } else {
-                // request was via http, so redirect to https
-                res.redirect('https://' + req.headers.host + req.url);
-        }
+app.use(function (req, res, next) {
+  if (req.secure) {
+    // request was via https, so do no special handling
+    next();
+  } else {
+    // request was via http, so redirect to https
+    res.redirect('https://' + req.headers.host + req.url);
+  }
 });
 
 app.use(express.static(path.resolve(__dirname, 'www')));
@@ -1068,6 +1072,90 @@ app.post("/workloadchart3", cors(), function (request, response) {
 
 
 
+
+});
+
+///////////// Ionic Services
+
+// Service to get notification tokens
+app.get("/tokens", cors(), function (req, response) {
+  console.log("Getting tokens");
+
+  var options = {
+    method: 'GET',
+    url: 'https://api.ionic.io/push/tokens',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json'
+    },
+    json: true
+  };
+
+  request(options, function (err, resp, body) {
+    if (err) throw new Error(err);
+    console.log(body);
+    response.send({ success: true, items: body.data });
+  });
+
+});
+
+// Service to send a push notification to users with token
+app.post("/pushwithtokens", cors(), function (req, response) {
+  console.log("Sending push notification");
+
+  var options = {
+    method: 'POST',
+    url: 'https://api.ionic.io/push/notifications',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json'
+    },
+    json: true,
+    body:{
+      tokens : req.body.tokens,
+      profile: 'dev',
+      notification: {
+        title: req.body.title,
+        message: req.body.message
+      } 
+    }
+  };
+
+  request(options, function (err, resp, body) {
+    if (err) throw new Error(err);
+    console.log(body);
+    response.send({ success: true, items: body.data });
+  });
+
+});
+
+// Service to send a push notification to all users
+app.post("/pushall", cors(), function (req, response) {
+  console.log("Sending push notification");
+
+  var options = {
+    method: 'POST',
+    url: 'https://api.ionic.io/push/notifications',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json'
+    },
+    json: true,
+    body:{
+      send_to_all : true,
+      profile: 'dev',
+      notification: {
+        title: req.body.title,
+        message: req.body.message
+      } 
+    }
+  };
+
+  request(options, function (err, resp, body) {
+    if (err) throw new Error(err);
+    console.log(body);
+    response.send({ success: true, items: body.data });
+  });
 
 });
 

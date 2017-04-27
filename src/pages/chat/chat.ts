@@ -331,14 +331,14 @@ export class ChatPage {
         break;
       case 'total_alerts_piechart':
         this.processEntities(entities);
-        this.updateDon3('https://myhive.mybluemix.net/filterc');     
+        this.updateDon3('https://myhive.mybluemix.net/filterc');
         break;
-      
+
       case 'total_alerts_linechart':
         this.processEntities(entities);
         this.updateLine3('https://myhive.mybluemix.net/postdb2weekone');
-        break;  
-        
+        break;
+
 
       case 'dynamicot_ot':
         if (this.checkOT()) {
@@ -598,19 +598,19 @@ export class ChatPage {
 
 
   }
-    updateBar4(urll): void {
-    var date1=moment(this.start).format()
-    var date2=moment(this.end).format()
-    var link = urll+"/"+this.queryCustomer.toUpperCase()+"/"+date1+"/"+date2;
+  updateBar4(urll): void {
+    var date1 = moment(this.start).format()
+    var date2 = moment(this.end).format()
+    var link = urll + "/" + this.queryCustomer.toUpperCase() + "/" + date1 + "/" + date2;
     //var data = JSON.stringify({ start: this.start, end: this.end, client: this.queryCustomer, sids: this.selected });
     console.log(link);
     this.http.get(link)
       .subscribe(data => {
-       var month=data.json().months;
+        var month = data.json().months;
 
-        console.log(data,month);
-        this.data=data.json().months;
-         if (this.data.length > 0) {
+        console.log(data, month);
+        this.data = data.json().months;
+        if (this.data.length > 0) {
 
           var ar1 = [];
           var ar2 = [];
@@ -620,7 +620,7 @@ export class ChatPage {
             ar2.push(month._id.month);
           });
 
-         var mess = this.messages[this.messages.length - 1];
+          var mess = this.messages[this.messages.length - 1];
 
           mess.chart = "bar";
           mess.data = { labels: ar2, data: [{ data: ar1, label: "Number of alerts" }] };
@@ -643,7 +643,7 @@ export class ChatPage {
 
 
   updateDon(urll): void {
-   
+
     var link = this.url + urll;
     var data = JSON.stringify({ start: this.start, end: this.end, client: this.queryCustomer, sids: this.selected });
 
@@ -734,14 +734,14 @@ export class ChatPage {
 
 
   }
-   updateDon3(urll): void {
-    var date1=moment(this.start).format()
-    var date2=moment(this.end).format()
-var d1=moment(date1).format("MM-DD-YYYY")
-var d2=moment(date2).format("MM-DD-YYYY")
+  updateDon3(urll): void {
+    var date1 = moment(this.start).format()
+    var date2 = moment(this.end).format()
+    var d1 = moment(date1).format("MM-DD-YYYY")
+    var d2 = moment(date2).format("MM-DD-YYYY")
 
-    var a ='All';
-    var link = urll+"/"+this.queryCustomer.toUpperCase()+"/"+date1+"/"+date2;
+    //var a ='All';
+    var link = urll + "/" + this.queryCustomer.toUpperCase() + "/" + date1 + "/" + date2;
     //var data = JSON.stringify({ start: this.start, end: this.end, client: this.queryCustomer, sids: this.selected });
     console.log(link);
     this.http.get(link)
@@ -762,7 +762,7 @@ var d2=moment(date2).format("MM-DD-YYYY")
           for (var i = 0; i < custo.length && i < 26; i++) {
             job = custo[i];
             ar1.push(job.value);
-            ar2.push(d1+" - "+d2);
+            ar2.push(d1 + " - " + d2);
             var tot = 0;
             tot += job.value;
           }
@@ -780,7 +780,7 @@ var d2=moment(date2).format("MM-DD-YYYY")
           this.addMessage("Sorry there is no information", true);
 
         }
-        
+
       }, error => {
         console.log("Oooops!");
       });
@@ -876,16 +876,16 @@ var d2=moment(date2).format("MM-DD-YYYY")
 
   }
 
-    updateLine3(urll): void {
+  updateLine3(urll): void {
 
-    var date1=moment(this.start).format()
-    var date2=moment(this.end).format()
+    var date1 = moment(this.start).format()
+    var date2 = moment(this.end).format()
 
-    var link = urll+"/"+this.queryCustomer.toUpperCase()+"/"+date1+"/"+date2;
+    var link = urll + "/" + this.queryCustomer.toUpperCase() + "/" + date1 + "/" + date2;
     //var data = JSON.stringify({ start: this.start, end: this.end, client: this.queryCustomer, sids: this.selected });
     this.http.get(link)
       .subscribe(data => {
-        console.log(data.json(),link);  
+        console.log(data.json(), link);
         var week = data.json().weeks;
 
         this.loading = false;
