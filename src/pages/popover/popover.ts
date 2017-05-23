@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ViewController, App } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
+import { ServicesProvider } from '../../providers/services/services';
 import { BasePage } from '../base/base';
 import { PasswordPage } from '../password/password';
 
@@ -16,22 +16,15 @@ import { Push } from '@ionic/cloud-angular';
 })
 export class PopoverPage {
 
-  local: Storage = new Storage();
-
   cust: boolean = false;
 
-  constructor(public push: Push, public viewCtrl: ViewController, private _app: App) {
+  constructor(public services: ServicesProvider, public push: Push, public viewCtrl: ViewController, private _app: App) {
 
-    this.local.get('user').then(token => {
-      if (token) {
-        if (token.ibm) {
-          this.cust = true;
-        }
-      } else {
-      }
-    }).catch(error => {
-      console.log(error);
-    });
+
+    if (services.getUser().ibm) {
+      this.cust = true;
+    }
+
 
   }
 
@@ -57,7 +50,7 @@ export class PopoverPage {
   logout() {
 
     this.push.unregister();
-    this.local.set('user', null);
+    this.services.logout();
     this.goLogin();
   }
 

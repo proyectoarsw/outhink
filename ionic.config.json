@@ -1,6 +1,5 @@
 {
   "name": "watson-advisor",
   "app_id": "82a189c0",
-  "v2": true,
-  "typescript": true
+  "type": "ionic-angular"
 }

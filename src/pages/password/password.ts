@@ -2,14 +2,9 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, ToastController } from 'ionic-angular';
 import {Validators, FormBuilder } from '@angular/forms';
 import {Http, Headers} from '@angular/http';
-import { Storage } from '@ionic/storage';
+import { ServicesProvider } from '../../providers/services/services';
 
-/*
-  Generated class for the Password page.
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-password',
   templateUrl: 'password.html'
@@ -18,7 +13,6 @@ export class PasswordPage {
 
    contentHeader: Headers = new Headers({"Content-Type": "application/json"});
 
-  local: Storage = new Storage();
   tabBarElement: any;
 
   public form: any;
@@ -29,18 +23,12 @@ export class PasswordPage {
 
   public url:String = "https://watson-advisor.mybluemix.net/";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public http:Http, private formBuilder: FormBuilder, public toastCtrl: ToastController) {
+  constructor(public services: ServicesProvider, public navCtrl: NavController, public navParams: NavParams, public http:Http, private formBuilder: FormBuilder, public toastCtrl: ToastController) {
 
       this.tabBarElement = document.querySelector('.tabbar.show-tabbar');
-      this.local.get('user').then(token => {
 
-    if(token){
-      this.id = token._id;
-      this.user = token;
-    }
-  }).catch(error => {
-    console.log(error);
-  });
+      this.user = this.services.getUser();
+      this.id = this.user._id;
 
 
   this.form = this.formBuilder.group({

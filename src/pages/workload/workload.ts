@@ -7,8 +7,6 @@ import * as moment from "moment";
 
 import { PopoverPage } from '../popover/popover';
 
-import { Storage } from '@ionic/storage';
-
 @Component({
   selector: 'page-workload',
   templateUrl: 'workload.html'
@@ -31,7 +29,7 @@ b: Number = 255;
 
 public url:String = "https://watson-advisor.mybluemix.net/";
 
-local: Storage = new Storage();
+//local: Storage = new Storage();
 
 loading: boolean = false;
 
@@ -51,7 +49,7 @@ lastServer = "^.*";
 
   constructor(private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController,public loadingCtrl: LoadingController) {
     this.http = http;
-
+/*
         this.local.get('user').then(token => {
       if(token){
         this.user = token;
@@ -82,7 +80,7 @@ lastServer = "^.*";
     }).catch(error => {
       console.log(error);
     });
-
+*/
   }
 
   // Line chart

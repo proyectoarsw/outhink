@@ -15,6 +15,9 @@ import { WorkloadPage } from '../pages/workload/workload';
 import { ChartsModule } from 'ng2-charts';
 import '../../node_modules/chart.js/dist/Chart.bundle.min.js';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
+import { BrowserModule } from '@angular/platform-browser';
+import { ServicesProvider } from '../providers/services/services';
+import { IonicStorageModule } from '@ionic/storage';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -51,7 +54,9 @@ const cloudSettings: CloudSettings = {
   ],
   imports: [
     IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot(),
     ChartsModule,
+    BrowserModule,
     CloudModule.forRoot(cloudSettings)
   ],
   bootstrap: [IonicApp],
@@ -69,6 +74,7 @@ const cloudSettings: CloudSettings = {
     ChatPage,
     WorkloadPage
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler},
+    ServicesProvider]
 })
 export class AppModule {}

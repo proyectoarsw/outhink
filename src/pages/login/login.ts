@@ -6,8 +6,8 @@ import 'rxjs/add/operator/map';
 import { Validators, FormBuilder } from '@angular/forms';
 import { BasePage } from '../base/base';
 import { TabsPage } from '../tabs/tabs';
-
 import { Storage } from '@ionic/storage';
+import { ServicesProvider } from '../../providers/services/services';
 
 import { Push, PushToken } from '@ionic/cloud-angular';
 
@@ -20,23 +20,21 @@ export class LoginPage {
 
   contentHeader: Headers = new Headers({ "Content-Type": "application/json" });
 
-  local: Storage = new Storage();
   tabBarElement: any;
 
   public form: any;
 
   public url: String = "https://watson-advisor.mybluemix.net/";
 
-  constructor(public push: Push, public navCtrl: NavController, public navParams: NavParams, public http: Http, public toastCtrl: ToastController, private formBuilder: FormBuilder) {
+  constructor(public storage: Storage, public services: ServicesProvider, public push: Push, public navCtrl: NavController, public navParams: NavParams, public http: Http, public toastCtrl: ToastController, private formBuilder: FormBuilder) {
 
     this.tabBarElement = document.querySelector('.tabbar.show-tabbar');
-    this.local.get('user').then(token => {
 
-      if (token) {
-        this.updateUser(token);
-      }
-    }).catch(error => {
-      console.log(error);
+    this.storage.get('user').then((us) => {
+
+            if (us) {
+              this.updateUser(us);
+            }
     });
 
 
@@ -57,19 +55,21 @@ export class LoginPage {
       resp => {
         console.log(resp);
         if (resp.success) {
-
+          /* This is for register device
           this.push.register().then((t: PushToken) => {
             return this.push.saveToken(t);
           }).then((t: PushToken) => {
             console.log('Token saved:', t.token);
           });
+          */
+          this.services.setUser(resp.user);
+          this.services.saveUser(resp.user);
 
 
-          this.local.set("user", resp.user);
           if (resp.user.ibm) {
             this.navCtrl.push(BasePage);
           } else {
-            this.local.set("client", resp.user.clients[0]);
+            this.services.setCustomer(resp.user.clients[0]);
             this.navCtrl.push(TabsPage);
           }
         } else {
@@ -92,19 +92,18 @@ export class LoginPage {
       resp => {
         console.log(resp);
         if (resp.success) {
-
+          /* Update token
           this.push.register().then((t: PushToken) => {
             return this.push.saveToken(t);
           }).then((t: PushToken) => {
             console.log('Token saved:', t.token);
           });
-
-
-          this.local.set("user", resp.user);
+          */
+          this.services.setUser(resp.user);
           if (resp.user.ibm) {
             this.navCtrl.push(BasePage);
           } else {
-            this.local.set("client", resp.user.clients[0]);
+            this.services.setCustomer(resp.user.clients[0]);
             this.navCtrl.push(TabsPage);
           }
         } else {
@@ -126,14 +125,6 @@ export class LoginPage {
     });
     toast.present();
 
-  }
-
-  ionViewWillEnter() {
-    //this.tabBarElement.style.display = 'none';
-  }
-
-  ionViewWillLeave() {
-    //this.tabBarElement.style.display = 'flex';
   }
 
 }

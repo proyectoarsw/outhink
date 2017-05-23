@@ -5,7 +5,7 @@ import { NavController, App, PopoverController } from 'ionic-angular';
 import { Http, Headers } from '@angular/http';
 import { PopoverPage } from '../popover/popover';
 
-import { Storage } from '@ionic/storage';
+import { ServicesProvider } from '../../providers/services/services';
 import 'rxjs/add/operator/map';
 import * as moment from "moment";
 
@@ -30,8 +30,6 @@ export class ContactPage {
   b: Number = 255;
 
 
-  local: Storage = new Storage();
-
   loading: boolean = false;
 
   user: any = {};
@@ -45,37 +43,23 @@ export class ContactPage {
   public url: String = "https://watson-advisor.mybluemix.net/";
 
 
-  constructor(private _app: App, public navCtrl: NavController, http: Http, public popoverCtrl: PopoverController) {
+  constructor(public services: ServicesProvider, private _app: App, public navCtrl: NavController, http: Http, public popoverCtrl: PopoverController) {
     this.http = http;
 
-    this.local.get('user').then(token => {
-      if (token) {
-        this.user = token;
-      }
-    }).catch(error => {
-      console.log(error);
-    });
+    this.user = this.services.getUser();
 
-    this.local.get('client').then(token => {
-      if (token) {
-        this.client = token;
+    this.client = this.services.getCustomer();
 
-        for (let elem of this.client.sids) {
-          this.selectedCheck.push({ selected: true, sid: elem });
-        };
+    for (let elem of this.client.sids) {
+      this.selectedCheck.push({ selected: true, sid: elem });
+    };
 
-        this.color = 'rgb(' + token.r + ',' + token.g + ',' + token.b + ')';
-        this.r = token.r;
-        this.g = token.g;
-        this.b = token.b;
+    this.color = 'rgb(' + this.client.r + ',' + this.client.g + ',' + this.client.b + ')';
+    this.r = this.client.r;
+    this.g = this.client.g;
+    this.b = this.client.b;
 
-        this.updateChart();
-      }
-    }).catch(error => {
-      console.log(error);
-    });
-
-
+    this.updateChart();
 
   }
 
@@ -222,7 +206,7 @@ export class ContactPage {
       .subscribe(data => {
         console.log(data.json());
 
-        var dat = data.json().dumps;
+        var dat = data.json().data;
 
         if (dat.length > 0) {
 
@@ -259,7 +243,7 @@ export class ContactPage {
       .subscribe(data => {
         console.log(data.json());
 
-        var dat = data.json().dumps;
+        var dat = data.json().data;
 
         if (dat.length > 0) {
 
@@ -309,7 +293,7 @@ export class ContactPage {
       .subscribe(data => {
         console.log(data.json());
 
-        var jobx = data.json().dumps;
+        var jobx = data.json().data;
 
         this.loading = false;
 
@@ -358,7 +342,7 @@ export class ContactPage {
       .subscribe(data => {
         console.log(data.json());
 
-        var dat = data.json().dumps;
+        var dat = data.json().data;
 
         dat.forEach(function (item) {
           var da = moment(item._id).add(1, "day").format("D/M/YYYY");

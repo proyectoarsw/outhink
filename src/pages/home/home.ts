@@ -8,7 +8,7 @@ import * as moment from "moment";
 
 import { PopoverPage } from '../popover/popover';
 
-import { Storage } from '@ionic/storage';
+import { ServicesProvider } from '../../providers/services/services';
 
 import { Push } from '@ionic/cloud-angular';
 
@@ -37,8 +37,6 @@ export class HomePage {
 
   public totalCancelled = '0';
 
-  local: Storage = new Storage();
-
   loading: boolean = false;
 
   user: any = {};
@@ -48,38 +46,23 @@ export class HomePage {
   selected = [];
 
 
-  constructor(public push: Push, private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController, public loadingCtrl: LoadingController) {
+  constructor(public services: ServicesProvider, public push: Push, private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController, public loadingCtrl: LoadingController) {
     this.http = http;
 
-    this.local.get('user').then(token => {
-      if (token) {
-        this.user = token;
-      }
-    }).catch(error => {
-      console.log(error);
-    });
+    this.user = this.services.getUser();
 
-    this.local.get('client').then(token => {
-      if (token) {
-        this.client = token;
-        // this.client.sids = ["ERP","PRD"];
+    this.client = this.services.getCustomer();
 
-        for (let elem of this.client.sids) {
-          this.selectedCheck.push({ selected: true, sid: elem });
-        };
+    for (let elem of this.client.sids) {
+      this.selectedCheck.push({ selected: true, sid: elem });
+    };
 
-        this.color = 'rgb(' + token.r + ',' + token.g + ',' + token.b + ')';
-        this.r = token.r;
-        this.g = token.g;
-        this.b = token.b;
+    this.color = 'rgb(' + this.client.r + ',' + this.client.g + ',' + this.client.b + ')';
+    this.r = this.client.r;
+    this.g = this.client.g;
+    this.b = this.client.b;
 
-        //        this.client.colors = [ 'rgba(253,201,41,0.8)', 'rgba(78,89,140,0.8)', 'rgba(249,199,132,0.8)', 'rgba(255,140,66,0.8)', 'rgba(85,221,224,0.8)', 'rgba(110,235,131,0.8)', 'rgba(228,255,26,0.8)', 'rgba(255,221,161,0.8)', 'rgba(17,157,164,0.8)', 'rgba(243,66,19,0.8)', 'rgba(51,124,160,0.8)', 'rgba(62,195,0,0.8)' ] 
-
-        this.updateChart();
-      }
-    }).catch(error => {
-      console.log(error);
-    });
+    this.updateChart();
 
     // Handle push notifications
 
@@ -277,7 +260,7 @@ export class HomePage {
       .subscribe(data => {
         console.log(data.json());
 
-        this.data = data.json().jobs;
+        this.data = data.json().data;
 
         if (this.data.length > 0) {
 
@@ -316,7 +299,7 @@ export class HomePage {
       .subscribe(data => {
         console.log(data.json());
 
-        var jobx = data.json().jobs;
+        var jobx = data.json().data;
 
         if (jobx.length > 0) {
 
@@ -354,7 +337,7 @@ export class HomePage {
       .subscribe(data => {
         console.log(data.json());
 
-        var jobx = data.json().jobs;
+        var jobx = data.json().data;
 
         if (jobx.length > 0) {
 
@@ -392,7 +375,7 @@ export class HomePage {
       .subscribe(data => {
         console.log(data.json());
 
-        var jobx = data.json().jobs;
+        var jobx = data.json().data;
 
         this.loading = false;
 

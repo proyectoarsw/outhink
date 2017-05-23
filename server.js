@@ -455,9 +455,7 @@ app.post("/dumpchart", cors(), function (request, response) {
 
         collection.find().sort({ value: -1 }).limit(5).toArray(function (er, results) {
 
-          console.log("Results: " + results.length);
-
-          response.send({ success: true, dumps: results });
+          response.send({ success: true, data: results });
 
         });
       }
@@ -497,9 +495,7 @@ app.post("/dumpchart2", cors(), function (request, response) {
 
         collection.find().sort({ value: -1 }).limit(5).toArray(function (er, results) {
 
-          console.log("Results: " + results.length);
-
-          response.send({ success: true, dumps: results });
+          response.send({ success: true, data: results });
 
         });
 
@@ -540,9 +536,7 @@ app.post("/dumpchart3", cors(), function (request, response) {
 
         collection.find().toArray(function (er, results) {
 
-          console.log("Results: " + results.length);
-
-          response.send({ success: true, dumps: results });
+          response.send({ success: true, data: results });
 
         });
       }
@@ -596,9 +590,7 @@ app.post("/dumpchart4", cors(), function (request, response) {
 
         collection.find().limit(10).toArray(function (er, results) {
 
-          console.log("Results: " + results.length);
-
-          response.send({ success: true, dumps: results });
+          response.send({ success: true, data: results });
 
         });
       }
@@ -638,9 +630,7 @@ app.post("/transchart", cors(), function (request, response) {
 
         collection.find().sort({ value: -1 }).limit(10).toArray(function (er, results) {
 
-          console.log("Results: " + results.length);
-
-          response.send({ success: true, trans: results });
+          response.send({ success: true, data: results });
 
         });
       }
@@ -680,9 +670,7 @@ app.post("/memorychart", cors(), function (request, response) {
 
         collection.find().sort({ value: -1 }).limit(10).toArray(function (er, results) {
 
-          console.log("Results: " + results.length);
-
-          response.send({ success: true, trans: results });
+          response.send({ success: true, data: results });
 
         });
       }
@@ -722,9 +710,7 @@ app.post("/memorychart2", cors(), function (request, response) {
 
         collection.find().sort({ value: -1 }).limit(5).toArray(function (er, results) {
 
-          console.log("Results: " + results.length);
-
-          response.send({ success: true, trans: results });
+          response.send({ success: true, data: results });
 
         });
 
@@ -749,9 +735,7 @@ app.post("/jobchart", cors(), function (request, response) {
     sid: { "$in": request.body.sids }
   }, { job_name: 1, duration: 1, log: 1 }).sort({ duration: -1 }).limit(3).toArray(function (er, results) {
 
-    console.log("Results: " + results.length);
-
-    response.send({ success: true, jobs: results });
+    response.send({ success: true, data: results });
 
   });
 
@@ -787,9 +771,7 @@ app.post("/jobchart2", cors(), function (request, response) {
 
         collection.find().sort({ value: -1 }).limit(5).toArray(function (er, results) {
 
-          console.log("Results: " + results.length);
-
-          response.send({ success: true, jobs: results });
+          response.send({ success: true, data: results });
 
         });
       }
@@ -829,9 +811,7 @@ app.post("/jobchart3", cors(), function (request, response) {
 
         collection.find().sort({ value: -1 }).limit(5).toArray(function (er, results) {
 
-          console.log("Results: " + results.length);
-
-          response.send({ success: true, jobs: results });
+          response.send({ success: true, data: results });
 
         });
       }
@@ -871,9 +851,7 @@ app.post("/jobchart4", cors(), function (request, response) {
 
         collection.find().toArray(function (er, results) {
 
-          console.log("Results: " + results.length);
-
-          response.send({ success: true, jobs: results });
+          response.send({ success: true, data: results });
 
         });
       }
@@ -1002,7 +980,7 @@ app.post("/workloadchart", cors(), function (request, response) {
 
           console.log("Results: " + results.length);
 
-          response.send({ success: true, items: results });
+          response.send({ success: true, data: results });
 
         });
       }
@@ -1046,7 +1024,7 @@ app.post("/workloadchart2", cors(), function (request, response) {
 
           console.log("Results: " + results.length);
 
-          response.send({ success: true, items: results });
+          response.send({ success: true, data: results });
 
         });
       }
@@ -1065,7 +1043,7 @@ app.post("/workloadchart3", cors(), function (request, response) {
       if (er) {
         response.send({ success: false, error: er.toString() });
       } else {
-        response.send({ success: true, items: results });
+        response.send({ success: true, data: results });
       }
 
     });

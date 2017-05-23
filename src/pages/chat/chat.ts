@@ -6,14 +6,8 @@ import * as moment from "moment";
 import { Validators, FormBuilder } from '@angular/forms';
 import { PopoverPage } from '../popover/popover';
 
-import { Storage } from '@ionic/storage';
+import { ServicesProvider } from '../../providers/services/services';
 
-/*
-  Generated class for the Chat page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-chat',
   templateUrl: 'chat.html',
@@ -40,8 +34,6 @@ export class ChatPage {
   b: Number = 255;
 
   public url: String = "https://watson-advisor.mybluemix.net/";
-
-  local: Storage = new Storage();
 
   loading: boolean = false;
 
@@ -81,35 +73,23 @@ export class ChatPage {
 
 
 
-  constructor(private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController, private formBuilder: FormBuilder) {
+  constructor(public services: ServicesProvider, private _app: App, public navCtrl: NavController, http: Http, public alertCtrl: AlertController, public toastCtrl: ToastController, public popoverCtrl: PopoverController, private formBuilder: FormBuilder) {
 
     this.http = http;
 
 
 
-    this.local.get('user').then(token => {
-      if (token) {
-        this.user = token;
-      }
-    }).catch(error => {
-      console.log(error);
-    });
+    this.user = this.services.getUser();
 
-    this.local.get('client').then(token => {
-      if (token) {
-        this.client = token;
-        this.queryCustomer = token.name;
-        this.selected = token.sids;
+    this.client = this.services.getCustomer();
 
-        this.color = 'rgb(' + token.r + ',' + token.g + ',' + token.b + ')';
-        this.r = token.r;
-        this.g = token.g;
-        this.b = token.b;
+    this.queryCustomer = this.client.name;
+    this.selected = this.client.sids;
 
-      }
-    }).catch(error => {
-      console.log(error);
-    });
+    this.color = 'rgb(' + this.client.r + ',' + this.client.g + ',' + this.client.b + ')';
+    this.r = this.client.r;
+    this.g = this.client.g;
+    this.b = this.client.b;
 
     this.form = this.formBuilder.group({
       message: ['', Validators.compose([Validators.required])]
@@ -303,27 +283,27 @@ export class ChatPage {
         break;
       case 'heaviest_transactions':
         this.processEntities(entities);
-        this.updateDon2('transchart');
+        this.updateDon('transchart');
         break;
       case 'transactions_average_memory':
         this.processEntities(entities);
-        this.updateBar2('memorychart');
+        this.updateBar('memorychart');
         break;
       case 'transactions_private_average_memory':
         this.processEntities(entities);
-        this.updateBar2('memorychart2');
+        this.updateBar('memorychart2');
         break;
       case 'timeline_dumps':
         this.processEntities(entities);
-        this.updateLine2('dumpchart3');
+        this.updateLine('dumpchart3');
         break;
       case 'most_dumps_programs':
         this.processEntities(entities);
-        this.updateBar3('dumpchart');
+        this.updateBar('dumpchart');
         break;
       case 'errors_dumps':
         this.processEntities(entities);
-        this.updateBar3('dumpchart2');
+        this.updateBar('dumpchart2');
         break;
       case 'alerts_barchart':
         this.processEntities(entities);
@@ -395,17 +375,7 @@ export class ChatPage {
 
 
   }
-  /*
-      hideCharts(){
-      this.showBigNumber= false;
-  
-      this.showLineChart = false;
-  
-      this.showBarChart = false;
-  
-      this.showDoughnutChart = false;
-    }
-  */
+
   checkOT(): boolean {
 
     var sp = this.chatInput.split("TO");
@@ -474,9 +444,8 @@ export class ChatPage {
 
     this.http.post(link, data, { headers: this.contentHeader })
       .subscribe(data => {
-        console.log(data.json());
 
-        this.data = data.json().jobs;
+        this.data = data.json().data;
 
         this.loading = false;
 
@@ -493,7 +462,7 @@ export class ChatPage {
           var mess = this.messages[this.messages.length - 1];
 
           mess.chart = "bar";
-          mess.data = { labels: ar2, data: [{ data: ar1, label: "Total duration (ms)" }] };
+          mess.data = { labels: ar2, data: [{ data: ar1, label: "" }] };
 
           this.scrollToBottom();
 
@@ -511,93 +480,7 @@ export class ChatPage {
 
   }
 
-  updateBar2(urll): void {
 
-    var link = this.url + urll;
-    var data = JSON.stringify({ start: this.start, end: this.end, client: this.queryCustomer, sids: this.selected });
-
-    this.http.post(link, data, { headers: this.contentHeader })
-      .subscribe(data => {
-        console.log(data.json());
-
-        this.data = data.json().trans;
-
-        this.loading = false;
-
-        if (this.data.length > 0) {
-
-          var ar1 = [];
-          var ar2 = [];
-
-          this.data.forEach(function (job) {
-            ar1.push(job.value);
-            ar2.push(job._id);
-          });
-
-          var mess = this.messages[this.messages.length - 1];
-
-          mess.chart = "bar";
-          mess.data = { labels: ar2, data: [{ data: ar1, label: "Average Memory Usage (KB)" }] };
-
-          this.scrollToBottom();
-
-
-        } else {
-
-          this.addMessage("Sorry there is no information", true);
-
-        }
-
-      }, error => {
-        console.log("Oooops!");
-      });
-
-
-  }
-
-  updateBar3(urll): void {
-
-    var link = this.url + urll;
-    var data = JSON.stringify({ start: this.start, end: this.end, client: this.queryCustomer, sids: this.selected });
-
-    this.http.post(link, data, { headers: this.contentHeader })
-      .subscribe(data => {
-        console.log(data.json());
-
-        this.data = data.json().dumps;
-
-        this.loading = false;
-
-        if (this.data.length > 0) {
-
-          var ar1 = [];
-          var ar2 = [];
-
-          this.data.forEach(function (job) {
-            ar1.push(job.value);
-            ar2.push(job._id);
-          });
-
-          var mess = this.messages[this.messages.length - 1];
-
-          mess.chart = "bar";
-          mess.data = { labels: ar2, data: [{ data: ar1, label: "Number of Dumps" }] };
-
-          this.scrollToBottom();
-
-
-        } else {
-
-          this.addMessage("Sorry there is no information", true);
-        }
-
-
-      }, error => {
-        console.log("Oooops!");
-      });
-
-
-  }
   updateBar4(urll): void {
     var date1 = moment(this.start).format()
     var date2 = moment(this.end).format()
@@ -649,20 +532,19 @@ export class ChatPage {
 
     this.http.post(link, data, { headers: this.contentHeader })
       .subscribe(data => {
-        console.log(data.json());
 
-        var jobx = data.json().jobs;
+        var datax = data.json().data;
 
         this.loading = false;
 
-        if (jobx.length > 0) {
+        if (datax.length > 0) {
 
           var ar1 = [];
           var ar2 = [];
 
-          jobx.forEach(function (job) {
-            ar1.push(job.value);
-            ar2.push(job._id);
+          datax.forEach(function (item) {
+            ar1.push(item.value);
+            ar2.push(item._id);
           });
 
           var mess = this.messages[this.messages.length - 1];
@@ -687,53 +569,6 @@ export class ChatPage {
 
   }
 
-  updateDon2(urll): void {
-
-    var link = this.url + urll;
-    var data = JSON.stringify({ start: this.start, end: this.end, client: this.queryCustomer, sids: this.selected });
-
-    this.http.post(link, data, { headers: this.contentHeader })
-      .subscribe(data => {
-        console.log(data.json());
-
-        var jobx = data.json().trans;
-
-        this.loading = false;
-
-        if (jobx.length > 0) {
-
-          var ar1 = [];
-          var ar2 = [];
-
-          var job;
-
-          for (var i = 0; i < jobx.length && i < 5; i++) {
-            job = jobx[i];
-            ar1.push(job.value);
-            ar2.push(job._id);
-          }
-
-          var mess = this.messages[this.messages.length - 1];
-
-          mess.chart = "don";
-          mess.data = { labels: ar2, data: ar1 };
-
-          this.scrollToBottom();
-
-
-        } else {
-
-          this.addMessage("Sorry there is no information", true);
-
-        }
-      }, error => {
-        console.log("Oooops!");
-      });
-
-
-
-
-  }
   updateDon3(urll): void {
     var date1 = moment(this.start).format()
     var date2 = moment(this.end).format()
@@ -797,28 +632,27 @@ export class ChatPage {
     console.log(data);
     this.http.post(link, data, { headers: this.contentHeader })
       .subscribe(data => {
-        console.log(data.json());
 
-        var jobx = data.json().jobs;
+        var datax = data.json().data;
 
         this.loading = false;
 
-        if (jobx.length > 0) {
+        if (datax.length > 0) {
 
           var ar1 = [];
           var ar2 = [];
           var tot = 0;
 
-          jobx.forEach(function (job) {
-            ar1.push(job.value);
-            ar2.push(moment(job._id).add(1, "day").format("D/M/YYYY"));
-            tot += job.value;
+          datax.forEach(function (item) {
+            ar1.push(item.value);
+            ar2.push(moment(item._id).add(1, "day").format("D/M/YYYY"));
+            tot += item.value;
           });
 
           var mess = this.messages[this.messages.length - 1];
 
           mess.chart = "line";
-          mess.data = { labels: ar2, data: [{ data: ar1, label: "Cancelled jobs" }], data2: tot.toLocaleString('de-DE') };
+          mess.data = { labels: ar2, data: [{ data: ar1, label: "" }], data2: tot.toLocaleString('de-DE') };
 
           this.scrollToBottom();
 
@@ -826,49 +660,6 @@ export class ChatPage {
         } else {
 
           this.addMessage("Sorry there is no information", true);
-        }
-      }, error => {
-        console.log("Oooops!");
-      });
-
-  }
-
-  updateLine2(urll): void {
-
-    var link = this.url + urll;
-    var data = JSON.stringify({ start: this.start, end: this.end, client: this.queryCustomer, sids: this.selected });
-    console.log(data);
-    this.http.post(link, data, { headers: this.contentHeader })
-      .subscribe(data => {
-        console.log(data.json());
-
-        var jobx = data.json().dumps;
-
-        this.loading = false;
-
-        if (jobx.length > 0) {
-
-          var ar1 = [];
-          var ar2 = [];
-          var tot = 0;
-
-          jobx.forEach(function (job) {
-            ar1.push(job.value);
-            ar2.push(moment(job._id).add(1, "day").format("D/M/YYYY"));
-            tot += job.value;
-          });
-
-          var mess = this.messages[this.messages.length - 1];
-
-          mess.chart = "line";
-          mess.data = { labels: ar2, data: [{ data: ar1, label: "Number of dumps" }], data2: tot.toLocaleString('de-DE') };
-
-          this.scrollToBottom();
-
-        } else {
-
-          this.addMessage("Sorry there is no information", true);
-
         }
       }, error => {
         console.log("Oooops!");

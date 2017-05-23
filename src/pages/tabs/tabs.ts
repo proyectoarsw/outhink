@@ -7,14 +7,12 @@ import { ChatPage } from '../chat/chat';
 import { WorkloadPage } from '../workload/workload';
 //import { AvailabilityPage } from '../availability/availability';
 
-import { Storage } from '@ionic/storage';
+import { ServicesProvider } from '../../providers/services/services';
 
 @Component({
   templateUrl: 'tabs.html'
 })
 export class TabsPage {
-
-  local: Storage = new Storage();
 
   user: any = {};
 
@@ -31,42 +29,17 @@ export class TabsPage {
   showJobs = true;
   showDumps = true;
 
-  constructor() {
+  constructor(public services: ServicesProvider) {
 
 
 
-    this.local.get('user').then(token => {
-      if (token) {
-        this.user = token;
+    this.user = this.services.getUser();
 
+    var clien = this.services.getCustomer();
 
-
-       // if (token.username == 'mehernan@co.ibm.com' || token.username == 'jarincon@co.ibm.com' || token.username == 'demo@co.ibm.com' || token.username == 'rvargass@co.ibm.com') {
-          //this.showExperience = true;
-       // }
-
-        //this.showDumps = true;
-        //this.showJobs = true;
-        /*
-                if(token.username == 'mehernan@co.ibm.com'){
-                  this.showWorkload = true;
-                }
-                */
-
-        this.local.get('client').then(token => {
-          if (token) {
-            if (token.name == 'Nutresa' || token.name == 'Sura') {
-              this.showTransactions = true;
-            }
-          }
-        }).catch(error => {
-          console.log(error);
-        });
-
-      }
-    }).catch(error => {
-      console.log(error);
-    });
+    if (clien.name == 'Nutresa' || clien.name == 'Sura') {
+      this.showTransactions = true;
+    }
 
 
 
