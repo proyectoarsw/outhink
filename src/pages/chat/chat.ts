@@ -239,16 +239,25 @@ export class ChatPage {
           var respp = data.json();
           console.log(respp);
 
-          if (respp.response.output.text.length > 0) {
+          if (respp.response.output.text.length > 1) {
 
             this.addMessage(respp.response.output.text[0], true);
+            this.addMessage(respp.response.output.text[1], true);
+
+          }
+          if (respp.response.output.text.length == 1) {
+
+            this.addMessage(respp.response.output.text[0], true);
+        
 
           }
 
           if (respp.response.intents.length > 0) {
-            this.loadChart(respp.response.intents[0].intent, respp.response.entities)
+            this.loadChart(respp.response.intents[0].intent, respp.response.entities)        
           }
-
+         // console.log ( JSON.stringify(respp.response.context)+"si entro");
+           
+          
 
         }, error => {
           console.log("Oooops!");
@@ -257,7 +266,7 @@ export class ChatPage {
     }
 
   }
-
+ 
 
   loadChart(intent, entities) {
     switch (intent) {
@@ -319,8 +328,48 @@ export class ChatPage {
         this.updateLine3('https://myhive.mybluemix.net/postdb2weekone');
         break;
 
+      case 'standby_occ' :
+      
+       for (var i = 0; i < entities.length; i++) {
 
-      case 'dynamicot_ot':
+      if(entities[i].entity=="occ"){
+        this.processEntities(entities);
+        this.updateteam('https://teams.mybluemix.net/api/activitiesoccw','standby_occ');
+
+      }else{
+         this.processEntities(entities);
+         this.updateteam('https://teams.mybluemix.net/api/leaderw','standby_occ');
+      }
+      }
+        
+        break;
+
+      case 'alerting_occ':
+        for (var i = 0; i < entities.length; i++) {
+
+      if(entities[i].entity=="occ"){
+        this.processEntities(entities);
+        this.updateteam('https://teams.mybluemix.net/api/activitiesoccw','alerting_occ');
+      }else{
+          this.processEntities(entities);
+          this.updateteam('https://teams.mybluemix.net/api/leaderw','alerting_occ');
+      }
+    
+  }
+        break;
+    case 'leaders_occ':
+
+          this.processEntities(entities);
+          this.updateteam('https://teams.mybluemix.net/api/activitiesoccw','leaders_occ');
+    break;
+
+    case 'give_idea':
+        this.processEntities(entities);
+        console.log(intent);
+        
+    break;
+
+    case 'dynamicot_ot':
         if (this.checkOT()) {
           this.getOT();
         } else {
@@ -328,7 +377,7 @@ export class ChatPage {
           this.addMessage('Please provide the Transport Order Number', true);
         }
         break;
-
+  
     }
   }
 
@@ -341,6 +390,7 @@ export class ChatPage {
     var custt;
     var sidd = [];
     var elem;
+    var occ;
 
     for (var i = 0; i < entities.length; i++) {
       elem = entities[i];
@@ -348,6 +398,8 @@ export class ChatPage {
         custt = elem.value;
       } else if (elem.entity === 'sid') {
         sidd.push(elem.value);
+      }else if (elem.entity === 'OCC') {
+        occ.push(elem.value);
       } else if (elem.entity === 'sys-date') {
         if (!date1) {
           date1 = moment(elem.value).format("YYYY-MM-DDTHH:mm");
@@ -624,6 +676,65 @@ export class ChatPage {
 
 
   }
+  updateteam(urll,inten): void {
+    
+  
+    var link = urll + "/" + this.queryCustomer;
+    if((urll=='https://teams.mybluemix.net/api/activitiesoccw')&&(inten=='standby_occ')){
+    this.http.get(link)
+      .subscribe(data => {
+        var custo = data.json().standby;
+       console.log(custo);
+
+        this.addMessage(custo.member+" "+"telefono"+":"+custo.phmember+" "+"Ciudad"+":"+custo.citymem+" "+"email:"+custo.email,true);
+
+    }, error => {
+        console.log("Oooops!");
+      });
+  }else if((urll=='https://teams.mybluemix.net/api/activitiesoccw')&&(inten=='alerting_occ')){
+ 
+     this.http.get(link)
+      .subscribe(data => {
+        var custo = data.json().alerting;
+       console.log(custo);
+
+        this.addMessage(custo.member+" "+"telefono"+":"+custo.phmember+" "+"Ciudad"+":"+custo.citymem+" "+"email:"+custo.email,true);
+
+    }, error => {
+        console.log("Oooops!");
+      });
+
+  }
+  else if((urll=='https://teams.mybluemix.net/api/activitiesoccw')&&(inten=='leaders_occ')){
+      this.http.get(link)
+      .subscribe(data => {
+        var custo = data.json().leaders;
+       console.log(custo);
+
+        this.addMessage("sql"+":"+custo.sql+" "+"telefono"+":"+custo.phonesql+" "+"Ciudad"+":"+custo.citysql+" "+"sqlmail:"+custo.email+"Team leader"+":"+custo.leader+" "+"telefono"+":"+custo.phoneleader+" "+"Ciudad"+":"+custo.cityleader+" "+"sqlmail:"+custo.emailleader+"Manager"+":"+custo.manager+" "+"telefono"+":"+custo.phonemanager+" "+"Ciudad"+":"+custo.citymanager+" "+"sqlmail:"+custo.emailmanager,true);
+
+    }, error => {
+        console.log("Oooops!");
+      });
+
+  }
+  
+  else{
+     this.http.get(link)
+      .subscribe(data => {
+        var custo = data.json().leaders;
+       console.log(custo);
+
+        this.addMessage(custo.standby+" "+"telefono"+":"+custo.sbtel+" "+"Descripción"+":"+custo.sbDetails+" "+"email:"+custo.sbemail,true);
+
+    }, error => {
+        console.log("Oooops!");
+      });
+
+  }
+
+}
+
 
   updateLine(urll): void {
 
