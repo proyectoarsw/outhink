@@ -3,7 +3,6 @@ var path = require('path')
 var cors = require('cors')
 var app = express();
 var moment = require('moment');
-var http = require("https");
 
 var bodyParser = require('body-parser');
 
@@ -26,7 +25,7 @@ const util = require('util')
 const assert = require('assert');
 
 // For disabling http
-/*app.enable('trust proxy');
+app.enable('trust proxy');
 app.use(function (req, res, next) {
   if (req.secure) {
     // request was via https, so do no special handling
@@ -36,9 +35,9 @@ app.use(function (req, res, next) {
     res.redirect('https://' + req.headers.host + req.url);
   }
 });
-*/
 
-//app.use(express.static(path.resolve(__dirname, 'www')));
+
+app.use(express.static(path.resolve(__dirname, 'www')));
 app.set('port', process.env.PORT || 3000);
 
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
@@ -50,46 +49,46 @@ var ObjectId = require("mongodb").ObjectId;
 
 // Now lets get cfenv and ask it to parse the environment variable
 var cfenv = require('cfenv');
-//var appenv = cfenv.getAppEnv();
+var appenv = cfenv.getAppEnv();
 
 // Within the application environment (appenv) there's a services object
-//var services = appenv.services;
+var services = appenv.services;
 
 // The services object is a map named by service so we extract the one for MongoDB
-//var mongodb_services = services["compose-for-mongodb"];
+var mongodb_services = services["compose-for-mongodb"];
 //var mongodb_services = services["mongodb"];
 
 // This check ensures there is a services for MongoDB databases
-//assert(!util.isUndefined(mongodb_services), "Must be bound to mongodb services");
+assert(!util.isUndefined(mongodb_services), "Must be bound to mongodb services");
 
 // We now take the first bound MongoDB service and extract it's credentials object
-//var credentials = mongodb_services[0].credentials;
+var credentials = mongodb_services[0].credentials;
 
 // Within the credentials, an entry ca_certificate_base64 contains the SSL pinning key
 // We convert that from a string into a Buffer entry in an array which we use when
 // connecting.
-//var ca = [new Buffer(credentials.ca_certificate_base64, 'base64')];
+var ca = [new Buffer(credentials.ca_certificate_base64, 'base64')];
 
 // This is a global variable we'll use for handing the MongoDB client around
 var mongodb;
 
 // Initialize conversation
 
-//var conversation_services = services["conversation"];
+var conversation_services = services["conversation"];
 
 // This check ensures there is a services for Watson Conversation
-//assert(!util.isUndefined(conversation_services), "Must be bound to conversation services");
+assert(!util.isUndefined(conversation_services), "Must be bound to conversation services");
 
 // We now take the first bound Watson conversation service and extract it's credentials object
-//var credentials_conversation = conversation_services[0].credentials;
+var credentials_conversation = conversation_services[0].credentials;
 
-//var conversation = new ConversationV1({
-//  username: process.env.CONVERSATION_USERNAME,
-//  password: process.env.CONVERSATION_PASSWORD,
-//  version_date: ConversationV1.VERSION_DATE_2017_02_03
-//});
+var conversation = new ConversationV1({
+  username: process.env.CONVERSATION_USERNAME,
+  password: process.env.CONVERSATION_PASSWORD,
+  version_date: ConversationV1.VERSION_DATE_2017_02_03
+});
 
-/*
+
 function initDBConnection() {
 
   MongoClient.connect(credentials.uri + '?authMode=scram-sha1&rm.tcpNoDelay=true', {
@@ -115,8 +114,8 @@ function initDBConnection() {
   );
 
 }
-*/
-//initDBConnection();
+
+initDBConnection();
 
 app.use(express.static(__dirname + '/public'));
 
@@ -125,8 +124,8 @@ app.post("/dump", function (req, response) {
   console.log("Insert dumps");
   console.log(req.body);
 
-  //var body = req.body;
-  var body = [];
+  var body = req.body;
+  //var body = [];
   var csv = "customer, sid, environment, app_server, user, client, runtime_error, terminated_program, transaction_id, day, month, year";
 
   var it = {};
@@ -139,13 +138,16 @@ app.post("/dump", function (req, response) {
 
     it.datee = moment(it.date, "DD.MM.YYYY").toDate();
 
-    da = it.date.split('.');
+    if (it.customer == 'Nutresa') {
 
-    csv += '\n' + it.customer + ',' + it.sid + ',' + it.environment + ',' + it.app_server + ',' + it.user + ',' + it.client + ',' + it.runtime_error + ',' + it.terminated_program + ',' + it.transaction_id + ',' + da[0] + ',' + da[1] + ',' + da[2];
+      da = it.date.split('.');
 
+      csv += '\n' + it.customer + ',' + it.sid + ',' + it.environment + ',' + it.app_server + ',' + it.user + ',' + it.client + ',' + it.runtime_error + ',' + it.terminated_program + ',' + it.transaction_id + ',' + da[0] + ',' + da[1] + ',' + da[2];
+    }
   }
 
   var headers = {
+    'accept': 'application/json',
     'X-IBM-Client-Id': '273ce84f-1005-4deb-8c32-84ec85075821',
     'X-IBM-Client-Secret': 'G2aR0bM2uJ0kJ0sM1lM4gE1iB8hB6pU0nH4oO4tO6lG7nN1hM8'
   }
@@ -154,71 +156,34 @@ app.post("/dump", function (req, response) {
     grant_type: 'refresh_token',
     refresh_token: 'nadYI1+pPAVuHlisshMjS/J8XWC8eMdcHP65OPqt/OX2jUF5ECgU3c+rni+ZtHtNlxtZhIC9pLSJhchMLHGbzES1BuCouxTlw1gKTpR3HcvCyDdtqWauIIvaXg4IVQzDvWJKuFH2ufjvxbJEua9XlFb5ssA/k/tRQzKAoiSrN+zS85Vyjz/9Jyes0QygZiGUX1IuQNOhUtnScJm7ArEjMunRFtnUwir4qqq8odew6oENAqLeXokqZ/Qqpet+webaQAUQHy6wy0uUoPYhawXHx1IurtX7eCCr0Q+InXwDGF5Ef0GXjotDAA'
   }
+
   request.post({ url: 'https://api.ibm.com/watsonanalytics/run/oauth2/v1/token', formData: form, headers: headers }, function (err, httpResponse, bodyx) {
-    console.log(bodyx);
-    var headers2= {
-        'accept': 'application/json',
-        'authorization': 'Bearer' + ' ' + bodyx.access_token,
-        'content-type': 'text/csv',
-        'X-IBM-Client-Id': '273ce84f-1005-4deb-8c32-84ec85075821',
-        'X-IBM-Client-Secret': 'G2aR0bM2uJ0kJ0sM1lM4gE1iB8hB6pU0nH4oO4tO6lG7nN1hM8'
-      };
+    console.log(JSON.parse(bodyx).access_token);
+    var headers2 = {
+      'accept': 'application/json',
+      'authorization': 'Bearer' + ' ' + JSON.parse(bodyx).access_token,
+      'content-type': 'text/csv',
+      'X-IBM-Client-Id': '273ce84f-1005-4deb-8c32-84ec85075821',
+      'X-IBM-Client-Secret': 'G2aR0bM2uJ0kJ0sM1lM4gE1iB8hB6pU0nH4oO4tO6lG7nN1hM8'
+    };
 
 
-    request.put({url:'https://api.ibm.com/watsonanalytics/run/data/v1/datasets/2fccbb20-56f7-4b11-90e2-c16802be8e8d/content',headers:headers2,data:csv}, function (error2, response3, body3) {
-      console.log(body3);
-      if (!error2 && response3.statusCode == 200) {
-        console.log(body3);
-        response.send("OK");
-      } else {
-        console.log(error2);
-      }
+    request.put({ url: 'https://api.ibm.com/watsonanalytics/run/data/v1/datasets/2fccbb20-56f7-4b11-90e2-c16802be8e8d/content?appendData=true', headers: headers2, body: csv }, function (error2, response3, body3) {
+
     });
 
   })
 
-  /*
-    // Start the request
-    request(options, function (error, response2, body2) {
-      if (!error && response2.statusCode == 200) {
-  
-        console.log(body2);
-  
-        var options2 = {
-          url: 'https://api.ibm.com/watsonanalytics/run/oauth2/v1/token',
-          method: 'PUT',
-          headers: {
-            'accept': 'application/json',
-            'authorization': 'Bearer' + ' ' + body2.access_token,
-            'content-type': 'text/csv',
-            'X-IBM-Client-Id': '273ce84f-1005-4deb-8c32-84ec85075821',
-            'X-IBM-Client-Secret': 'G2aR0bM2uJ0kJ0sM1lM4gE1iB8hB6pU0nH4oO4tO6lG7nN1hM8'
-          },
-          data: csv
-        };
-  
-        request(options2, function (error2, response3, body3) {
-          if (!error2 && response3.statusCode == 200) {
-            console.log(body3);
-          } else {
-            console.log(error2);
-          }
-        });
-      } else {
-        console.log(error);
-      }
-    })*/
 
-  /*
-    mongodb.collection("dumps").insertMany(request.body, function (err, r) {
-      if (err) {
-        console.log("Error: " + err);
-        response.status(500).send(err);
-      } else {
-        console.log("Success");
-        response.send({ success: true });
-      }
-    });*/
+  mongodb.collection("dumps").insertMany(body, function (err, r) {
+    if (err) {
+      console.log("Error: " + err);
+      response.status(500).send(err);
+    } else {
+      console.log("Success");
+      response.send({ success: true });
+    }
+  });
 
 });
 
