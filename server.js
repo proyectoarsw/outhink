@@ -88,6 +88,116 @@ var conversation = new ConversationV1({
   version_date: ConversationV1.VERSION_DATE_2017_02_03
 });
 
+// -----------------watson conversation service for Slack
+var Botkit = require('botkit');
+var Promise = require('bluebird');
+
+var convID = '56613a83-e77c-41e4-a8b3-48886a7eaca5';
+
+var middleware = require('botkit-middleware-watson')({
+  username: process.env.CONVERSATION_USERNAME,
+  password: process.env.CONVERSATION_PASSWORD,
+  workspace_id: convID,
+  url: process.env.CONVERSATION_URL || 'https://gateway.watsonplatform.net/conversation/api',
+  version_date: '2017-05-26'
+});
+
+// Configure your bot.
+var slackController = Botkit.slackbot();
+var slackBot = slackController.spawn({
+  token: 'xoxb-218317456099-5UYMjgwBFhZu81MHtCrL1Duz'
+});
+
+function getOCCStandby(callback) {
+  //this version of function updates only the context object
+  var options = {
+    method: 'POST',
+    url: 'https://teams.mybluemix.net/api/slack',
+    json: true,
+    body: {
+      text: 'standbyocc nutresa',
+    }
+  };
+
+  var res = '';
+
+  request(options, function (err, resp, body) {
+    res = '';
+    if (err){
+      res = err.toString();
+    }else{
+      res = body;
+    }
+    callback(res);
+  });
+}
+
+function getDOTHistory(callback) {
+  //this version of function updates only the context object
+
+  var options = {
+    method: 'POST',
+    url: 'https://myhive.mybluemix.net/api/slack',
+    json: true,
+    body: {
+      text: 'history',
+    }
+  };
+
+  var res = '';
+
+  request(options, function (err, resp, body) {
+    res = '';
+    if (err){
+      res = err.toString();
+    }else{
+      res = body;
+    }
+
+    callback(res);
+  });
+}
+
+//Promise.promisifyAll(middleware);
+//var getOCCStandbyA = Promise.promisify(getOCCStandby);
+//var getDOTHistoryA = Promise.promisify(getDOTHistory);
+
+
+
+slackController.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], function (bot, message) {
+  slackController.log('Slack message received');
+  middleware.interpret(bot, message, function () {
+    if (message.watsonError) {
+      return bot.reply(message, "I'm sorry, but for technical reasons I can't respond to your message");
+    }
+    if (typeof message.watsonData.output !== 'undefined') {
+      //send "Please wait" to users
+      bot.reply(message, message.watsonData.output.text.join('\n'));
+
+      if (message.watsonData.output.action === 'dot_history') {
+
+        //excecute action
+        getDOTHistory(function (res) {
+          //send message
+          bot.reply(message, res);
+        });
+      }else if (message.watsonData.output.action === 'standby_occ') {
+
+        //excecute action
+        getOCCStandby(function (res) {
+          //send message
+          bot.reply(message, res);
+        });
+      }
+    }
+  });
+});
+
+
+slackBot.startRTM();
+
+
+//----------------------------------
 
 function initDBConnection() {
 
