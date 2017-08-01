@@ -123,9 +123,9 @@ function getOCCStandby(callback) {
 
   request(options, function (err, resp, body) {
     res = '';
-    if (err){
+    if (err) {
       res = err.toString();
-    }else{
+    } else {
       res = body;
     }
     callback(res);
@@ -148,9 +148,9 @@ function getDOTHistory(callback) {
 
   request(options, function (err, resp, body) {
     res = '';
-    if (err){
+    if (err) {
       res = err.toString();
-    }else{
+    } else {
       res = body;
     }
 
@@ -181,7 +181,7 @@ slackController.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], f
           //send message
           bot.reply(message, res);
         });
-      }else if (message.watsonData.output.action === 'standby_occ') {
+      } else if (message.watsonData.output.action === 'standby_occ') {
 
         //excecute action
         getOCCStandby(function (res) {
@@ -297,6 +297,81 @@ app.post("/dump", function (req, response) {
 
 });
 
+// Service to add job records
+app.post("/job", function (req, response) {
+  console.log("Insert job records");
+  console.log(req.body);
+
+  var body = req.body;
+
+  var csv = "customer, sid, environment, job_name, job_created_by, status, start_time, duration, delay, day, month, year";
+
+  var it = {};
+
+  for (var x = 0; x < body.jobs.length; x++) {
+
+    it = body.jobs[x];
+
+    var log = "";
+
+    if (x < 3) {
+
+      log = body.log[x];
+
+      if (log) {
+        it.log = log;
+      }
+    }
+
+    it.date = moment(it.start_date, "DDMMYYYY").toDate();
+
+    if (it.customer == 'Nutresa') {
+
+      csv += '\n' + it.customer + ',' + it.sid + ',' + it.environment + ',' + it.job_name + ',' + it.job_created_by + ',' + it.status + ',' + it.start_time + ',' + it.duration + ',' + it.delay + ',' + it.start_date.substring(0, 2) + ',' + it.start_date.substring(2, 4) + ',' + it.start_date.substring(4, 8);
+    }
+
+  }
+
+  var headers = {
+    'accept': 'application/json',
+    'X-IBM-Client-Id': '273ce84f-1005-4deb-8c32-84ec85075821',
+    'X-IBM-Client-Secret': 'G2aR0bM2uJ0kJ0sM1lM4gE1iB8hB6pU0nH4oO4tO6lG7nN1hM8'
+  }
+
+  var form = {
+    grant_type: 'refresh_token',
+    refresh_token: 'nadYI1+pPAVuHlisshMjS/J8XWC8eMdcHP65OPqt/OX2jUF5ECgU3c+rni+ZtHtNlxtZhIC9pLSJhchMLHGbzES1BuCouxTlw1gKTpR3HcvCyDdtqWauIIvaXg4IVQzDvWJKuFH2ufjvxbJEua9XlFb5ssA/k/tRQzKAoiSrN+zS85Vyjz/9Jyes0QygZiGUX1IuQNOhUtnScJm7ArEjMunRFtnUwir4qqq8odew6oENAqLeXokqZ/Qqpet+webaQAUQHy6wy0uUoPYhawXHx1IurtX7eCCr0Q+InXwDGF5Ef0GXjotDAA'
+  }
+
+  request.post({ url: 'https://api.ibm.com/watsonanalytics/run/oauth2/v1/token', formData: form, headers: headers }, function (err, httpResponse, bodyx) {
+    console.log(JSON.parse(bodyx).access_token);
+    var headers2 = {
+      'accept': 'application/json',
+      'authorization': 'Bearer' + ' ' + JSON.parse(bodyx).access_token,
+      'content-type': 'text/csv',
+      'X-IBM-Client-Id': '273ce84f-1005-4deb-8c32-84ec85075821',
+      'X-IBM-Client-Secret': 'G2aR0bM2uJ0kJ0sM1lM4gE1iB8hB6pU0nH4oO4tO6lG7nN1hM8'
+    };
+
+
+    request.put({ url: 'https://api.ibm.com/watsonanalytics/run/data/v1/datasets/dcb7a4b6-b3f8-4c65-9189-485462eaad2f/content?appendData=true', headers: headers2, body: csv }, function (error2, response3, body3) {
+
+    });
+
+  })
+
+  mongodb.collection("job").insertMany(body.jobs, function (err, r) {
+    if (err) {
+      console.log("Error: " + err);
+      response.status(500).send(err);
+    } else {
+      console.log("Success");
+      response.send({ success: true });
+    }
+  });
+
+});
+
 // Service to add workload records
 app.post("/workload", function (request, response) {
   console.log("Insert workload records");
@@ -382,41 +457,6 @@ app.post("/system", function (request, response) {
   console.log(request.body);
 
   mongodb.collection("system").insertMany(request.body, function (err, r) {
-    if (err) {
-      console.log("Error: " + err);
-      response.status(500).send(err);
-    } else {
-      console.log("Success");
-      response.send({ success: true });
-    }
-  });
-
-});
-
-// Service to add job records
-app.post("/job", function (request, response) {
-  console.log("Insert job records");
-  console.log(request.body);
-
-  var jobx = request.body;
-
-  for (var x = 0; x < jobx.jobs.length; x++) {
-
-    var jo = jobx.jobs[x];
-
-    if (x < 3) {
-
-      var log = jobx.log[x];
-
-      if (log) {
-        jo.log = log;
-      }
-    }
-
-    jo.date = moment(jo.start_date, "DDMMYYYY").toDate();
-  }
-
-  mongodb.collection("job").insertMany(jobx.jobs, function (err, r) {
     if (err) {
       console.log("Error: " + err);
       response.status(500).send(err);
@@ -1566,6 +1606,27 @@ app.get("/test", function (request, response) {
     } else {
       response.send({ success: true, items: items });
     }
+  });
+
+});
+
+//Service to refresh WA token
+app.get("/watoken", function (req, response) {
+
+  var headers = {
+    'accept': 'application/json',
+    'X-IBM-Client-Id': '273ce84f-1005-4deb-8c32-84ec85075821',
+    'X-IBM-Client-Secret': 'G2aR0bM2uJ0kJ0sM1lM4gE1iB8hB6pU0nH4oO4tO6lG7nN1hM8'
+  }
+
+  var form = {
+    grant_type: 'refresh_token',
+    refresh_token: 'nadYI1+pPAVuHlisshMjS/J8XWC8eMdcHP65OPqt/OX2jUF5ECgU3c+rni+ZtHtNlxtZhIC9pLSJhchMLHGbzES1BuCouxTlw1gKTpR3HcvCyDdtqWauIIvaXg4IVQzDvWJKuFH2ufjvxbJEua9XlFb5ssA/k/tRQzKAoiSrN+zS85Vyjz/9Jyes0QygZiGUX1IuQNOhUtnScJm7ArEjMunRFtnUwir4qqq8odew6oENAqLeXokqZ/Qqpet+webaQAUQHy6wy0uUoPYhawXHx1IurtX7eCCr0Q+InXwDGF5Ef0GXjotDAA'
+  }
+
+  request.post({ url: 'https://api.ibm.com/watsonanalytics/run/oauth2/v1/token', formData: form, headers: headers }, function (err, httpResponse, bodyx) {
+
+    response.send(JSON.parse(bodyx).access_token)
   });
 
 });
