@@ -158,12 +158,6 @@ function getDOTHistory(callback) {
   });
 }
 
-//Promise.promisifyAll(middleware);
-//var getOCCStandbyA = Promise.promisify(getOCCStandby);
-//var getDOTHistoryA = Promise.promisify(getDOTHistory);
-
-
-
 slackController.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], function (bot, message) {
   slackController.log('Slack message received');
   middleware.interpret(bot, message, function () {
@@ -235,7 +229,7 @@ app.post("/dump", function (req, response) {
   console.log(req.body);
 
   var body = req.body;
-  //var body = [];
+
   var csv = "customer, sid, environment, app_server, user, client, runtime_error, terminated_program, transaction_id, day, month, year";
 
   var it = {};
@@ -268,7 +262,6 @@ app.post("/dump", function (req, response) {
   }
 
   request.post({ url: 'https://api.ibm.com/watsonanalytics/run/oauth2/v1/token', formData: form, headers: headers }, function (err, httpResponse, bodyx) {
-    console.log(JSON.parse(bodyx).access_token);
     var headers2 = {
       'accept': 'application/json',
       'authorization': 'Bearer' + ' ' + JSON.parse(bodyx).access_token,
@@ -344,7 +337,6 @@ app.post("/job", function (req, response) {
   }
 
   request.post({ url: 'https://api.ibm.com/watsonanalytics/run/oauth2/v1/token', formData: form, headers: headers }, function (err, httpResponse, bodyx) {
-    console.log(JSON.parse(bodyx).access_token);
     var headers2 = {
       'accept': 'application/json',
       'authorization': 'Bearer' + ' ' + JSON.parse(bodyx).access_token,
@@ -365,6 +357,160 @@ app.post("/job", function (req, response) {
       console.log("Error: " + err);
       response.status(500).send(err);
     } else {
+      response.send({ success: true });
+    }
+  });
+
+});
+
+// Service to add transactions
+app.post("/transaction", function (req, response) {
+  console.log("Insert transactions");
+  console.log(req.body);
+
+  var body = req.body;
+
+  var csv = "customer, sid, environment, instance, sub_app, transaction, steps, resp_time, day, month, year";
+
+  var it = {};
+
+  for (var x = 0; x < body.length; x++) {
+
+    it = body[x];
+
+    it.datee = moment(it.date, "DDMMYYYY").toDate();
+
+    if (it.customer == 'Nutresa') {
+
+      csv += '\n' + it.customer + ',' + it.sid + ',' + it.environment + ',' + it.instance + ',' + it.sub_app + ',' + it.transaction + ',' + it.steps + ',' + it.resp_time + ',' + it.date.substring(0, 2) + ',' + it.date.substring(2, 4) + ',' + it.date.substring(4, 8);
+    }
+  }
+
+  var headers = {
+    'accept': 'application/json',
+    'X-IBM-Client-Id': '273ce84f-1005-4deb-8c32-84ec85075821',
+    'X-IBM-Client-Secret': 'G2aR0bM2uJ0kJ0sM1lM4gE1iB8hB6pU0nH4oO4tO6lG7nN1hM8'
+  }
+
+  var form = {
+    grant_type: 'refresh_token',
+    refresh_token: 'nadYI1+pPAVuHlisshMjS/J8XWC8eMdcHP65OPqt/OX2jUF5ECgU3c+rni+ZtHtNlxtZhIC9pLSJhchMLHGbzES1BuCouxTlw1gKTpR3HcvCyDdtqWauIIvaXg4IVQzDvWJKuFH2ufjvxbJEua9XlFb5ssA/k/tRQzKAoiSrN+zS85Vyjz/9Jyes0QygZiGUX1IuQNOhUtnScJm7ArEjMunRFtnUwir4qqq8odew6oENAqLeXokqZ/Qqpet+webaQAUQHy6wy0uUoPYhawXHx1IurtX7eCCr0Q+InXwDGF5Ef0GXjotDAA'
+  }
+
+  request.post({ url: 'https://api.ibm.com/watsonanalytics/run/oauth2/v1/token', formData: form, headers: headers }, function (err, httpResponse, bodyx) {
+    var headers2 = {
+      'accept': 'application/json',
+      'authorization': 'Bearer' + ' ' + JSON.parse(bodyx).access_token,
+      'content-type': 'text/csv',
+      'X-IBM-Client-Id': '273ce84f-1005-4deb-8c32-84ec85075821',
+      'X-IBM-Client-Secret': 'G2aR0bM2uJ0kJ0sM1lM4gE1iB8hB6pU0nH4oO4tO6lG7nN1hM8'
+    };
+
+
+    request.put({ url: 'https://api.ibm.com/watsonanalytics/run/data/v1/datasets/aef7c7ee-fda5-417c-870f-5e3e338bc2e3/content?appendData=true', headers: headers2, body: csv }, function (error2, response3, body3) {
+
+    });
+
+  })
+
+  mongodb.collection("transaction").insertMany(body, function (err, r) {
+    if (err) {
+      console.log("Error: " + err);
+      response.status(500).send(err);
+    } else {
+      response.send({ success: true });
+    }
+  });
+  
+
+});
+
+// Service to add memory transactions
+app.post("/memoryt", function (req, response) {
+  console.log("Insert memoryt");
+  console.log(req.body);
+
+  var body = req.body;
+
+  var csv = "customer, sid, environment, instance, transaction, steps, avg_memory, avg_priv_memory, day, month, year";
+
+  var it = {};
+
+  var da = [];
+
+  for (var x = 0; x < body.length; x++) {
+
+    it = body[x];
+
+    it.datee = moment(it.date, "DD.MM.YYYY").toDate();
+
+    if (it.customer == 'Nutresa') {
+
+      da = it.date.split('.');
+
+      csv += '\n' + it.customer + ',' + it.sid + ',' + it.environment + ',' + it.instance + ',' + it.transaction + ',' + it.steps + ',' + it.avg_memory + ',' + it.avg_priv_memory + ',' + da[0] + ',' + da[1] + ',' + da[2];
+    }
+
+  }
+
+  var headers = {
+    'accept': 'application/json',
+    'X-IBM-Client-Id': '273ce84f-1005-4deb-8c32-84ec85075821',
+    'X-IBM-Client-Secret': 'G2aR0bM2uJ0kJ0sM1lM4gE1iB8hB6pU0nH4oO4tO6lG7nN1hM8'
+  }
+
+  var form = {
+    grant_type: 'refresh_token',
+    refresh_token: 'nadYI1+pPAVuHlisshMjS/J8XWC8eMdcHP65OPqt/OX2jUF5ECgU3c+rni+ZtHtNlxtZhIC9pLSJhchMLHGbzES1BuCouxTlw1gKTpR3HcvCyDdtqWauIIvaXg4IVQzDvWJKuFH2ufjvxbJEua9XlFb5ssA/k/tRQzKAoiSrN+zS85Vyjz/9Jyes0QygZiGUX1IuQNOhUtnScJm7ArEjMunRFtnUwir4qqq8odew6oENAqLeXokqZ/Qqpet+webaQAUQHy6wy0uUoPYhawXHx1IurtX7eCCr0Q+InXwDGF5Ef0GXjotDAA'
+  }
+
+  request.post({ url: 'https://api.ibm.com/watsonanalytics/run/oauth2/v1/token', formData: form, headers: headers }, function (err, httpResponse, bodyx) {
+    var headers2 = {
+      'accept': 'application/json',
+      'authorization': 'Bearer' + ' ' + JSON.parse(bodyx).access_token,
+      'content-type': 'text/csv',
+      'X-IBM-Client-Id': '273ce84f-1005-4deb-8c32-84ec85075821',
+      'X-IBM-Client-Secret': 'G2aR0bM2uJ0kJ0sM1lM4gE1iB8hB6pU0nH4oO4tO6lG7nN1hM8'
+    };
+
+
+    request.put({ url: 'https://api.ibm.com/watsonanalytics/run/data/v1/datasets/543553af-528b-4570-94a3-89b29642e301/content?appendData=true', headers: headers2, body: csv }, function (error2, response3, body3) {
+
+    });
+
+  })
+
+  mongodb.collection("memoryt").insertMany(body, function (err, r) {
+    if (err) {
+      console.log("Error: " + err);
+      response.status(500).send(err);
+    } else {
+      response.send({ success: true });
+    }
+  });
+  
+
+});
+
+// Service to add memory transactions per user
+app.post("/memoryu", function (request, response) {
+  console.log("Insert memoryu");
+  console.log(request.body);
+
+  var dumpx = request.body;
+
+  for (var x = 0; x < dumpx.length; x++) {
+
+    var jo = dumpx[x];
+
+    jo.datee = moment(jo.date, "DD.MM.YYYY").toDate();
+  }
+
+  mongodb.collection("memoryu").insertMany(request.body, function (err, r) {
+    if (err) {
+      console.log("Error: " + err);
+      response.status(500).send(err);
+    } else {
       console.log("Success");
       response.send({ success: true });
     }
@@ -372,6 +518,7 @@ app.post("/job", function (req, response) {
 
 });
 
+/*
 // Service to add workload records
 app.post("/workload", function (request, response) {
   console.log("Insert workload records");
@@ -468,59 +615,6 @@ app.post("/system", function (request, response) {
 
 });
 
-
-// Service to add memory transactions
-app.post("/memoryt", function (request, response) {
-  console.log("Insert memoryt");
-  console.log(request.body);
-
-  var dumpx = request.body;
-
-  for (var x = 0; x < dumpx.length; x++) {
-
-    var jo = dumpx[x];
-
-    jo.datee = moment(jo.date, "DD.MM.YYYY").toDate();
-  }
-
-  mongodb.collection("memoryt").insertMany(request.body, function (err, r) {
-    if (err) {
-      console.log("Error: " + err);
-      response.status(500).send(err);
-    } else {
-      console.log("Success");
-      response.send({ success: true });
-    }
-  });
-
-});
-
-// Service to add memory transactions per user
-app.post("/memoryu", function (request, response) {
-  console.log("Insert memoryu");
-  console.log(request.body);
-
-  var dumpx = request.body;
-
-  for (var x = 0; x < dumpx.length; x++) {
-
-    var jo = dumpx[x];
-
-    jo.datee = moment(jo.date, "DD.MM.YYYY").toDate();
-  }
-
-  mongodb.collection("memoryu").insertMany(request.body, function (err, r) {
-    if (err) {
-      console.log("Error: " + err);
-      response.status(500).send(err);
-    } else {
-      console.log("Success");
-      response.send({ success: true });
-    }
-  });
-
-});
-
 // Service to add transactions per subapp
 app.post("/subapp", function (request, response) {
   console.log("Insert subapp");
@@ -547,31 +641,7 @@ app.post("/subapp", function (request, response) {
 
 });
 
-// Service to add transactions
-app.post("/transaction", function (request, response) {
-  console.log("Insert transactions");
-  console.log(request.body);
-
-  var dumpx = request.body;
-
-  for (var x = 0; x < dumpx.length; x++) {
-
-    var jo = dumpx[x];
-
-    jo.datee = moment(jo.date, "DDMMYYYY").toDate();
-  }
-
-  mongodb.collection("transaction").insertMany(request.body, function (err, r) {
-    if (err) {
-      console.log("Error: " + err);
-      response.status(500).send(err);
-    } else {
-      console.log("Success");
-      response.send({ success: true });
-    }
-  });
-
-});
+*/
 
 
 /// TEST
