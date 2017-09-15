@@ -3,14 +3,9 @@ var path = require('path')
 var cors = require('cors')
 var app = express();
 var moment = require('moment');
-
 var bodyParser = require('body-parser');
-
 var ConversationV1 = require('watson-developer-cloud/conversation/v1');
-
-// Ionic API
 var request = require("request");
-var token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4OWE4MTIwYi0wZjdkLTQzZWItODgyMC0yOGIxYmRhODIyY2IifQ.fuo2-uG6uvCvkKZI6UifbpcUrZMQoajaAjX-98f3p0U';
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
@@ -92,7 +87,7 @@ var conversation = new ConversationV1({
 var Botkit = require('botkit');
 var Promise = require('bluebird');
 
-var convID = '56613a83-e77c-41e4-a8b3-48886a7eaca5';
+var convID = '1231062f-0531-4888-a4f7-14a6984de436';
 
 var middleware = require('botkit-middleware-watson')({
   username: process.env.CONVERSATION_USERNAME,
@@ -108,11 +103,34 @@ var slackBot = slackController.spawn({
   token: 'xoxb-218317456099-5UYMjgwBFhZu81MHtCrL1Duz'
 });
 
-function getOCCStandby(callback) {
-  //this version of function updates only the context object
+function getStandby(cust,sl, callback) {
+
   var options = {
     method: 'POST',
     url: 'https://teams.mybluemix.net/api/slack',
+    json: true,
+    body: {
+      text: 'standby ' + cust,
+    }
+  };
+
+  var res = '';
+
+  request(options, function (err, resp, body) {
+    res = '';
+    if (err) {
+      res = err.toString();
+    } else {
+      res = body;
+    }
+    callback(res);
+  });
+}
+
+function getOCCStandby(callback) {
+  var options = {
+    method: 'POST',
+    url: 'https://teamswm.mybluemix.net/api/slack',
     json: true,
     body: {
       text: 'standbyocc nutresa',
@@ -133,7 +151,6 @@ function getOCCStandby(callback) {
 }
 
 function getDOTHistory(callback) {
-  //this version of function updates only the context object
 
   var options = {
     method: 'POST',
@@ -167,8 +184,30 @@ slackController.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], f
     if (typeof message.watsonData.output !== 'undefined') {
       //send "Please wait" to users
       bot.reply(message, message.watsonData.output.text.join('\n'));
+      if (message.watsonData.output.action === 'standby') {
 
-      if (message.watsonData.output.action === 'dot_history') {
+        var customer = 'none';
+        var serviceLine = 'none';
+
+        var obj = {};
+
+        for(var i = 0; i < message.watsonData.entities.length; i++){
+          obj = message.watsonData.entities[i];
+
+          if(obj.entity === 'cliente'){
+            customer = obj.value;
+          }else if(obj.entity === 'linea_servicio'){
+            serviceLine = obj.value;
+          }
+        }
+
+        //excecute action
+        getStandby(customer,serviceLine,function (res) {
+          //send message
+          bot.reply(message, res);
+        });
+      }
+      else if (message.watsonData.output.action === 'dot_history') {
 
         //excecute action
         getDOTHistory(function (res) {
@@ -421,7 +460,7 @@ app.post("/transaction", function (req, response) {
       response.send({ success: true });
     }
   });
-  
+
 
 });
 
@@ -488,7 +527,7 @@ app.post("/memoryt", function (req, response) {
       response.send({ success: true });
     }
   });
-  
+
 
 });
 
