@@ -103,7 +103,7 @@ var slackBot = slackController.spawn({
   token: 'xoxb-218317456099-5UYMjgwBFhZu81MHtCrL1Duz'
 });
 
-function getStandby(cust,sl, callback) {
+function getStandby(cust, sl, callback) {
 
   var options = {
     method: 'POST',
@@ -111,6 +111,31 @@ function getStandby(cust,sl, callback) {
     json: true,
     body: {
       text: 'standby ' + cust,
+    }
+  };
+
+  var res = '';
+
+  request(options, function (err, resp, body) {
+    res = '';
+    if (err) {
+      res = err.toString();
+    } else {
+      res = body;
+    }
+    callback(res);
+  });
+}
+
+function getNewStandby(cust, sl, callback) {
+
+  var options = {
+    method: 'POST',
+    url: 'https://teamswm.mybluemix.net/api/slack',
+    json: true,
+    body: {
+      sl: sl,
+      cus: cust
     }
   };
 
@@ -191,18 +216,18 @@ slackController.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], f
 
         var obj = {};
 
-        for(var i = 0; i < message.watsonData.entities.length; i++){
+        for (var i = 0; i < message.watsonData.entities.length; i++) {
           obj = message.watsonData.entities[i];
 
-          if(obj.entity === 'cliente'){
+          if (obj.entity === 'cliente') {
             customer = obj.value;
-          }else if(obj.entity === 'linea_servicio'){
+          } else if (obj.entity === 'linea_servicio') {
             serviceLine = obj.value;
           }
         }
 
         //excecute action
-        getStandby(customer,serviceLine,function (res) {
+        getStandby(customer, serviceLine, function (res) {
           //send message
           bot.reply(message, res);
         });
@@ -214,10 +239,25 @@ slackController.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], f
           //send message
           bot.reply(message, res);
         });
-      } else if (message.watsonData.output.action === 'standby_occ') {
+      } else if (message.watsonData.output.action === 'turno') {
+
+        var customer = 'none';
+        var serviceLine = 'none';
+
+        var obj = {};
+
+        for (var i = 0; i < message.watsonData.entities.length; i++) {
+          obj = message.watsonData.entities[i];
+
+          if (obj.entity === 'cliente') {
+            customer = obj.value;
+          } else if (obj.entity === 'linea_servicio') {
+            serviceLine = obj.value;
+          }
+        }
 
         //excecute action
-        getOCCStandby(function (res) {
+        getNewStandby(customer, serviceLine, function (res) {
           //send message
           bot.reply(message, res);
         });
@@ -230,7 +270,6 @@ slackController.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], f
 slackBot.startRTM();
 
 
-//----------------------------------
 
 function initDBConnection() {
 
@@ -1739,6 +1778,25 @@ app.get("/watoken", function (req, response) {
   });
 
 });
+
+//---------------------- Slack services
+
+// Service to execute an action
+app.post("/slack/interact", function (request, response) {
+  console.log("Interactive message action");
+  console.log(JSON.stringify(request.body));
+
+  let payload = JSON.parse(request.body.payload);
+  let mess = payload.original_message;
+  if (payload.actions[0].value == 'incident') {
+    delete mess.attachments[0].actions;
+    response.send(mess);
+  } else {
+    response.send("OK");
+  }
+});
+
+//----------------------------------
 
 
 // Service to check if server is alive
