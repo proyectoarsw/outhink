@@ -19,6 +19,8 @@ const util = require('util')
 // and so is assert
 const assert = require('assert');
 
+const teamsURL = 'https://teamsp2.mybluemix.net'
+
 // For disabling http
 app.enable('trust proxy');
 app.use(function (req, res, next) {
@@ -98,7 +100,7 @@ var middleware = require('botkit-middleware-watson')({
 });
 
 // Configure your bot.
-var slackController = Botkit.slackbot();
+var slackController = Botkit.slackbot({retry:5});
 var slackBot = slackController.spawn({
   token: 'xoxb-218317456099-5UYMjgwBFhZu81MHtCrL1Duz'
 });
@@ -131,7 +133,7 @@ function getNewStandby(cust, sl, callback) {
 
   var options = {
     method: 'POST',
-    url: 'https://teamswm.mybluemix.net/api/slack',
+    url: teamsURL + '/api/slack',
     json: true,
     body: {
       sl: sl,
